@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "SceneManager.h"
 #include "IntroScene.h"
 #include "TestScene.h"
@@ -13,7 +13,7 @@ SceneManager::~SceneManager()
 
 void SceneManager::Initialize()
 {
-	m_upCurrentScene = std::make_unique<TestScene>();
+	m_upCurrentScene = std::make_unique<IntroScene>();
 	m_upCurrentScene->BuildObjects();
 }
 

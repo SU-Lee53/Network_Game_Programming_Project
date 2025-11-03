@@ -14,6 +14,7 @@ std::unique_ptr<GameTimer>			GameFramework::g_pGameTimer = nullptr;
 std::unique_ptr<AssimpLoader>		GameFramework::g_pModelLoader = nullptr;
 std::unique_ptr<ModelManager>		GameFramework::g_pModelManager = nullptr;
 std::unique_ptr<GuiManager>			GameFramework::g_pGuiManager = nullptr;
+std::unique_ptr<NetworkManager>		GameFramework::g_pNetworkManager = nullptr;
 
 GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 {
@@ -30,6 +31,7 @@ GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 	g_pGameTimer = std::make_unique<GameTimer>();
 	g_pModelLoader = std::make_unique<AssimpLoader>();
 	g_pGuiManager = std::make_unique<GuiManager>(g_pD3DCore->GetDevice());
+	g_pNetworkManager = std::make_unique<NetworkManager>();
 
 	g_pShaderManager->Initialize();
 

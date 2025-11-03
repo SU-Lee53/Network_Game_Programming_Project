@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Scene.h"
 #include "D3DCore.h"
 
@@ -12,6 +12,7 @@
 #include "GameTimer.h"
 #include "AssimpLoader.h"
 #include "GuiManager.h"
+#include "NetworkManager.h"
 
 class GameFramework {
 public:
@@ -36,6 +37,7 @@ public:
 	static std::unique_ptr<AssimpLoader>		g_pModelLoader;
 	static std::unique_ptr<ModelManager>		g_pModelManager;
 	static std::unique_ptr<GuiManager>			g_pGuiManager;
+	static std::unique_ptr<NetworkManager>		g_pNetworkManager;
 
 };
 
@@ -49,6 +51,7 @@ public:
 #define TIMER			GameFramework::g_pInputManager
 #define MODEL			GameFramework::g_pModelManager
 #define GUI				GameFramework::g_pGuiManager
+#define NETWORK			GameFramework::g_pNetworkManager
 
 #define MODELLOADER			GameFramework::g_pModelLoader
 

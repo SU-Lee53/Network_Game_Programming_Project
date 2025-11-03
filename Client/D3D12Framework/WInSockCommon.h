@@ -1,19 +1,19 @@
-#define _CRT_SECURE_NO_WARNINGS // ±¸Çü C ÇÔ¼ö »ç¿ë ½Ã °æ°í ²ô±â
-#define _WINSOCK_DEPRECATED_NO_WARNINGS // ±¸Çü ¼ÒÄÏ API »ç¿ë ½Ã °æ°í ²ô±â
+ï»¿#define _CRT_SECURE_NO_WARNINGS // êµ¬í˜• C í•¨ìˆ˜ ì‚¬ìš© ì‹œ ê²½ê³  ë„ê¸°
+#define _WINSOCK_DEPRECATED_NO_WARNINGS // êµ¬í˜• ì†Œì¼“ API ì‚¬ìš© ì‹œ ê²½ê³  ë„ê¸°
 
-#include <winsock2.h> // À©¼Ó2 ¸ŞÀÎ Çì´õ
-#include <ws2tcpip.h> // À©¼Ó2 È®Àå Çì´õ
+#include <winsock2.h> // ìœˆì†2 ë©”ì¸ í—¤ë”
+#include <ws2tcpip.h> // ìœˆì†2 í™•ì¥ í—¤ë”
 
 #include <tchar.h> // _T(), ...
 #include <stdio.h> // printf(), ...
 #include <stdlib.h> // exit(), ...
 #include <string.h> // strncpy(), ...
 
-#pragma comment(lib, "ws2_32") // ws2_32.lib ¸µÅ©
+#pragma comment(lib, "ws2_32") // ws2_32.lib ë§í¬
 
-// ¼ÒÄÏ ÇÔ¼ö ¿À·ù Ãâ·Â ÈÄ Á¾·á
+// ì†Œì¼“ í•¨ìˆ˜ ì˜¤ë¥˜ ì¶œë ¥ í›„ ì¢…ë£Œ
 
-void err_quit(const char *msg)
+inline void err_quit(const char *msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessageA(
@@ -26,21 +26,28 @@ void err_quit(const char *msg)
 	exit(1);
 }
 
-// ¼ÒÄÏ ÇÔ¼ö ¿À·ù Ãâ·Â
-void err_display(const char *msg)
+// ì†Œì¼“ í•¨ìˆ˜ ì˜¤ë¥˜ ì¶œë ¥
+// 11.03 ì´ìŠ¹ìš±
+// ì¶œë ¥ ì–¸ì–´ë¥¼ ì˜ì–´ë¡œ ë°”ê¿ˆ
+inline std::string err_display(const char *msg)
 {
 	LPVOID lpMsgBuf;
 	FormatMessageA(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL, WSAGetLastError(),
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
 		(char *)&lpMsgBuf, 0, NULL);
 	printf("[%s] %s\n", msg, (char *)lpMsgBuf);
+
+	std::string strErrorLog = std::format("{} {}\n", msg, (char*)lpMsgBuf);
+
 	LocalFree(lpMsgBuf);
+
+	return strErrorLog;
 }
 
-// ¼ÒÄÏ ÇÔ¼ö ¿À·ù Ãâ·Â
-void err_display(int errcode)
+// ì†Œì¼“ í•¨ìˆ˜ ì˜¤ë¥˜ ì¶œë ¥
+inline void err_display(int errcode)
 {
 	LPVOID lpMsgBuf;
 	FormatMessageA(
@@ -48,6 +55,6 @@ void err_display(int errcode)
 		NULL, errcode,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(char *)&lpMsgBuf, 0, NULL);
-	printf("[¿À·ù] %s\n", (char *)lpMsgBuf);
+	printf("[ì˜¤ë¥˜] %s\n", (char *)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }

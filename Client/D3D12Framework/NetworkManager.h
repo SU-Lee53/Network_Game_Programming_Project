@@ -1,17 +1,13 @@
-#pragma once
-#include "WinSockCommon.h"
+﻿#pragma once
+#define SERVERPORT 9000
 
-#define SEPARATE_PACKET
-
-#ifdef SEPARATE_PACKET
-#pragma pack(0)
 enum PACKET_TYPE : BYTE {
 	PACKET_TYPE_PLAYER_TRANSFORM,
 	PACKET_TYPE_PLAYER_SHOT,
-	PACKET_TYPE_GAME_SYNCED
 	/*...*/
 };
 
+#pragma pack(0)
 struct PlayerTransformData {
 	XMFLOAT4X4 mtxPlayerTransform;
 };
@@ -21,38 +17,25 @@ struct PlayerShotData {
 	XMFLOAT3 v3RayDirection;
 };
 
-struct GameSyncData {
-	BYTE nSynced;
-};
 
 struct ClientToServerPacket {
 	PACKET_TYPE ePacketType;
 	union {
 		PlayerTransformData transformData;
 		PlayerShotData shotData;
-		GameSyncData syncData;
 	};
 };
 #pragma pack()
 
-#else
-#pragma pack(0)
-struct ClientToServerPacket {
-	Matrix mtxPlayerTransform;
-	bool bShot;
-	Vector3 v3RayPosition;
-	Vector3 v3RayDirection;
-	BYTE nSynced;
-};
-#pragma pack()
-
-#endif
 
 struct ServerToClientPacket {
 
 };
 
 class NetworkManager {
+public:
+	NetworkManager();
+
 public:
 	void ConnectToServer();
 	void Disconnect();
@@ -62,15 +45,11 @@ public:
 	bool ReceiveData(ServerToClientPacket& packet);
 
 public:
-	SOCKET m_hSocketToClient;
+	// 2025.11.03 
+	// by 이승욱
+	WSADATA m_wsa;
+	SOCKET m_hClientSocket;
+	char m_cstrServerIP[16] = "000.000.000.000";
+	bool m_bConnected = false;
+	std::string m_strErrorLog;
 };
-
-bool NetworkManager::SendData(ClientToServerPacket* packet, int nPacket)
-{
-	if (packet->ePacketType == PACKET_TYPE_PLAYER_TRANSFORM) {
-		XMFLOAT4X4 data = packet->transformData.mtxPlayerTransform;
-	}
-
-
-	return true;
-}

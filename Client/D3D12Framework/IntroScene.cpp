@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "IntroScene.h"
 #include "TestScene.h"
 
@@ -19,6 +19,9 @@ void IntroScene::Update()
 	spriteParam.spriteParams.fBottom = 1;
 
 	RENDER->Add(TEXTURE->Get("Opening"), spriteParam);
+
+	NETWORK->ConnectToServer();
+
 
 	UpdateObjects();
 }
