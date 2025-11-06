@@ -1,4 +1,4 @@
-#include "Common.h"
+﻿#include "Common.h"
 
 #define MAX_ROCK_COUNT 10
 

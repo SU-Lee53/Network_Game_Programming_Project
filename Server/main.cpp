@@ -1,10 +1,20 @@
-#include "Common.h"
+ï»¿#include "Common.h"
 #include "MsgProtocol.h"
+#include "Logic.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    512
 
 CRITICAL_SECTION cs;
+
+std::queue<std::shared_ptr<ServertoClientPacket>> PacketBuf;
+std::queue<std::shared_ptr<ServertoClientPacket>> SendPakcetBuf;
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.06
+// ProcessClient() By ìµœëª…ì¤€
+// recv() ë°©ì‹ ì •ì˜
+// send() ë°©ì‹ ì¶”í›„ ê°œì„  í•„ìš” (ì•ˆì „í•˜ì§€ ì•Šì•„ë³´ì„)
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -16,23 +26,32 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	int addrlen;
 	int len;
 
-	// Å¬¶óÀÌ¾ğÆ® Á¤º¸ ¾ò±â
+	// í´ë¼ì´ì–¸íŠ¸ ì •ë³´ ì–»ê¸°
 	addrlen = sizeof(clientaddr);
 
-	// ¼ÒÄÏ¿¡¼­ ÁÖ¼ÒÁ¤º¸ ¾ò±â
+	// ì†Œì¼“ì—ì„œ ì£¼ì†Œì •ë³´ ì–»ê¸°
 	getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
 	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 
 	while (true)
 	{
-		retval = recv(client_sock, NULL, NULL, MSG_PEEK);
+		ServertoClientPacket temp;
+		retval = recv(client_sock, (char*)&temp, sizeof(ServertoClientPacket), 0);
+		PacketBuf.emplace(std::make_shared<ServertoClientPacket>(temp));
+		retval = send(client_sock, (char*)SendPakcetBuf.front().get(), sizeof(ServertoClientPacket), 0);
+		EnterCriticalSection(&cs);
+		SendPakcetBuf.pop();
+		LeaveCriticalSection(&cs);
 	}
 
-	//¼ÒÄÏ ´İ±â
+	//ì†Œì¼“ ë‹«ê¸°
 	closesocket(client_sock);
-
-	LeaveCriticalSection(&cs);
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.06
+// main() By ìµœëª…ì¤€
+// Testìš© Logic Loop ì¶”ê°€
 
 int main(int argc, char* argv[])
 {
@@ -68,7 +87,7 @@ int main(int argc, char* argv[])
 	int len;
 	HANDLE hThread;
 
-	while (true)
+	for (int i = 0; i < 3; ++i)
 	{
 		addrlen = sizeof(clientaddr);
 		client_sock = accept(listen_sock, (struct sockaddr*)&clientaddr, &addrlen);
@@ -86,6 +105,29 @@ int main(int argc, char* argv[])
 		else
 		{
 			CloseHandle(hThread);
+		}
+	}
+
+
+	// Logich Loop
+	while (true)
+	{
+		if (PacketBuf.empty())
+		{
+			continue;
+		}
+		else
+		{
+			switch (PacketBuf.front()->ePacketType)
+			{
+			case PACKET_TYPE_PLAYER_TRANSFORM:
+
+			case PACKET_TYPE_PLAYER_SHOT:
+
+			case PACKET_TYPE_GAME_ROCK:
+				SendPakcetBuf.emplace(CreateLock(*PacketBuf.front()));
+				PacketBuf.pop();
+			}
 		}
 	}
 
