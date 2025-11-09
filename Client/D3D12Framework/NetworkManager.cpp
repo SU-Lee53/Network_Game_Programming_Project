@@ -112,15 +112,16 @@ bool NetworkManager::SendData(ClientToServerPacket* packet, int nPacket)
 	return nSumOfRetval == nBytesToSend;
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.06
+// Disconnect() By 민정원
+// 연결해제
 
 void NetworkManager::Disconnect()
 {
+	m_bConnected = false;
+	closesocket(m_hClientSocket);
+	WSACleanup();
 }
 
 bool NetworkManager::ReceiveData(ServerToClientPacket& packet)
