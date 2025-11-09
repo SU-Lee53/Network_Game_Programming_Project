@@ -94,7 +94,6 @@ bool NetworkManager::SendData(ClientToServerPacket* packet, int nPacket)
 		nSumOfRetval += retval;
 	}
 
-
 	for (int i = 0; i < nPacket; ++i) {
 		retval += send(m_hClientSocket, (char*)&packet[i], sizeof(ClientToServerPacket), 0);	
 		if (retval == SOCKET_ERROR) {
@@ -107,7 +106,6 @@ bool NetworkManager::SendData(ClientToServerPacket* packet, int nPacket)
 	}
 
 	ImGui::Text(m_strErrorLog.c_str());		// TODO : 확인 후 지울것
-
 
 	return nSumOfRetval == nBytesToSend;
 }
@@ -124,7 +122,15 @@ void NetworkManager::Disconnect()
 	WSACleanup();
 }
 
-bool NetworkManager::ReceiveData(ServerToClientPacket& packet)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.04
+// ReceiveData By 이승욱
+// 테스트용 임시
+
+bool NetworkManager::ReceiveData(ServertoClientPlayerPacket& packet)
 {
-	return false;
+	int retval = 0;
+	retval = recv(m_hClientSocket, (char*)&packet, sizeof(ServertoClientPlayerPacket), MSG_WAITALL);
+
+	return retval == sizeof(ServertoClientPlayerPacket);
 }

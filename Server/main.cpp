@@ -10,7 +10,7 @@ CRITICAL_SECTION cs;
 int client_count = 0;
 int client_id[CLIENT_NUM];
 
-std::unordered_map<int, CLIENT> PlayerStates;
+std::unordered_map<int, std::queue<CLIENT>> PlayerStates;
 //std::queue<std::shared_ptr<ServertoClientPlayerPacket>> RecvPlayerPacket;
 //std::queue<std::shared_ptr<ServertoClientPlayerPacket>> SendPlayerPacket;
 ServertoClientRockPacket SendRockPacket;
@@ -23,8 +23,6 @@ ServertoClientRockPacket SendRockPacket;
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
-
-
 	int retval;
 	SOCKET client_sock = (SOCKET)arg;
 	struct sockaddr_in clientaddr;
@@ -42,7 +40,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	CLIENT recvPacket;
 
-
 	EnterCriticalSection(&cs);
 	client_id[client_count] = (int)arg;
 	recvPacket.id = client_id[client_count];
@@ -54,7 +51,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	{
 		retval = recv(client_sock, (char*)&recvPacket, sizeof(CLIENT), 0);
 		EnterCriticalSection(&cs);
-		PlayerStates[client_id[c_num]] = recvPacket;
+		PlayerStates[client_id[c_num]].push(recvPacket);
 		LeaveCriticalSection(&cs);
 	}
 
@@ -128,10 +125,12 @@ int main(int argc, char* argv[])
 	{
 		ServertoClientPlayerPacket packet;
 
+		// TODO: Send() 전에 패킷안에 보낼 데이터 다 들어왔는지 확인하는 로직 필요
 		for (int i = 0; i < 3; ++i)
 		{
 			EnterCriticalSection(&cs);
-			packet.client[i] = PlayerStates[client_id[i]];
+			packet.client[i] = PlayerStates[client_id[i]].front();
+			PlayerStates[client_id[i]].pop();
 			LeaveCriticalSection(&cs);
 		}
 

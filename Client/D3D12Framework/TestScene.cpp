@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "TestScene.h"
 #include "Transform.h"
 #include "CubeObject.h"
@@ -14,9 +14,9 @@ using namespace std::string_literals;
 void TestScene::BuildObjects()
 {
 	/*
-		- ÇöÀç ÄÚµå·Î´Â ÀÎ½ºÅÏ½ÌÀÌ ¾ÈµÊ
-		- ³ªÁß¿¡ ModelÀ» Àü¿ª¿¡¼­ °ü¸®ÇÏµµ·Ï ÇÏ°í, ±×°É °øÀ¯ÇÏ´Â ½ÄÀ¸·Î °¡¸é µÉ "¼öµµ" ÀÖÀ½
-			- ¾ÆÁ÷ ¾ÈÇØºÁ¼­ ¸ğ¸§
+		- í˜„ì¬ ì½”ë“œë¡œëŠ” ì¸ìŠ¤í„´ì‹±ì´ ì•ˆë¨
+		- ë‚˜ì¤‘ì— Modelì„ ì „ì—­ì—ì„œ ê´€ë¦¬í•˜ë„ë¡ í•˜ê³ , ê·¸ê±¸ ê³µìœ í•˜ëŠ” ì‹ìœ¼ë¡œ ê°€ë©´ ë  "ìˆ˜ë„" ìˆìŒ
+			- ì•„ì§ ì•ˆí•´ë´ì„œ ëª¨ë¦„
 	
 	*/
 	std::shared_ptr<CubeObject> pCube1 = std::make_shared<CubeObject>();
@@ -84,7 +84,7 @@ void TestScene::BuildLights()
 	m_pLights[0] = pSpotLight;
 
 	auto pLight1 = std::make_shared<PointLight>();
-	pLight1->m_v3Position = Vector3(-200, 0, -40);	// TODO : SunÀÇ À§Ä¡·Î ¼öÁ¤
+	pLight1->m_v3Position = Vector3(-200, 0, -40);	// TODO : Sunì˜ ìœ„ì¹˜ë¡œ ìˆ˜ì •
 	pLight1->m_v4Ambient = Vector4(0.05f, 0.05f, 0.05f, 1.0f);
 	pLight1->m_v4Diffuse = Vector4(10.0f, 10.0f, 10.0f, 1.0f);
 	pLight1->m_v4Specular = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -159,9 +159,34 @@ void TestScene::Update()
 
 	RENDER->Add(TEXTURE->Get("Crosshair"), spriteParam);
 
+	ServertoClientPlayerPacket receivePacket;
+
 	ImGui::Begin("Test");
 	{
-		ImGui::Text("Test");
+		ClientToServerPacket packet;
+		packet.id = 999;
+		packet.transformData.mtxPlayerTransform = m_pPlayer->GetTransform().GetWorldMatrix();
+		packet.shotData.v3RayDirection = static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->GetRayDirection();
+		packet.shotData.v3RayPosition = static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->GetRayPos();
+
+		if (ImGui::Button("Send")) {
+			NETWORK->SendData(&packet, 1);
+
+			NETWORK->ReceiveData(receivePacket);
+
+			strReceived.clear();
+			strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
+			strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[0].transformData.mtxPlayerTransform._41, receivePacket.client[0].transformData.mtxPlayerTransform._42, receivePacket.client[0].transformData.mtxPlayerTransform._43, receivePacket.client[0].transformData.mtxPlayerTransform._44);
+			
+			strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
+			strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[1].transformData.mtxPlayerTransform._41, receivePacket.client[1].transformData.mtxPlayerTransform._42, receivePacket.client[1].transformData.mtxPlayerTransform._43, receivePacket.client[1].transformData.mtxPlayerTransform._44);
+			
+			strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
+			strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[2].transformData.mtxPlayerTransform._41, receivePacket.client[2].transformData.mtxPlayerTransform._42, receivePacket.client[2].transformData.mtxPlayerTransform._43, receivePacket.client[2].transformData.mtxPlayerTransform._44);
+
+		}
+		ImGui::Text(strReceived.c_str());
+
 	}
 	ImGui::End();
 

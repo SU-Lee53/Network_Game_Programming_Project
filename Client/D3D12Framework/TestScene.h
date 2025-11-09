@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Scene.h"
 
 class TestScene : public Scene {
@@ -16,5 +16,10 @@ protected:
 	//pointLightPositions.emplace_back(2.3f, -3.3f, -4.0f);
 	//pointLightPositions.emplace_back(-4.0f, 2.0f, -12.0f);
 	//pointLightPositions.emplace_back(0.0f, 0.0f, -3.0f);
+
+	std::string strReceived;
+
+
+
 };
 

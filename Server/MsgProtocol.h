@@ -1,8 +1,8 @@
-﻿#include "Common.h"
-
+﻿#pragma once
+#include "Common.h"
 
 struct PlayerTransformData {
-	XMMATRIX mtxPlayerTransofrm;
+	XMFLOAT4X4 mtxPlayerTransofrm;
 };
 
 struct PlayerShotData {
@@ -11,7 +11,7 @@ struct PlayerShotData {
 };
 
 struct RockData {
-	XMMATRIX mtxRockTransform;
+	XMFLOAT4X4 mtxRockTransform;
 	BYTE nrockID;
 	BYTE nIsAlive;
 };
