@@ -7,8 +7,13 @@
 
 CRITICAL_SECTION cs;
 
-std::queue<std::shared_ptr<ServertoClientPacket>> PacketBuf;
-std::queue<std::shared_ptr<ServertoClientPacket>> SendPakcetBuf;
+int client_count = 0;
+int client_id[CLIENT_NUM];
+
+std::unordered_map<int, CLIENT> PlayerStates;
+//std::queue<std::shared_ptr<ServertoClientPlayerPacket>> RecvPlayerPacket;
+//std::queue<std::shared_ptr<ServertoClientPlayerPacket>> SendPlayerPacket;
+ServertoClientRockPacket SendRockPacket;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // 2025.11.06
@@ -18,13 +23,15 @@ std::queue<std::shared_ptr<ServertoClientPacket>> SendPakcetBuf;
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
-	int client_id = (int)arg;
+
+
 	int retval;
 	SOCKET client_sock = (SOCKET)arg;
 	struct sockaddr_in clientaddr;
 	char addr[INET_ADDRSTRLEN];
 	int addrlen;
 	int len;
+	int c_num;
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -33,14 +40,21 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
 	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 
+	CLIENT recvPacket;
+
+
+	EnterCriticalSection(&cs);
+	client_id[client_count] = (int)arg;
+	recvPacket.id = client_id[client_count];
+	c_num = client_count;
+	client_count++;
+	LeaveCriticalSection(&cs);
+
 	while (true)
 	{
-		ServertoClientPacket temp;
-		retval = recv(client_sock, (char*)&temp, sizeof(ServertoClientPacket), 0);
-		PacketBuf.emplace(std::make_shared<ServertoClientPacket>(temp));
-		retval = send(client_sock, (char*)SendPakcetBuf.front().get(), sizeof(ServertoClientPacket), 0);
+		retval = recv(client_sock, (char*)&recvPacket, sizeof(CLIENT), 0);
 		EnterCriticalSection(&cs);
-		SendPakcetBuf.pop();
+		PlayerStates[client_id[c_num]] = recvPacket;
 		LeaveCriticalSection(&cs);
 	}
 
@@ -81,26 +95,26 @@ int main(int argc, char* argv[])
 	if (retval == SOCKET_ERROR)
 		err_quit("listen()");
 
-	SOCKET client_sock;
+	SOCKET client_sock[CLIENT_NUM];
 	struct sockaddr_in clientaddr;
 	int addrlen;
 	int len;
 	HANDLE hThread;
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < CLIENT_NUM; ++i)
 	{
 		addrlen = sizeof(clientaddr);
-		client_sock = accept(listen_sock, (struct sockaddr*)&clientaddr, &addrlen);
-		if (client_sock == INVALID_SOCKET)
+		client_sock[i] = accept(listen_sock, (struct sockaddr*)&clientaddr, &addrlen);
+		if (client_sock[i] == INVALID_SOCKET)
 		{
 			err_display("accept()");
 			break;
 		}
 
-		hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
+		hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock[i], 0, NULL);
 		if (hThread == NULL)
 		{
-			closesocket(client_sock);
+			closesocket(client_sock[i]);
 		}
 		else
 		{
@@ -112,22 +126,20 @@ int main(int argc, char* argv[])
 	// Logich Loop
 	while (true)
 	{
-		if (PacketBuf.empty())
+		ServertoClientPlayerPacket packet;
+
+		for (int i = 0; i < 3; ++i)
 		{
-			continue;
+			EnterCriticalSection(&cs);
+			packet.client[i] = PlayerStates[client_id[i]];
+			LeaveCriticalSection(&cs);
 		}
-		else
+
+		for (int i = 0; i < 3; ++i)
 		{
-			switch (PacketBuf.front()->ePacketType)
-			{
-			case PACKET_TYPE_PLAYER_TRANSFORM:
-
-			case PACKET_TYPE_PLAYER_SHOT:
-
-			case PACKET_TYPE_GAME_ROCK:
-				SendPakcetBuf.emplace(CreateLock(*PacketBuf.front()));
-				PacketBuf.pop();
-			}
+			EnterCriticalSection(&cs);
+			send(client_sock[i], (char*)&packet, sizeof(packet), 0);
+			LeaveCriticalSection(&cs);
 		}
 	}
 

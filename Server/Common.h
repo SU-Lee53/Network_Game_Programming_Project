@@ -9,10 +9,15 @@
 #include <stdlib.h> // exit(), ...
 #include <string.h> // strncpy(), ...
 #include <vector>
+#include <map>
 #include <queue>
 #include <iostream>
+#include <unordered_map>
 
 #include <directxmath.h>
+
+#define MAX_ROCK_COUNT 10
+#define CLIENT_NUM 3
 
 using namespace DirectX;
 

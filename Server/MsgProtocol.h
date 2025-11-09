@@ -1,16 +1,5 @@
 ﻿#include "Common.h"
 
-#define MAX_ROCK_COUNT 10
-
-enum PACKET_TYPE {
-	PACKET_TYPE_PLAYER_TRANSFORM,
-	PACKET_TYPE_PLAYER_SHOT,
-	PACKET_TYPE_GAME_ROCK
-};
-
-struct CLIENT_ID {
-	int id;
-};
 
 struct PlayerTransformData {
 	XMMATRIX mtxPlayerTransofrm;
@@ -27,12 +16,16 @@ struct RockData {
 	BYTE nIsAlive;
 };
 
-struct ServertoClientPacket {
-	PACKET_TYPE ePacketType;
-	CLIENT_ID client_id;
-	union {
-		PlayerTransformData transformData;
-		PlayerShotData shotData;
-		RockData rockData[MAX_ROCK_COUNT];
-	};
+struct CLIENT {
+	int id;
+	PlayerTransformData transformData;
+	PlayerShotData shotData;
+};
+
+struct ServertoClientPlayerPacket {
+	CLIENT client[CLIENT_NUM];
+};
+
+struct ServertoClientRockPacket {
+	std::vector<RockData> rockData;
 };
