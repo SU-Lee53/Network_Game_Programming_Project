@@ -311,6 +311,9 @@
     <ClInclude Include="NetworkManager.h">
       <Filter>소스 파일\02. Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Packets.h">
+      <Filter>소스 파일\98. Utility Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameFramework.cpp">

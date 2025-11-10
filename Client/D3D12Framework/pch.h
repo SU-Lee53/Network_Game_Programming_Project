@@ -84,6 +84,7 @@ using namespace Microsoft::WRL;
 #include "Utility.h"
 #include "ShaderResource.h"
 #include "DescriptorHeap.h"
+#include "Packets.h"
 
 // Assimp
 #include <assimp/Importer.hpp>

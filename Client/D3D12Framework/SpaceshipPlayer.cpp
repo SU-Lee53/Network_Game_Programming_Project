@@ -1,7 +1,8 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "SpaceshipPlayer.h"
 #include "ThirdPersonCamera.h"
 #include "PlayerRenderer.h"
+#include "NetworkManager.h"
 
 SpaceshipPlayer::SpaceshipPlayer()
 {
@@ -14,8 +15,8 @@ SpaceshipPlayer::~SpaceshipPlayer()
 void SpaceshipPlayer::Initialize()
 {
 	if (!m_bInitialized) {
-		// ¾Æ·¡ ¹æ½Ä ¸ÖÆ¼ÇÃ·¹ÀÌ µé¾î°¡¸é PlayerRenderer ÀÇ PlayerRef °¡ ºĞ¸í ¹®Á¦°¡ µÉ°Å°°À½
-		// ¹®Á¦µÇ¸é ±×³É °°Àº¸ğµ¨ ÇÏ³ª ´õ ·Îµù
+		// ì•„ë˜ ë°©ì‹ ë©€í‹°í”Œë ˆì´ ë“¤ì–´ê°€ë©´ PlayerRenderer ì˜ PlayerRef ê°€ ë¶„ëª… ë¬¸ì œê°€ ë ê±°ê°™ìŒ
+		// ë¬¸ì œë˜ë©´ ê·¸ëƒ¥ ê°™ì€ëª¨ë¸ í•˜ë‚˜ ë” ë¡œë”©
 		std::shared_ptr<GameObject> pSphere = MODEL->Get("Spaceship");	// 1
 		SetChild(pSphere);
 
@@ -49,8 +50,9 @@ void SpaceshipPlayer::ProcessInput()
 	m_pCamera->ProcessInput();
 
 	if (INPUT->GetButtonDown(VK_LBUTTON)) {
-		/* ¹ß»ç */
+		/* ë°œì‚¬ */
 		m_bIsFire = true;
+		m_bRayDataSended = false;	// Ray ë°œì‚¬ì‹œ Data ê°€ ë³´ë‚´ì•¼ í•¨ì„ ì•Œë¦¼
 
 		// Ray Direction
 		Vector3 v3CamPos = m_pCamera->GetPosition();
@@ -74,7 +76,7 @@ void SpaceshipPlayer::ProcessInput()
 		m_vRayDirection.Normalize();
 	}
 
-	// Roll È¸Àü Ãß°¡
+	// Roll íšŒì „ ì¶”ê°€
 	float fRollAmount = 100.f * DT;
 	if (INPUT->GetButtonPressed('D')) {
 		if (m_fRoll > -45.f) {
@@ -107,7 +109,7 @@ void SpaceshipPlayer::ProcessInput()
 
 void SpaceshipPlayer::Update()
 {
-	// ¹ß»ç Å¸ÀÌ¸Ó ·ÎÁ÷
+	// ë°œì‚¬ íƒ€ì´ë¨¸ ë¡œì§
 	if (m_bIsFire && m_fFireTimer <= m_fFireDuration) {
 		m_fFireTimer += DT;
 	}
@@ -142,14 +144,12 @@ void SpaceshipPlayer::Update()
 		}
 	}
 
-
-
 	m_Transform.SetRotation(m_pCamera->GetPitch(), m_pCamera->GetYaw(), XMConvertToRadians(m_fRoll));
 
-	// view ¸ÕÀú ÇÑ¹ø ¸¸µé¾î¼­ Ä«¸Ş¶ó ±âÀú Á¤»óÈ­
+	// view ë¨¼ì € í•œë²ˆ ë§Œë“¤ì–´ì„œ ì¹´ë©”ë¼ ê¸°ì € ì •ìƒí™”
 	m_pCamera->Update();
 
-	// Ä«¸Ş¶ó¿¡ ÀÌµ¿ ¸ÂÃã
+	// ì¹´ë©”ë¼ì— ì´ë™ ë§ì¶¤
 	Vector3 v3CamPosition = m_pCamera->GetPosition();
 	Vector3 v3CamRight = m_pCamera->GetRight();
 	Vector3 v3CamUp = m_pCamera->GetUp();
@@ -166,6 +166,28 @@ void SpaceshipPlayer::Update()
 
 void SpaceshipPlayer::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 {
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.10
+// MakePacketToSend() By ì´ìŠ¹ìš±
+// 11.10 ê¸°ì¤€ìœ¼ë¡œ ì •í•´ì§„ íŒ¨í‚· ë°ì´í„°ë¥¼ ì±„ì›€ - ì–¸ì œë“ ì§€ ë°”ë€” ìˆ˜ ìˆìŒ
+ClientToServerPacket SpaceshipPlayer::MakePacketToSend()
+{
+	ClientToServerPacket packet;
+	packet.id = 0;	// ì¼ë‹¨ ì•ˆë³´ë‚´ë„ ë¨
+	packet.transformData.mtxPlayerTransform = m_Transform.GetWorldMatrix();
+	if (m_bIsFire && !m_bRayDataSended) {
+		packet.shotData.v3RayPosition = GetRayPos();
+		packet.shotData.v3RayDirection = GetRayDirection();
+		m_bRayDataSended = true;	// í•œë²ˆ ë³´ëƒˆìŒì„ ì•Œë¦¼ (== íŒ¨í‚·ì„ ë§Œë“¤ì—ˆìŒ)
+	}
+	else {
+		packet.shotData.v3RayPosition = Vector3(0.f, 0.f, 0.f);
+		packet.shotData.v3RayDirection = Vector3(0.f, 0.f, 0.f);
+	}
+
+	return packet;
 }
 
 Vector3 SpaceshipPlayer::GetRayPos()

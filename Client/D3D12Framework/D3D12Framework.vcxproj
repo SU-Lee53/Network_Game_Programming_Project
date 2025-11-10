@@ -177,6 +177,7 @@
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="ModelManager.h" />
     <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="Packets.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerRenderer.h" />
