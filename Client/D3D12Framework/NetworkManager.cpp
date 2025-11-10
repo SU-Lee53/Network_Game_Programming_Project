@@ -65,7 +65,7 @@ bool NetworkManager::SendData(ClientToServerPacket* packet, int nPacket)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 2025.11.06
 // Disconnect() By 민정원
-// 연결해제
+// 연결해제 구현
 
 void NetworkManager::Disconnect()
 {
