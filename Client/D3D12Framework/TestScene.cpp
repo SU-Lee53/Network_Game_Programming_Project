@@ -164,10 +164,8 @@ void TestScene::Update()
 	ImGui::Begin("Test");
 	{
 		ClientToServerPacket packet;
-		packet.id = 999;
-		packet.transformData.mtxPlayerTransform = m_pPlayer->GetTransform().GetWorldMatrix();
-		packet.shotData.v3RayDirection = static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->GetRayDirection();
-		packet.shotData.v3RayPosition = static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->GetRayPos();
+		
+		NETWORK->MakePacketToSend(packet , m_pPlayer);
 
 		if (ImGui::Button("Send")) {
 			NETWORK->SendData(&packet, 1);

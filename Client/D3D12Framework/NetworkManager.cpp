@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "NetworkManager.h"
 #include "TestScene.h"
+#include "SpaceshipPlayer.h"
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,4 +134,17 @@ bool NetworkManager::ReceiveData(ServertoClientPlayerPacket& packet)
 	retval = recv(m_hClientSocket, (char*)&packet, sizeof(ServertoClientPlayerPacket), MSG_WAITALL);
 
 	return retval == sizeof(ServertoClientPlayerPacket);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.11
+// MakePacketToSend() By 민정원
+// 서버로 보낼 패킷 생성.
+
+void NetworkManager::MakePacketToSend(ClientToServerPacket& packet , std::shared_ptr<Player> Player)
+{
+	packet.id = 999;
+	packet.transformData.mtxPlayerTransform = Player->GetTransform().GetWorldMatrix();
+	packet.shotData.v3RayDirection = static_pointer_cast<SpaceshipPlayer>(Player)->GetRayDirection();
+	packet.shotData.v3RayPosition = static_pointer_cast<SpaceshipPlayer>(Player)->GetRayPos();
 }
