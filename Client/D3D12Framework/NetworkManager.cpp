@@ -76,34 +76,24 @@ void NetworkManager::ConnectToServer()
 // 
 // 2025.11.04
 // Local 서버를 이용한 테스트 완료
+//
+// 2025.11.14
+// 패킷 변경에 따라 Send 방식 변경
 
-bool NetworkManager::SendData(ClientToServerPacket* packet, int nPacket)
+
+bool NetworkManager::SendData(const ClientToServerPacket& packet)
 {
 	assert(m_bConnected);
-	int nBytesToSend = sizeof(ClientToServerPacket) * nPacket;	// 나중에 retval 의 합이 이것과 같으면 true 임
+	int nBytesToSend = sizeof(ClientToServerPacket);
 	int retval{};
 	int nSumOfRetval{};
 
-	// 전송할 패킷 갯수를 먼저 보냄
-	// 1개라면 Transform  정보만 보낸것
-	// 2개라면 Transform + Ray 정보까지 보낸 것
-	retval = send(m_hClientSocket, (char*)&nPacket, sizeof(int), 0);
+	retval += send(m_hClientSocket, (char*)&packet, sizeof(ClientToServerPacket), 0);
 	if (retval == SOCKET_ERROR) {
 		m_strErrorLog = err_display("send()");
 	}
 	else {
 		nSumOfRetval += retval;
-	}
-
-	for (int i = 0; i < nPacket; ++i) {
-		retval += send(m_hClientSocket, (char*)&packet[i], sizeof(ClientToServerPacket), 0);	
-		if (retval == SOCKET_ERROR) {
-			m_strErrorLog = err_display("send()");
-		}
-		else {
-			nSumOfRetval += retval;
-		}
-
 	}
 
 	ImGui::Text(m_strErrorLog.c_str());		// TODO : 확인 후 지울것

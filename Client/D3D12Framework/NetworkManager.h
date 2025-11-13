@@ -13,7 +13,7 @@ public:
 	void Disconnect();
 
 public:
-	bool SendData(ClientToServerPacket* packet, int nPacket);
+	bool SendData(const ClientToServerPacket& packet);
 	bool ReceiveData(ServertoClientPlayerPacket& packet);
 	void MakePacketToSend(ClientToServerPacket& packet ,const std::shared_ptr<Player> Player);
 
