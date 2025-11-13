@@ -15,7 +15,7 @@ public:
 public:
 	bool SendData(ClientToServerPacket* packet, int nPacket);
 	bool ReceiveData(ServertoClientPlayerPacket& packet);
-
+	void MakePacketToSend(ClientToServerPacket& packet ,const std::shared_ptr<Player> Player);
 
 public:
 	// 2025.11.03 
