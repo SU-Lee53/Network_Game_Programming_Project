@@ -401,7 +401,7 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Ignore Excutable
-Client/Excutables/**
+# Client/Excutables/**
 
 # Allow Dependencies folder and its contents
 !Client/Dependencies/
