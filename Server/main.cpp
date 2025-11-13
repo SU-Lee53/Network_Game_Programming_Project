@@ -8,18 +8,20 @@
 CRITICAL_SECTION cs;
 
 int client_count = 0;
-int client_id[CLIENT_NUM];
 
 std::unordered_map<int, std::queue<CLIENT>> PlayerStates;
-//std::queue<std::shared_ptr<ServertoClientPlayerPacket>> RecvPlayerPacket;
-//std::queue<std::shared_ptr<ServertoClientPlayerPacket>> SendPlayerPacket;
+ServertoClientPlayerPacket SendPlayerPacket;
 ServertoClientRockPacket SendRockPacket;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// 2025.11.06
+// 2025.11.12
 // ProcessClient() By 최명준
-// recv() 방식 정의
-// send() 방식 추후 개선 필요 (안전하지 않아보임)
+// recv() 방식 재정의
+// send() 방식 재정의
+// send를 통해 client쪽으로 보내는 패킷안에 이게 어떤 플레이어 데이터인지
+// id를 통해 보내는 패킷마다 늘 확인할 수 있음
+// 지금 방식은 recv한번하고 데이터 취합한 다음 send하는 방식
+// 느리거나 프레임 끊길시 구조 조정
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -29,7 +31,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	char addr[INET_ADDRSTRLEN];
 	int addrlen;
 	int len;
-	int c_num;
+	int client_id = (int)arg;
+	int client_num = 0;
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -41,18 +44,25 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	CLIENT recvPacket;
 
 	EnterCriticalSection(&cs);
-	client_id[client_count] = (int)arg;
-	recvPacket.id = client_id[client_count];
-	c_num = client_count;
+	client_num = client_count;
 	client_count++;
 	LeaveCriticalSection(&cs);
-
+	recvPacket.flag = false;
 	while (true)
 	{
 		retval = recv(client_sock, (char*)&recvPacket, sizeof(CLIENT), 0);
-		EnterCriticalSection(&cs);
-		PlayerStates[client_id[c_num]].push(recvPacket);
-		LeaveCriticalSection(&cs);
+		recvPacket.id = client_id;
+		
+		recvPacket.flag = false;
+		SendPlayerPacket.client[client_num] = recvPacket;
+		recvPacket.flag = true;
+
+		if (SendPlayerPacket.client[0].flag == true &&
+			SendPlayerPacket.client[1].flag == true &&
+			SendPlayerPacket.client[2].flag == true)
+		{
+			retval = send(client_sock, (char*)&SendPlayerPacket, sizeof(SendPlayerPacket), 0);
+		}
 	}
 
 	//소켓 닫기
@@ -60,9 +70,11 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// 2025.11.06
+// 2025.11.10
 // main() By 최명준
-// Test용 Logic Loop 추가
+// main에서 send하는 방식 취소
+// 일단은 main에서 클라이언트 연결만 하는 방식
+// Logic Loop는 잠시 비워둠
 
 int main(int argc, char* argv[])
 {
@@ -123,23 +135,6 @@ int main(int argc, char* argv[])
 	// Logich Loop
 	while (true)
 	{
-		ServertoClientPlayerPacket packet;
-
-		// TODO: Send() 전에 패킷안에 보낼 데이터 다 들어왔는지 확인하는 로직 필요
-		for (int i = 0; i < 3; ++i)
-		{
-			EnterCriticalSection(&cs);
-			packet.client[i] = PlayerStates[client_id[i]].front();
-			PlayerStates[client_id[i]].pop();
-			LeaveCriticalSection(&cs);
-		}
-
-		for (int i = 0; i < 3; ++i)
-		{
-			EnterCriticalSection(&cs);
-			send(client_sock[i], (char*)&packet, sizeof(packet), 0);
-			LeaveCriticalSection(&cs);
-		}
 	}
 
 	DeleteCriticalSection(&cs);
