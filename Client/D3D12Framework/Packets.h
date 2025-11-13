@@ -33,6 +33,7 @@ struct CLIENT {
 	int id;
 	PlayerTransformData transformData;
 	PlayerShotData shotData;
+	bool flag;
 };
 
 struct ServertoClientPlayerPacket {
