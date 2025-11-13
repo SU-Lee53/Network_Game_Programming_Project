@@ -47,15 +47,22 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	client_num = client_count;
 	client_count++;
 	LeaveCriticalSection(&cs);
-
+	recvPacket.flag = false;
 	while (true)
 	{
 		retval = recv(client_sock, (char*)&recvPacket, sizeof(CLIENT), 0);
 		recvPacket.id = client_id;
+		
+		recvPacket.flag = false;
 		SendPlayerPacket.client[client_num] = recvPacket;
+		recvPacket.flag = true;
 
-		// TODO : send를 하기 전에 client 3명의 정보가 다 들어갔는지 확인 로직 필요
-		retval = send(client_sock, (char*)&SendPlayerPacket, sizeof(SendPlayerPacket), 0);
+		if (SendPlayerPacket.client[0].flag == true &&
+			SendPlayerPacket.client[1].flag == true &&
+			SendPlayerPacket.client[2].flag == true)
+		{
+			retval = send(client_sock, (char*)&SendPlayerPacket, sizeof(SendPlayerPacket), 0);
+		}
 	}
 
 	//소켓 닫기
