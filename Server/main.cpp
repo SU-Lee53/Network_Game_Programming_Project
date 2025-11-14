@@ -55,7 +55,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		
 		recvPacket.flag = false;
 		SendPlayerPacket.client[client_num] = recvPacket;
-		recvPacket.flag = true;
+		SendPlayerPacket.client[client_num].flag = true;
 
 		if (SendPlayerPacket.client[0].flag == true &&
 			SendPlayerPacket.client[1].flag == true &&
