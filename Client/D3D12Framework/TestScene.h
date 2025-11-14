@@ -19,7 +19,7 @@ protected:
 
 	std::string strReceived;
 
-
+	ULONGLONG m_ullDataReceived = 0;
 
 };
 

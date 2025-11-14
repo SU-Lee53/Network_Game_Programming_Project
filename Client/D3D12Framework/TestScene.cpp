@@ -165,27 +165,42 @@ void TestScene::Update()
 	ImGui::Begin("Test");
 	{
 		ClientToServerPacket packet;
-		
 		//NETWORK->MakePacketToSend(packet , m_pPlayer);
+		//	if (ImGui::Button("Send")) {
+		//		NETWORK->SendData(m_pPlayer->MakePacketToSend());
+		//	
+		//		NETWORK->ReceiveData(receivePacket);
+		//	
+		//		strReceived.clear();
+		//		strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
+		//		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[0].transformData.mtxPlayerTransform._41, receivePacket.client[0].transformData.mtxPlayerTransform._42, receivePacket.client[0].transformData.mtxPlayerTransform._43, receivePacket.client[0].transformData.mtxPlayerTransform._44);
+		//		
+		//		strReceived += std::format("ID : {}\n", receivePacket.client[1].id);
+		//		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[1].transformData.mtxPlayerTransform._41, receivePacket.client[1].transformData.mtxPlayerTransform._42, receivePacket.client[1].transformData.mtxPlayerTransform._43, receivePacket.client[1].transformData.mtxPlayerTransform._44);
+		//		
+		//		strReceived += std::format("ID : {}\n", receivePacket.client[2].id);
+		//		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[2].transformData.mtxPlayerTransform._41, receivePacket.client[2].transformData.mtxPlayerTransform._42, receivePacket.client[2].transformData.mtxPlayerTransform._43, receivePacket.client[2].transformData.mtxPlayerTransform._44);
+		//	
+		//	}
+
+		// send recv every frame
+		NETWORK->SendData(m_pPlayer->MakePacketToSend());
+		NETWORK->ReceiveData(receivePacket);
+
+		strReceived.clear();
+		strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
+		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[0].transformData.mtxPlayerTransform._41, receivePacket.client[0].transformData.mtxPlayerTransform._42, receivePacket.client[0].transformData.mtxPlayerTransform._43, receivePacket.client[0].transformData.mtxPlayerTransform._44);
+
+		strReceived += std::format("ID : {}\n", receivePacket.client[1].id);
+		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[1].transformData.mtxPlayerTransform._41, receivePacket.client[1].transformData.mtxPlayerTransform._42, receivePacket.client[1].transformData.mtxPlayerTransform._43, receivePacket.client[1].transformData.mtxPlayerTransform._44);
+
+		strReceived += std::format("ID : {}\n", receivePacket.client[2].id);
+		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[2].transformData.mtxPlayerTransform._41, receivePacket.client[2].transformData.mtxPlayerTransform._42, receivePacket.client[2].transformData.mtxPlayerTransform._43, receivePacket.client[2].transformData.mtxPlayerTransform._44);
 		
-		if (ImGui::Button("Send")) {
-			NETWORK->SendData(m_pPlayer->MakePacketToSend());
+		m_ullDataReceived++;
 
-			NETWORK->ReceiveData(receivePacket);
 
-			strReceived.clear();
-			strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
-			strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[0].transformData.mtxPlayerTransform._41, receivePacket.client[0].transformData.mtxPlayerTransform._42, receivePacket.client[0].transformData.mtxPlayerTransform._43, receivePacket.client[0].transformData.mtxPlayerTransform._44);
-			
-			strReceived += std::format("ID : {}\n", receivePacket.client[1].id);
-			strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[1].transformData.mtxPlayerTransform._41, receivePacket.client[1].transformData.mtxPlayerTransform._42, receivePacket.client[1].transformData.mtxPlayerTransform._43, receivePacket.client[1].transformData.mtxPlayerTransform._44);
-			
-			strReceived += std::format("ID : {}\n", receivePacket.client[2].id);
-			strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[2].transformData.mtxPlayerTransform._41, receivePacket.client[2].transformData.mtxPlayerTransform._42, receivePacket.client[2].transformData.mtxPlayerTransform._43, receivePacket.client[2].transformData.mtxPlayerTransform._44);
-
-		}
 		ImGui::Text(strReceived.c_str());
-
 	}
 	ImGui::End();
 
