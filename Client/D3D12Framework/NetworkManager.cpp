@@ -141,10 +141,16 @@ bool NetworkManager::ReceiveData(ServertoClientPlayerPacket& packet)
 // MakePacketToSend() By 민정원
 // 서버로 보낼 패킷 생성.
 
-void NetworkManager::MakePacketToSend(ClientToServerPacket& packet , std::shared_ptr<Player> Player)
-{
-	packet.id = 999;
-	packet.transformData.mtxPlayerTransform = Player->GetTransform().GetWorldMatrix();
-	packet.shotData.v3RayDirection = static_pointer_cast<SpaceshipPlayer>(Player)->GetRayDirection();
-	packet.shotData.v3RayPosition = static_pointer_cast<SpaceshipPlayer>(Player)->GetRayPos();
-}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.14
+// MakePacketToSend() By 민정원
+// player에서 다시 구현.
+
+//void NetworkManager::MakePacketToSend(ClientToServerPacket& packet , std::shared_ptr<Player> Player)
+//{
+//	packet.id = 999;
+//	packet.transformData.mtxPlayerTransform = Player->GetTransform().GetWorldMatrix();
+//	packet.shotData.v3RayDirection = static_pointer_cast<SpaceshipPlayer>(Player)->GetRayDirection();
+//	packet.shotData.v3RayPosition = static_pointer_cast<SpaceshipPlayer>(Player)->GetRayPos();
+//}

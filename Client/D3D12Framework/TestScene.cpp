@@ -165,7 +165,6 @@ void TestScene::Update()
 	{
 		ClientToServerPacket packet;
 		
-		NETWORK->MakePacketToSend(packet , m_pPlayer);
 
 		if (ImGui::Button("Send")) {
 			NETWORK->SendData(&packet, 1);
