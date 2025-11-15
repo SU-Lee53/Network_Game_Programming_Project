@@ -1,10 +1,10 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Transform.h"
 #include "GameObject.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	- ÁÖÀÇ
-//		- SimpleMath °¡ RHS ÁÂÇ¥°è »ç¿ëÁßÀÌ¶ó Forward(Look) ¹æÇâÀº Matrix::Backward() ·Î °¡Á®¿Í¾ß ÇÔ
+//	- ì£¼ì˜
+//		- SimpleMath ê°€ RHS ì¢Œí‘œê³„ ì‚¬ìš©ì¤‘ì´ë¼ Forward(Look) ë°©í–¥ì€ Matrix::Backward() ë¡œ ê°€ì ¸ì™€ì•¼ í•¨
 //
 
 Transform::Transform()
@@ -15,12 +15,24 @@ Transform::Transform()
 
 void Transform::Update(std::shared_ptr<GameObject> pParent)
 {
+	// 11.15 ìˆ˜ì •
+	// ì™¸ë¶€ ìˆ˜ì • flag ë¥¼ ë‚´ë¦¬ê³  ì—…ë°ì´íŠ¸ ì—†ì´ ë¦¬í„´í•¨
+	if (m_bWorldSetFromOutside) {
+		m_bWorldSetFromOutside = false;
+		return;
+	}
 	m_mtxWorld = (pParent) ? ((m_mtxTransform * m_mtxFrameRelative) * pParent->GetTransform().m_mtxWorld) : (m_mtxTransform * m_mtxFrameRelative);
 }
 
 void Transform::SetFrameMatrix(const Matrix& mtxFrame)
 {
 	m_mtxFrameRelative = mtxFrame;
+}
+
+void Transform::SetWorldMatrix(const Matrix& mtxWorld)
+{
+	m_mtxWorld = mtxWorld;
+	m_bWorldSetFromOutside = true;
 }
 
 //void Transform::SetLocalMatrix(const Matrix& xmf4x4Local)

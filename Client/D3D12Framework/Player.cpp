@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Player.h"
 #include "Camera.h"
 
@@ -32,7 +32,9 @@ void Player::ProcessInput()
 
 void Player::Update()
 {
-	m_pCamera->Update();
+	if (m_pCamera) {
+		m_pCamera->Update();
+	}
 
 	GameObject::Update();
 }

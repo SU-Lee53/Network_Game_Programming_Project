@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class GameObject;
 
@@ -11,6 +11,11 @@ public:
 public:
 	void SetFrameMatrix(const Matrix& mtxFrame);
 
+	// 11.15
+	// ì•„ë˜ í•¨ìˆ˜ëŠ” ì´ë²ˆ í”„ë¡œì íŠ¸ì—ì„œ ì‚¬ìš©
+	// íŠ¹ë³„í•œ ê²½ìš°ê°€ ì•„ë‹ˆë¼ë©´ ì§ì ‘ ì›”ë“œ í–‰ë ¬ì„ Setí•˜ëŠ” ì¼ì€ ì—†ëŠ”ê²ƒì´ ì¢‹ìŒ
+	void SetWorldMatrix(const Matrix& mtxWorld);
+
 public:
 	void SetPosition(float x, float y, float z);
 	void SetPosition(const Vector3& xmf3Position);
@@ -18,10 +23,10 @@ public:
 	void Move(Vector3 v3MoveDirection, float fAmount);
 
 public:
-	// Rotate ÀÌÈÄ ÀÌ°É ¾²¸é ±âÁ¸ÀÇ ¸ğµç È¸ÀüÀÌ ³¯¾Æ°¨
+	// Rotate ì´í›„ ì´ê±¸ ì“°ë©´ ê¸°ì¡´ì˜ ëª¨ë“  íšŒì „ì´ ë‚ ì•„ê°
 	void SetRotation(float fPitch, float fYaw, float fRoll);
 
-	// Rotate ÀÌÈÄ ÀÌ°É ¾²¸é ±âÁ¸ÀÇ ¸ğµç È¸ÀüÀÌ ³¯¾Æ°¨
+	// Rotate ì´í›„ ì´ê±¸ ì“°ë©´ ê¸°ì¡´ì˜ ëª¨ë“  íšŒì „ì´ ë‚ ì•„ê°
 	void SetRotation(const Vector3& xmf3Position);
 
 	void Rotate(const Vector3& v3Rotation);
@@ -45,13 +50,17 @@ public:
 	Matrix GetWorldMatrix() const;
 
 private:
-	// m_mtxFrameRelative : °èÃş ¸ğµ¨¿¡¼­ ºÎ¸ğ·ÎºÎÅÍÀÇ »ó´ë º¯È¯
-	// m_mtxTransform : ¿ÀºêÁ§Æ®°¡ ¼öÇàÇÒ º¯È¯ÀÇ ´©Àû
-	// m_mtxWorld : m_mtxTransform * m_mtxFrameRelative (ÀÚ½ÄÀÌ¶ó¸é * (ºÎ¸ğÀÇ ¿ùµå))
-	//             ¿ùµå ¿øÁ¡ ±âÁØ ÃÖÁ¾ º¯È¯ Çà·Ä
+	// m_mtxFrameRelative : ê³„ì¸µ ëª¨ë¸ì—ì„œ ë¶€ëª¨ë¡œë¶€í„°ì˜ ìƒëŒ€ ë³€í™˜
+	// m_mtxTransform : ì˜¤ë¸Œì íŠ¸ê°€ ìˆ˜í–‰í•  ë³€í™˜ì˜ ëˆ„ì 
+	// m_mtxWorld : m_mtxTransform * m_mtxFrameRelative (ìì‹ì´ë¼ë©´ * (ë¶€ëª¨ì˜ ì›”ë“œ))
+	//             ì›”ë“œ ì›ì  ê¸°ì¤€ ìµœì¢… ë³€í™˜ í–‰ë ¬
 
 	Matrix m_mtxFrameRelative	= {};
 	Matrix m_mtxTransform		= {};
 	Matrix m_mtxWorld			= {};
+
+	// 11.15 ì´ìŠ¹ìš±
+	// ì™¸ë¶€ì—ì„œ World ë¥¼ Set í•œ ê²½ìš° Update ë¥¼ ë§‰ë„ë¡ í•¨
+	bool m_bWorldSetFromOutside = false;
 
 };
