@@ -121,7 +121,7 @@ void NetworkManager::Disconnect()
 bool NetworkManager::ReceiveData(ServertoClientPlayerPacket& packet)
 {
 	int retval = 0;
-	retval = recv(m_hClientSocket, (char*)&packet, sizeof(ServertoClientPlayerPacket), MSG_WAITALL);
+	retval = recv(m_hClientSocket, (char*)&packet, sizeof(ServertoClientPlayerPacket), 0);
 
 	return retval == sizeof(ServertoClientPlayerPacket);
 }

@@ -13,12 +13,6 @@ using namespace std::string_literals;
 
 void TestScene::BuildObjects()
 {
-	/*
-		- 현재 코드로는 인스턴싱이 안됨
-		- 나중에 Model을 전역에서 관리하도록 하고, 그걸 공유하는 식으로 가면 될 "수도" 있음
-			- 아직 안해봐서 모름
-	
-	*/
 	std::shared_ptr<CubeObject> pCube1 = std::make_shared<CubeObject>();
 	pCube1->Initialize();
 	//pCube1->GetTransform().SetPosition(15.f, 0.f, 30.f);
