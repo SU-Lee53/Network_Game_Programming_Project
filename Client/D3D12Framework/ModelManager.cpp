@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ModelManager.h"
 #include "PlayerRenderer.h"
 
@@ -12,8 +12,8 @@ ModelManager::~ModelManager()
 
 void ModelManager::LoadGameModels()
 {
-	// ¿ø·¡ ÀÌ·¯¶ó°í ¸¸µç°Ô ¾Æ´Ñµ¥ ¸ðµç Çà¼ºÀÌ ¾Æ·¡ ¸ðµ¨À» °øÀ¯ÇØ¹ö·Á Texture ¸¦ °¥¾Æ³¢¿ì±â°¡ °ï¶õÇÔ
-	// ¹æ¹ýÀº ´õ »ý°¢ÇØºÁ¾ß°ÚÁö¸¸ ÀÏ´Ü ÀÌ°É 5°³ ¸¸µé¾î¹ö¸®´Â°É·Î ¶§¿öº¸ÀÚ
+	// ì›ëž˜ ì´ëŸ¬ë¼ê³  ë§Œë“ ê²Œ ì•„ë‹Œë° ëª¨ë“  í–‰ì„±ì´ ì•„ëž˜ ëª¨ë¸ì„ ê³µìœ í•´ë²„ë ¤ Texture ë¥¼ ê°ˆì•„ë¼ìš°ê¸°ê°€ ê³¤ëž€í•¨
+	// ë°©ë²•ì€ ë” ìƒê°í•´ë´ì•¼ê² ì§€ë§Œ ì¼ë‹¨ ì´ê±¸ 5ê°œ ë§Œë“¤ì–´ë²„ë¦¬ëŠ”ê±¸ë¡œ ë•Œì›Œë³´ìž
 	Add("Sphere_1", MODELLOADER->Load<GameObject, TexturedNormalRenderer>("../Resource/Sphere.obj"));	// Earth
 	Add("Sphere_2", MODELLOADER->Load<GameObject, TexturedNormalRenderer>("../Resource/Sphere.obj"));	// Mars
 	Add("Sphere_3", MODELLOADER->Load<GameObject, TexturedNormalRenderer>("../Resource/Sphere.obj"));	// Mercury
@@ -23,6 +23,8 @@ void ModelManager::LoadGameModels()
 
 
 	Add("Spaceship", MODELLOADER->Load<GameObject, PlayerRenderer>("../Resource/space_ship.obj"));
+	Add("Spaceship2", MODELLOADER->Load<GameObject, PlayerRenderer>("../Resource/space_ship.obj"));
+	Add("Spaceship3", MODELLOADER->Load<GameObject, PlayerRenderer>("../Resource/space_ship.obj"));
 	Add("Rock", MODELLOADER->Load<GameObject, TexturedNormalRenderer>("../Resource/rock/rock.obj"));
 }
 

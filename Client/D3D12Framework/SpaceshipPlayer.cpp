@@ -144,21 +144,23 @@ void SpaceshipPlayer::Update()
 		}
 	}
 
-	m_Transform.SetRotation(m_pCamera->GetPitch(), m_pCamera->GetYaw(), XMConvertToRadians(m_fRoll));
-
 	// view 먼저 한번 만들어서 카메라 기저 정상화
-	m_pCamera->Update();
+	if (m_pCamera) {
+		m_Transform.SetRotation(m_pCamera->GetPitch(), m_pCamera->GetYaw(), XMConvertToRadians(m_fRoll));
 
-	// 카메라에 이동 맞춤
-	Vector3 v3CamPosition = m_pCamera->GetPosition();
-	Vector3 v3CamRight = m_pCamera->GetRight();
-	Vector3 v3CamUp = m_pCamera->GetUp();
-	Vector3 v3CamLook = m_pCamera->GetLook();
+		m_pCamera->Update();
+		// 카메라에 이동 맞춤
+		Vector3 v3CamPosition = m_pCamera->GetPosition();
+		Vector3 v3CamRight = m_pCamera->GetRight();
+		Vector3 v3CamUp = m_pCamera->GetUp();
+		Vector3 v3CamLook = m_pCamera->GetLook();
 
-	Vector3 v3PlayerPosition = v3CamPosition;
-	v3PlayerPosition -= v3CamUp * 3.f;
-	v3PlayerPosition += v3CamLook * 8.0f;
-	m_Transform.SetPosition(v3PlayerPosition);
+		Vector3 v3PlayerPosition = v3CamPosition;
+		v3PlayerPosition -= v3CamUp * 3.f;
+		v3PlayerPosition += v3CamLook * 8.0f;
+		m_Transform.SetPosition(v3PlayerPosition);
+
+	}
 
 	Player::Update();
 

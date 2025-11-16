@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "Scene.h"
 
+class SpaceshipPlayer;
+
 class TestScene : public Scene {
 public:
 	void BuildObjects() override;
@@ -11,6 +13,8 @@ public:
 protected:
 	void ProcessInput() override;
 
+	void InitializeOtherPlayers();
+
 
 	//pointLightPositions.emplace_back(0.7f, 0.2f, 2.0f);
 	//pointLightPositions.emplace_back(2.3f, -3.3f, -4.0f);
@@ -20,6 +24,9 @@ protected:
 	std::string strReceived;
 
 	ULONGLONG m_ullDataReceived = 0;
+
+	// 11.15 이승욱
+	std::array<std::shared_ptr<SpaceshipPlayer>, 2> m_pOtherPlayers;
 
 };
 

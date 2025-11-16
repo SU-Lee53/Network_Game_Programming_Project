@@ -22,7 +22,7 @@ public:
 	// by 이승욱
 	WSADATA m_wsa;
 	SOCKET m_hClientSocket;
-	char m_cstrServerIP[16] = "000.000.000.000";
+	char m_cstrServerIP[16] = "127.0.0.1";
 	bool m_bConnected = false;
 	std::string m_strErrorLog;
 };

@@ -8,17 +8,33 @@
 #include "MarsObject.h"
 #include "SunObject.h"
 #include "SpaceshipPlayer.h"
+#include "PlayerRenderer.h"
 
 using namespace std::string_literals;
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.15
+// InitializeOtherPlayers() By 이승욱
+// 상대 Player 들은 SpaceshipPlayer::Initialize() 를 사용하면 모델 포인터가 겹치므로 안됨
+// 따라서 별도의 Initialize 를 거침
+
+void TestScene::InitializeOtherPlayers()
+{
+	int cnt{};
+	for (auto& pOther : m_pOtherPlayers) {
+		pOther = std::make_shared<SpaceshipPlayer>();
+		std::shared_ptr<GameObject> pSpaceship = MODEL->Get("Spaceship")->CopyObject<GameObject>();	// 1
+		pOther->SetChild(pSpaceship);
+
+		auto& p = pOther->FindMeshedFrame("ship");
+		p->GetMeshRenderer()->SetTexture(TEXTURE->Get("Spaceship_Diffuse"), 0, TEXTURE_TYPE_DIFFUSE);
+		p->GetMeshRenderer()->SetTexture(TEXTURE->Get("Spaceship_Normal"), 0, TEXTURE_TYPE_NORMAL);
+		static_pointer_cast<PlayerRenderer>(p->GetMeshRenderer())->SetPlayer(pOther);
+	}
+}
+
 void TestScene::BuildObjects()
 {
-	/*
-		- 현재 코드로는 인스턴싱이 안됨
-		- 나중에 Model을 전역에서 관리하도록 하고, 그걸 공유하는 식으로 가면 될 "수도" 있음
-			- 아직 안해봐서 모름
-	
-	*/
 	std::shared_ptr<CubeObject> pCube1 = std::make_shared<CubeObject>();
 	pCube1->Initialize();
 	//pCube1->GetTransform().SetPosition(15.f, 0.f, 30.f);
@@ -49,16 +65,7 @@ void TestScene::BuildObjects()
 
 	m_pPlayer = std::make_shared<SpaceshipPlayer>();
 
-	//m_pMainCamera = std::make_shared<Camera>();
-	//m_pMainCamera->SetViewport(0, 0, WinCore::sm_dwClientWidth, WinCore::sm_dwClientHeight, 0.f, 1.f);
-	//m_pMainCamera->SetScissorRect(0, 0, WinCore::sm_dwClientWidth, WinCore::sm_dwClientHeight);
-	//m_pMainCamera->GenerateViewMatrix(XMFLOAT3(0.f, 0.f, -15.f), XMFLOAT3(0.f, 0.f, 1.f), XMFLOAT3(0.f, 1.f, 0.f));
-	//m_pMainCamera->GenerateProjectionMatrix(1.01f, 5000.0f, (WinCore::sm_dwClientWidth / WinCore::sm_dwClientHeight), 60.0f);
-
-	//m_pLights.resize(MAX_LIGHTS);
-
-	//MODELLOADER->Load<CubeObject, TexturedIlluminatedRenderer>("../Resource/plane.obj");
-
+	InitializeOtherPlayers();
 	InitializeObjects();
 	BuildLights();
 }
@@ -198,11 +205,29 @@ void TestScene::Update()
 		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[2].transformData.mtxPlayerTransform._41, receivePacket.client[2].transformData.mtxPlayerTransform._42, receivePacket.client[2].transformData.mtxPlayerTransform._43, receivePacket.client[2].transformData.mtxPlayerTransform._44);
 		
 		m_ullDataReceived++;
-
-
 		ImGui::Text(strReceived.c_str());
+
+		// m_pOtherPlayers 에 반영
+		// 실제로는 플레이어의 ID 를 알아야 반영이 가능할듯 함
+		m_pOtherPlayers[0]->GetTransform().SetWorldMatrix(receivePacket.client[1].transformData.mtxPlayerTransform);
+		m_pOtherPlayers[1]->GetTransform().SetWorldMatrix(receivePacket.client[2].transformData.mtxPlayerTransform);
+
+		if (receivePacket.client[0].shotData.v3RayDirection != Vector3(0, 0, 0)) {
+			m_pOtherPlayers[0]->m_bIsFire = true;
+		}
+
+		if (receivePacket.client[1].shotData.v3RayDirection != Vector3(0, 0, 0)) {
+			m_pOtherPlayers[1]->m_bIsFire = true;
+		}
+
 	}
 	ImGui::End();
+
+
+	RenderParameter renderParameter{};
+	for (auto& pOtherPlayer : m_pOtherPlayers) {
+		pOtherPlayer->Update();
+	}
 
 	UpdateObjects();
 }

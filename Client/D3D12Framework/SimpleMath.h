@@ -1,4 +1,4 @@
-//-------------------------------------------------------------------------------------
+﻿//-------------------------------------------------------------------------------------
 // SimpleMath.h -- Simplified C++ Math wrapper for DirectXMath
 //
 // Copyright (c) Microsoft Corporation.
@@ -270,7 +270,7 @@ namespace DirectX
 
             // Comparison operators
             bool operator == (const Vector3& V) const noexcept { return ((x == V.x) && (y == V.y) && (z == V.z)); }
-            bool operator != (const Vector3& V) const noexcept { return ((x != V.x) || (y != V.y) || (z != V.z)); }
+            //bool operator != (const Vector3& V) const noexcept { return ((x != V.x) || (y != V.y) || (z != V.z)); }
 
             // Assignment operators
             Vector3& operator= (const XMVECTORF32& F) noexcept { x = F.f[0]; y = F.f[1]; z = F.f[2]; return *this; }

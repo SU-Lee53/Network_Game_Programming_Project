@@ -24,8 +24,12 @@ public:
 
 	float GetRoll() const { return m_fRoll; }
 
-private:
+public:
+	// 11.15 
+	// 타 플레이어 발사 확인을 위해 잠시 false 로 만듬
 	bool m_bIsFire = false;
+
+private:
 	float m_fFireTimer = 0.f;
 	const float m_fFireDuration = 0.01f;
 	Vector3 m_vRayDirection;
