@@ -145,9 +145,7 @@ int main(int argc, char* argv[])
 	if (retval == SOCKET_ERROR)
 		err_quit("listen()");
 
-	
-
-	SOCKET client_sock[CLIENT_NUM];
+	SOCKET client_sock;
 	struct sockaddr_in clientaddr;
 	int addrlen;
 	int len;
@@ -156,17 +154,17 @@ int main(int argc, char* argv[])
 	for (int i = 0; i < CLIENT_NUM; ++i)
 	{
 		addrlen = sizeof(clientaddr);
-		client_sock[i] = accept(listen_sock, (struct sockaddr*)&clientaddr, &addrlen);
-		if (client_sock[i] == INVALID_SOCKET)
+		client_sock = accept(listen_sock, (struct sockaddr*)&clientaddr, &addrlen);
+		if (client_sock == INVALID_SOCKET)
 		{
 			err_display("accept()");
 			break;
 		}
 
-		hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock[i], 0, NULL);
+		hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL)
 		{
-			closesocket(client_sock[i]);
+			closesocket(client_sock);
 		}
 		else
 		{
