@@ -2,7 +2,7 @@
 #include "Common.h"
 
 struct PlayerTransformData {
-	XMFLOAT4X4 mtxPlayerTransofrm;
+	XMFLOAT4X4 mtxPlayerTransform;
 };
 
 struct PlayerShotData {
