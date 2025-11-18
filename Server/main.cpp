@@ -190,7 +190,9 @@ int main(int argc, char* argv[])
 	// Logich Loop
 	while (true)
 	{
-		CreateRock(SendPlayerPacket.client[uid(dre)]);
+		Sleep(1000);
+		auto rock = CreateRock(SendPlayerPacket.client[uid(dre)]);
+		Rocks.push_back(rock);
 	}
 
 	DeleteCriticalSection(&cs);
