@@ -123,10 +123,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Rock.cpp" />
     <ClCompile Include="Logic.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Rock.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Logic.h" />
     <ClInclude Include="MsgProtocol.h" />
