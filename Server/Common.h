@@ -13,6 +13,7 @@
 #include <queue>
 #include <iostream>
 #include <unordered_map>
+#include <random>
 
 #pragma once
 #include <directxmath.h>
@@ -62,4 +63,29 @@ inline void err_display(int errcode)
 		(char*)&lpMsgBuf, 0, NULL);
 	printf("[오류] %s\n", (char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
+}
+
+
+
+
+
+
+
+
+
+namespace Vector3
+{
+	inline XMFLOAT3 Normalize(const XMFLOAT3& xmf3Vector)
+	{
+		XMFLOAT3 m_xmf3Normal;
+		XMStoreFloat3(&m_xmf3Normal, XMVector3Normalize(XMLoadFloat3(&xmf3Vector)));
+		return(m_xmf3Normal);
+	}
+
+	inline XMFLOAT3 Subtract(const XMFLOAT3& xmf3Vector1, const XMFLOAT3& xmf3Vector2)
+	{
+		XMFLOAT3 xmf3Result;
+		XMStoreFloat3(&xmf3Result, XMLoadFloat3(&xmf3Vector1) - XMLoadFloat3(&xmf3Vector2));
+		return(xmf3Result);
+	}
 }
