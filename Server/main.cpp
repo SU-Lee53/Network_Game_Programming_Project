@@ -1,6 +1,7 @@
 ﻿#include "Common.h"
 #include "MsgProtocol.h"
 #include "Logic.h"
+#include "Rock.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    512
@@ -15,6 +16,19 @@ ServertoClientRockPacket SendRockPacket;
 HANDLE hEvent;
 int readyCount = 0;
 int sendCount = 0;
+
+
+std::random_device rd;
+std::default_random_engine dre(rd());
+std::uniform_int_distribution<int> uid(0, 2);
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.18
+// vector<std::unique_ptr<Rock>> By 민정원
+// Rock 담아둘 벡터 정의
+std::vector<std::unique_ptr<Rock>>	Rocks;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // 2025.11.12
@@ -176,6 +190,7 @@ int main(int argc, char* argv[])
 	// Logich Loop
 	while (true)
 	{
+		CreateRock(SendPlayerPacket.client[uid(dre)]);
 	}
 
 	DeleteCriticalSection(&cs);
