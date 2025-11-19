@@ -44,7 +44,7 @@ private:
 
 	// 2025.11.19
 	// by 이승욱
-	static CRITICAL_SECTION g_hCS;
+	static CRITICAL_SECTION g_hCS;	// 이벤트로 순서제어 중이므로 사용 안될듯함 (아직 모름)
 	static HANDLE g_hPlayerWritePacketEvent;
 	static HANDLE g_hPacketReceivedEvent;
 
