@@ -8,21 +8,24 @@ class NetworkManager {
 public:
 	NetworkManager();
 
-private:
+public:
 	void ConnectToServer();
+
+private:
 	void Disconnect();
 
 	bool SendData();
 	bool ReceiveData();
 	//void MakePacketToSend(ClientToServerPacket& packet ,const std::shared_ptr<Player> Player);
 
-	bool IsConnected() { return m_bConnected; }
-
 public:
 	// 2025.11.19
 	// by 이승욱
 	void WritePacketData(const ClientToServerPacket& packet);
 	ServertoClientPlayerPacket GetReceivedPacketData();
+
+	bool IsConnected() { return m_bConnected; }
+	bool IsGameStarted() { return m_bGameBegin; }
 
 private:
 	// 2025.11.03 
@@ -50,4 +53,5 @@ private:
 
 	bool m_bGameBegin = false;
 
+public:
 };

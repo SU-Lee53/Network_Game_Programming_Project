@@ -105,7 +105,7 @@ LRESULT WinCore::WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam
     switch (message)
     {
     case WM_DESTROY:
-		NETWORK->Disconnect();
+		//NETWORK->Disconnect();
         PostQuitMessage(0);
         break;
     default:

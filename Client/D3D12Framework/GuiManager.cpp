@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "GuiManager.h"
 
+HANDLE GuiManager::g_NewFrameEvent;
+
 GuiManager::GuiManager(ComPtr<ID3D12Device> pd3dDevice)
 {
     m_pFontSrvDescriptorHeap = std::make_unique<DescriptorHeap>();
@@ -27,6 +29,7 @@ GuiManager::GuiManager(ComPtr<ID3D12Device> pd3dDevice)
         DXGI_FORMAT_R8G8B8A8_UNORM, m_pFontSrvDescriptorHeap->GetD3DDescriptorHeap().Get(),
         m_pFontSrvDescriptorHeap->GetDescriptorHandleFromHeapStart().cpuHandle,
         m_pFontSrvDescriptorHeap->GetDescriptorHandleFromHeapStart().gpuHandle);
+
 }
 
 void GuiManager::Update()
@@ -34,6 +37,7 @@ void GuiManager::Update()
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
+
 }
 
 void GuiManager::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)

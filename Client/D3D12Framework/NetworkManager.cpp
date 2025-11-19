@@ -35,10 +35,8 @@ NetworkManager::NetworkManager()
 	InitializeCriticalSection(&g_hCS);
 
 	// 이벤트는 자동 리셋을 사용
-	g_hPlayerWritePacketEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	g_hPacketReceivedEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-
-	g_hNetworkThread = CreateThread(NULL, 0, ProcessNetwork, (LPVOID)m_hClientSocket, 0, NULL);
+	g_hPlayerWritePacketEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	g_hPacketReceivedEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 }
 
@@ -70,9 +68,14 @@ void NetworkManager::ConnectToServer()
 			}
 			else {
 				m_bConnected = true;
+				g_hNetworkThread = CreateThread(NULL, 0, ProcessNetwork, (LPVOID)m_hClientSocket, 0, NULL);
 			}
 		}
 		ImGui::Text(m_strErrorLog.c_str());
+
+		if (m_bConnected) {
+			ImGui::Text("Wait for game start...");
+		}
 
 		// 하지 말것
 		//if (m_bConnected) {
@@ -182,10 +185,10 @@ ServertoClientPlayerPacket NetworkManager::GetReceivedPacketData()
 
 DWORD WINAPI NetworkManager::ProcessNetwork(LPVOID arg)
 {
-	// 1. 연결
-	if (!NETWORK->m_bConnected) {
-		NETWORK->ConnectToServer();
-	}
+	// 1. 연결 -> Main 스레드에서
+	//while (!NETWORK->m_bConnected) {
+	//	NETWORK->ConnectToServer();
+	//}
 	
 	// 2. 시작 대기
 	// TODO : 신호를 받아 Scene 을 변경하려면 새로운 방법이 필요할 수도 있음

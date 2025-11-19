@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 class GuiManager {
 public:
@@ -10,6 +10,9 @@ public:
 
 private:
 	std::unique_ptr<DescriptorHeap> m_pFontSrvDescriptorHeap = nullptr;
+
+public:
+	static HANDLE g_NewFrameEvent;
 
 };
 
