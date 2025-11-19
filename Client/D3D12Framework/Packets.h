@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+struct StartPacket {
+	int id;
+	bool startFlag;
+};
+
 enum PACKET_TYPE {
 	PACKET_TYPE_PLAYER_TRANSFORM,
 	PACKET_TYPE_PLAYER_SHOT,

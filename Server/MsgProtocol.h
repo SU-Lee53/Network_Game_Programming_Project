@@ -16,6 +16,11 @@ struct RockData {
 	BYTE nIsAlive;
 };
 
+struct StartPacket {
+	int id;
+	bool startFlag;
+};
+
 struct CLIENT {
 	int id;
 	PlayerTransformData transformData;
