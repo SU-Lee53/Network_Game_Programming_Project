@@ -17,6 +17,7 @@
 
 #pragma once
 #include <directxmath.h>
+#include <DirectXCollision.h>
 
 #define MAX_ROCK_COUNT 10
 #define CLIENT_NUM 3

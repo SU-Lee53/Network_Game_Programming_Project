@@ -1,20 +1,24 @@
 ﻿#pragma once
 #include "Common.h"
+#include "Object.h"
 //////////////////////////////////////////////////////////////////////////////////////////////
 // 2025.11.18
 // Class Rock By 민정원
-// Class Rock 정의
-class Rock 
+// Class Rock 정의 - Object 상속
+// 2025.11.20
+// Class Rock By 민정원 
+// Class Rock 다시정의 - Object 상속
+
+class Rock : public Object
 {
 public:
 	Rock();
-	~Rock();
+	virtual ~Rock();
+
 	void SetDirection(const XMFLOAT3& PlayerPosition);
-	const XMFLOAT3& GetPosition(){ return m_Xmf3Position; }
 private:
-	float speed = 10.f;
 	XMFLOAT3 m_Xmf3Direction{};
-	XMFLOAT3 m_Xmf3Position{};
 };
+
 
 

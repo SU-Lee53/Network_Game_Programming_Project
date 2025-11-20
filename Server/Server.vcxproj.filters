@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\Object">
+      <UniqueIdentifier>{9a8adbfe-8aee-45cc-9760-128488de8f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object">
+      <UniqueIdentifier>{964eddfc-198e-4e0c-9c4c-5cbb921ec1a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -22,7 +28,13 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Rock.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -36,7 +48,13 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Rock.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>헤더 파일\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
