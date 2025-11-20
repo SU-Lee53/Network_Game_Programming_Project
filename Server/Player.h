@@ -9,8 +9,4 @@ class Player : public Object
 public:
 	Player();
 	virtual ~Player();
-
-	void SetDirection(const XMFLOAT3& PlayerPosition);
-private:
-	XMFLOAT3 m_Xmf3Direction{};
 };
