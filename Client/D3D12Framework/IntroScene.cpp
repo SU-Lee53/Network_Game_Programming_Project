@@ -22,8 +22,14 @@ void IntroScene::Update()
 
 	NETWORK->ConnectToServer();
 
-
 	UpdateObjects();
+
+	// Start game when game started
+	if (NETWORK->IsGameStarted()) {
+		SCENE->ChangeScene<TestScene>();
+	}
+	else {
+	}
 }
 
 void IntroScene::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommansList)

@@ -10,7 +10,6 @@ CRITICAL_SECTION cs;
 
 int client_count = 0;
 
-std::unordered_map<int, std::queue<CLIENT>> PlayerStates;
 ServertoClientPlayerPacket SendPlayerPacket;
 ServertoClientRockPacket SendRockPacket;
 HANDLE hEvent;
@@ -53,6 +52,14 @@ std::array<std::unique_ptr<Rock> , 3>	Players;
 // flag의 사용여부는 생각을 해봐야함
 // 개수를 체크해서 동기화에 사용
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.16
+// ProcessClient() By 최명준
+// 임계영역 구분 Update
+// Client_id 먼저 client들에게 send 후 while() 접근
+// 시작 전 client별 아이디와 게임 시작 신호 패킷 전송
+
+
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
 	int retval;
@@ -71,32 +78,50 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
 	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 
+
 	CLIENT recvPacket;
+	StartPacket startPacket;
 
 	EnterCriticalSection(&cs);
 	client_num = client_count;
 	client_count++;
+
+	// 시작 전 client별 아이디와 게임 시작 신호 전송
+	// 클라이언트 측에선 받은 패킷 중 Flag가 true면 바로 게임 시작	
+	if (client_count == 3)
+	{
+		startPacket.startFlag = true;
+	}
+	else
+	{
+		startPacket.startFlag = false;
+	}
+
 	LeaveCriticalSection(&cs);
-	recvPacket.flag = false;
+
+	startPacket.id = client_id;
+
+	retval = send(client_sock, (char*)&startPacket, sizeof(StartPacket), 0);
+
 	while (true)
 	{
 		retval = recv(client_sock, (char*)&recvPacket, sizeof(CLIENT), 0);
 		recvPacket.id = client_id;
-		
-		recvPacket.flag = false;
-		EnterCriticalSection(&cs);
-		{
-			SendPlayerPacket.client[client_num] = recvPacket;
-			SendPlayerPacket.client[client_num].flag = true;
-			readyCount++;
 
-			// 3명 모두 준비되었는지 확인
-			if (readyCount == 3)
-			{
-				SetEvent(hEvent);  // 이벤트 시그널
-			}
-		}
+		recvPacket.flag = false;
+
+		SendPlayerPacket.client[client_num] = recvPacket;
+		SendPlayerPacket.client[client_num].flag = true;
+
+		EnterCriticalSection(&cs);
+		readyCount++;
 		LeaveCriticalSection(&cs);
+
+		// 3명 모두 준비되었는지 확인
+		if (readyCount == 3)
+		{
+			SetEvent(hEvent);  // 이벤트 시그널
+		}
 
 		// 2단계: 모두 모일 때까지 대기
 		WaitForSingleObject(hEvent, INFINITE);
@@ -106,20 +131,19 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// 4단계: 전송 완료 후 정리
 		EnterCriticalSection(&cs);
+
+		sendCount++;
+		
+		// 마지막 스레드가 리셋 및 다음 라운드 준비
+		if (sendCount == 3)
 		{
-			sendCount++;
+			// 모든 flag 초기화
+			for (int i = 0; i < 3; i++)
+				SendPlayerPacket.client[i].flag = false;
 
-			// 마지막 스레드가 리셋 및 다음 라운드 준비
-			if (sendCount == 3)
-			{
-				// 모든 flag 초기화
-				for (int i = 0; i < 3; i++)
-					SendPlayerPacket.client[i].flag = false;
-
-				readyCount = 0;
-				sendCount = 0;
-				ResetEvent(hEvent);  // 다음 라운드를 위해 리셋
-			}
+			readyCount = 0;
+			sendCount = 0;
+			ResetEvent(hEvent);  // 다음 라운드를 위해 리셋
 		}
 		LeaveCriticalSection(&cs);
 	}
@@ -134,6 +158,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 // main에서 send하는 방식 취소
 // 일단은 main에서 클라이언트 연결만 하는 방식
 // Logic Loop는 잠시 비워둠
+
+// TODO : 3명 클라이언트 accept 될 시 이제 게임 시작하라는 신호 보내줄 수 있나
 
 int main(int argc, char* argv[])
 {

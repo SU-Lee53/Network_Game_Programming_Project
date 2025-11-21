@@ -171,29 +171,12 @@ void TestScene::Update()
 	// NETWORK TEST ZONE
 	ImGui::Begin("Test");
 	{
-		ClientToServerPacket packet;
-		//NETWORK->MakePacketToSend(packet , m_pPlayer);
-		//	if (ImGui::Button("Send")) {
-		//		NETWORK->SendData(m_pPlayer->MakePacketToSend());
-		//	
-		//		NETWORK->ReceiveData(receivePacket);
-		//	
-		//		strReceived.clear();
-		//		strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
-		//		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[0].transformData.mtxPlayerTransform._41, receivePacket.client[0].transformData.mtxPlayerTransform._42, receivePacket.client[0].transformData.mtxPlayerTransform._43, receivePacket.client[0].transformData.mtxPlayerTransform._44);
-		//		
-		//		strReceived += std::format("ID : {}\n", receivePacket.client[1].id);
-		//		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[1].transformData.mtxPlayerTransform._41, receivePacket.client[1].transformData.mtxPlayerTransform._42, receivePacket.client[1].transformData.mtxPlayerTransform._43, receivePacket.client[1].transformData.mtxPlayerTransform._44);
-		//		
-		//		strReceived += std::format("ID : {}\n", receivePacket.client[2].id);
-		//		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[2].transformData.mtxPlayerTransform._41, receivePacket.client[2].transformData.mtxPlayerTransform._42, receivePacket.client[2].transformData.mtxPlayerTransform._43, receivePacket.client[2].transformData.mtxPlayerTransform._44);
-		//	
-		//	}
+		ClientToServerPacket packet = m_pPlayer->MakePacketToSend();
+		NETWORK->WritePacketData(packet);
 
 		// send recv every frame
-		NETWORK->SendData(m_pPlayer->MakePacketToSend());
-		NETWORK->ReceiveData(receivePacket);
-
+		ServertoClientPlayerPacket receivePacket = NETWORK->GetReceivedPacketData();
+		
 		strReceived.clear();
 		strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
 		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[0].transformData.mtxPlayerTransform._41, receivePacket.client[0].transformData.mtxPlayerTransform._42, receivePacket.client[0].transformData.mtxPlayerTransform._43, receivePacket.client[0].transformData.mtxPlayerTransform._44);
@@ -212,11 +195,11 @@ void TestScene::Update()
 		m_pOtherPlayers[0]->GetTransform().SetWorldMatrix(receivePacket.client[1].transformData.mtxPlayerTransform);
 		m_pOtherPlayers[1]->GetTransform().SetWorldMatrix(receivePacket.client[2].transformData.mtxPlayerTransform);
 
-		if (receivePacket.client[0].shotData.v3RayDirection != Vector3(0, 0, 0)) {
+		if (receivePacket.client[1].shotData.v3RayDirection != Vector3(0, 0, 0)) {
 			m_pOtherPlayers[0]->m_bIsFire = true;
 		}
 
-		if (receivePacket.client[1].shotData.v3RayDirection != Vector3(0, 0, 0)) {
+		if (receivePacket.client[2].shotData.v3RayDirection != Vector3(0, 0, 0)) {
 			m_pOtherPlayers[1]->m_bIsFire = true;
 		}
 
