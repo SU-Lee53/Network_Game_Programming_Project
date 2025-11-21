@@ -12,17 +12,13 @@ public:
 	Object();
 	virtual ~Object();
 
-	virtual void SetWorldMatrix(const XMFLOAT4X4& worldMatrix);
-	virtual const XMFLOAT4X4& GetWorldMatrix() const { return m_xmf4x4WorldMatrix; }
-
-	virtual void SetBoundingRadius(float radius);
-	virtual float GetBoundingRadius() const { return m_fBoundingRadius; }
-
-	virtual XMFLOAT3 GetPosition() const;
-
-	virtual const BoundingSphere& GetBoundingSphere() const { return m_xmBoundingSphere; }
-
-	virtual void UpdateBoundingSphere();
+	void SetWorldMatrix(const XMFLOAT4X4& worldMatrix);
+	const XMFLOAT4X4& GetWorldMatrix() const { return m_xmf4x4WorldMatrix; }
+	void SetBoundingRadius(float radius);
+	float GetBoundingRadius() const { return m_fBoundingRadius; }
+	XMFLOAT3 GetPosition() const;
+	const BoundingSphere& GetBoundingSphere() const { return m_xmBoundingSphere; }
+	void UpdateBoundingSphere();
 
 protected:
 	XMFLOAT4X4 m_xmf4x4WorldMatrix;           // 월드 변환 행렬
