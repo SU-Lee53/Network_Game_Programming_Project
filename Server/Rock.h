@@ -17,7 +17,7 @@ public:
 
 	void SetDirection(const XMFLOAT3& PlayerPosition);
 private:
-	XMFLOAT3 m_Xmf3Direction{};
+	XMFLOAT3 m_xmf3Direction{};
 };
 
 

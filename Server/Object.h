@@ -13,19 +13,19 @@ public:
 	virtual ~Object();
 
 	virtual void SetWorldMatrix(const XMFLOAT4X4& worldMatrix);
-	virtual const XMFLOAT4X4& GetWorldMatrix() const { return m_WorldMatrix; }
+	virtual const XMFLOAT4X4& GetWorldMatrix() const { return m_xmf4x4WorldMatrix; }
 
 	virtual void SetBoundingRadius(float radius);
-	virtual float GetBoundingRadius() const { return m_BoundingRadius; }
+	virtual float GetBoundingRadius() const { return m_fBoundingRadius; }
 
 	virtual XMFLOAT3 GetPosition() const;
 
-	virtual const BoundingSphere& GetBoundingSphere() const { return m_BoundingSphere; }
+	virtual const BoundingSphere& GetBoundingSphere() const { return m_xmBoundingSphere; }
 
 	virtual void UpdateBoundingSphere();
 
 protected:
-	XMFLOAT4X4 m_WorldMatrix;           // 월드 변환 행렬
-	float m_BoundingRadius;              // 바운딩 스피어 반지름
-	BoundingSphere m_BoundingSphere;     // DirectXCollision 바운딩 스피어
+	XMFLOAT4X4 m_xmf4x4WorldMatrix;           // 월드 변환 행렬
+	float m_fBoundingRadius;              // 바운딩 스피어 반지름
+	BoundingSphere m_xmBoundingSphere;     // DirectXCollision 바운딩 스피어
 };
