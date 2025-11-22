@@ -2,6 +2,7 @@
 #include "MsgProtocol.h"
 #include "Logic.h"
 #include "Rock.h"
+#include "Player.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    512
@@ -31,8 +32,8 @@ std::uniform_int_distribution<int> uid(0, 2);
 // 2025.11.20
 // array<std::unique_ptr<Player> , 3> By 민정원
 // Rock 담아둘 벡터 정의
-std::vector<std::unique_ptr<Rock>>	Rocks;
-std::array<std::unique_ptr<Rock> , 3>	Players;
+//std::vector<std::unique_ptr<Rock>>	Rocks;
+//std::array<std::unique_ptr<Player> , 3>	Players;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,23 +86,25 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	EnterCriticalSection(&cs);
 	client_num = client_count;
 	client_count++;
+	LeaveCriticalSection(&cs);
+
+	if (client_count == 3)
+	{
+		SetEvent(hEvent);  // 이벤트 시그널
+	}
+
+	WaitForSingleObject(hEvent, INFINITE);
 
 	// 시작 전 client별 아이디와 게임 시작 신호 전송
 	// 클라이언트 측에선 받은 패킷 중 Flag가 true면 바로 게임 시작	
-	if (client_count == 3)
-	{
-		startPacket.startFlag = true;
-	}
-	else
-	{
-		startPacket.startFlag = false;
-	}
 
-	LeaveCriticalSection(&cs);
+	startPacket.startFlag = true;
 
 	startPacket.id = client_id;
 
 	retval = send(client_sock, (char*)&startPacket, sizeof(StartPacket), 0);
+
+	ResetEvent(hEvent);
 
 	while (true)
 	{
@@ -221,9 +224,9 @@ int main(int argc, char* argv[])
 	// Logich Loop
 	while (true)
 	{
-		Sleep(1000);
-		auto rock = CreateRock(SendPlayerPacket.client[uid(dre)]);
-		Rocks.push_back(rock);
+		//Sleep(1000);
+		//auto rock = CreateRock(SendPlayerPacket.client[uid(dre)]);
+		//Rocks.push_back(rock);
 	}
 
 	DeleteCriticalSection(&cs);
