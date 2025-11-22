@@ -120,7 +120,7 @@ bool NetworkManager::SendData()
 		nSumOfRetval += retval;
 	}
 
-	ImGui::Text(m_strErrorLog.c_str());		// TODO : 확인 후 지울것
+	//ImGui::Text(m_strErrorLog.c_str());		// TODO : 확인 후 지울것
 
 	return nSumOfRetval == nBytesToSend;
 }
