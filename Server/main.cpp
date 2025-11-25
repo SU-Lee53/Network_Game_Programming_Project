@@ -34,8 +34,9 @@ std::uniform_int_distribution<int> uid(0, 2);
 // 2025.11.20
 // array<std::unique_ptr<Player> , 3> By 민정원
 // Rock 담아둘 벡터 정의
-//std::vector<std::unique_ptr<Rock>>	Rocks;
-//std::array<std::unique_ptr<Player> , 3>	Players;
+std::array<std::unique_ptr<Rock> , 50>	Rocks;
+std::array<std::unique_ptr<Player> , 3>	Players;
+int RockIndex = 0;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +62,10 @@ std::uniform_int_distribution<int> uid(0, 2);
 // 임계영역 구분 Update
 // Client_id 먼저 client들에게 send 후 while() 접근
 // 시작 전 client별 아이디와 게임 시작 신호 패킷 전송
-
+// 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.25
+// 보낼때 Rock 데이터도 같이 보냄.
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -230,9 +234,14 @@ int main(int argc, char* argv[])
 	// Logich Loop
 	while (true)
 	{
-		//Sleep(1000);
-		//auto rock = CreateRock(SendPlayerPacket.client[uid(dre)]);
-		//Rocks.push_back(rock);
+		Sleep(1000);
+		Rocks[RockIndex] = CreateRock(SendPlayerPacket.client[uid(dre)]);
+		for (int i = 0; i < RockIndex; ++i) {
+			Rock* Rock = Rocks[i].get();
+			SendRockPacket.rockData[i].mtxRockTransform = Rock->GetWorldMatrix();
+			SendRockPacket.rockData[i].nIsAlive = Rock->GetIsAlive();
+			SendRockPacket.rockData[i].nrockID = i;
+		}
 	}
 
 	DeleteCriticalSection(&cs);

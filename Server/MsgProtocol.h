@@ -33,5 +33,5 @@ struct ServertoClientPlayerPacket {
 };
 
 struct ServertoClientRockPacket {
-	std::vector<RockData> rockData;
+	std::array<RockData , 50> rockData;
 };
