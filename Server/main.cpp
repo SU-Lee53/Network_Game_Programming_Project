@@ -139,6 +139,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// 3단계: 데이터 전송
 		retval = send(client_sock, (char*)&SendPlayerPacket, sizeof(SendPlayerPacket), 0);
+		retval = send(client_sock, (char*)&SendRockPacket, sizeof(SendRockPacket), 0);
 
 		// 4단계: 전송 완료 후 정리
 		EnterCriticalSection(&cs);
@@ -235,7 +236,10 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		Sleep(1000);
-		Rocks[RockIndex] = CreateRock(SendPlayerPacket.client[uid(dre)]);
+		if (RockIndex < Rocks.size()) {
+			Rocks[RockIndex] = CreateRock(SendPlayerPacket.client[uid(dre)]);
+			RockIndex++;
+		}
 		for (int i = 0; i < RockIndex; ++i) {
 			Rock* Rock = Rocks[i].get();
 			SendRockPacket.rockData[i].mtxRockTransform = Rock->GetWorldMatrix();
