@@ -67,14 +67,6 @@ inline void err_display(int errcode)
 	LocalFree(lpMsgBuf);
 }
 
-
-
-
-
-
-
-
-
 namespace Vector3
 {
 	inline XMFLOAT3 Normalize(const XMFLOAT3& xmf3Vector)
@@ -91,3 +83,13 @@ namespace Vector3
 		return(xmf3Result);
 	}
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.25
+// struct Ray By 이승욱
+// Rock 과 Player 의 Ray 간의 충돌 검사
+struct Ray 
+{
+	XMFLOAT3 xmf3RayStartPosition;
+	XMFLOAT3 xmf3RayDirection;
+};

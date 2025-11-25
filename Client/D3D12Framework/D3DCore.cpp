@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "D3DCore.h"
 
 UINT D3DCore::g_nCBVSRVDescriptorIncrementSize = 0;
@@ -12,6 +12,12 @@ D3DCore::D3DCore(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 	CreateDepthStencilView();
 
 	g_nCBVSRVDescriptorIncrementSize = m_pd3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+
+D3DCore::~D3DCore()
+{
+	// TODO : Release debug layer
+
 }
 
 void D3DCore::CreateD3DDevice(bool bEnableDebugLayer)

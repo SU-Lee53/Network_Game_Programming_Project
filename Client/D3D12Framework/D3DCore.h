@@ -1,8 +1,9 @@
-#pragma once
+﻿#pragma once
 
 class D3DCore {
 public:
 	D3DCore(BOOL bEnableDebugLayer, BOOL bEnableGBV);
+	~D3DCore();
 
 public:
 	void RenderBegin();

@@ -10,3 +10,12 @@ std::unique_ptr<Rock> CreateRock(const CLIENT& PlayerPacket)
 	rock->SetDirection(PlayerPosition);
 	return rock;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.25
+// CheckRayIntersection() By 이승욱
+// Rock 과 Player 의 Ray 간의 충돌 검사
+void CheckRayIntersection()
+{
+	
+}

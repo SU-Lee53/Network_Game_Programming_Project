@@ -133,6 +133,7 @@ bool NetworkManager::SendData()
 void NetworkManager::Disconnect()
 {
 	m_bConnected = false;
+	CloseHandle(g_hNetworkThread);
 	closesocket(m_hClientSocket);
 	DeleteCriticalSection(&g_hCS);
 	WSACleanup();
