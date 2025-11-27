@@ -3,6 +3,7 @@
 #include "ThirdPersonCamera.h"
 #include "PlayerRenderer.h"
 #include "NetworkManager.h"
+#include "Effect.h"
 
 SpaceshipPlayer::SpaceshipPlayer()
 {
@@ -54,26 +55,14 @@ void SpaceshipPlayer::ProcessInput()
 		m_bIsFire = true;
 		m_bRayDataSended = false;	// Ray 발사시 Data 가 보내야 함을 알림
 
-		// Ray Direction
-		Vector3 v3CamPos = m_pCamera->GetPosition();
-		
-		POINT m_currentCursorPos = INPUT->GetCurrentCursorPos();
+		// Draw Ray Effect
+		EffectParameter param;
+		param.xmf3Position = GetRayPos();
+		param.xmf3Force = m_Transform.GetLook();	// use force to direction
+		param.fElapsedTime = 0.f;
 
-		float fNdcX = 2.0f * ((float)m_currentCursorPos.x / (float)WinCore::sm_dwClientWidth) - 1.0f;
-		float fNdcY = 2.0f * ((float)m_currentCursorPos.y / (float)WinCore::sm_dwClientHeight) - 1.0f;
+		EFFECT->AddEffect<RayEffect>(param);
 
-		Vector4 v4RayPosInClipSpace{ fNdcX, fNdcY, 0.f, 1.f };
-
-		Vector3 v4RayPosInViewSpace = Vector4::Transform(v4RayPosInClipSpace, m_pCamera->GetProjectionMatrix().Invert());
-		v4RayPosInViewSpace = Vector3(v4RayPosInViewSpace.x, v4RayPosInViewSpace.y, 1.f);
-
-		Vector3 v3RayPositionInWorldSpace = Vector3::Transform(v4RayPosInViewSpace, m_pCamera->GetViewMatrix().Invert());
-		v3RayPositionInWorldSpace.Normalize();
-
-		Vector3 v3IntersectionRayCamera = v3CamPos + (v3RayPositionInWorldSpace * m_pCamera->GetFarPlaneDistance());
-
-		m_vRayDirection = v3IntersectionRayCamera - GetRayPos();
-		m_vRayDirection.Normalize();
 	}
 
 	// Roll 회전 추가
@@ -194,7 +183,7 @@ ClientToServerPacket SpaceshipPlayer::MakePacketToSend()
 
 Vector3 SpaceshipPlayer::GetRayPos()
 {
-	Vector3 v3PlayerPosition = m_Transform.GetPosition();
+	Vector3 v3PlayerPosition = Vector3(0,0,0);
 	v3PlayerPosition += Vector3(0.0f, 0.2f, 3.0f);
 
 	return Vector3::Transform(v3PlayerPosition, m_Transform.GetWorldMatrix());
@@ -202,5 +191,5 @@ Vector3 SpaceshipPlayer::GetRayPos()
 
 Vector3 SpaceshipPlayer::GetRayDirection()
 {
-	return m_vRayDirection;
+	return m_Transform.GetLook();
 }

@@ -1,47 +1,56 @@
-#pragma once
+ï»¿#pragma once
 #include "ConstantBuffer.h"
 
 // ================================================================================
 // ConstantBufferPool
-// - ÇÏ³ªÀÇ ID3D12Resource ¸¦ ÀÌ¿ëÇÏ¿© ¿©·¯°³ÀÇ ConstantBuffer ¸¦ »ç¿ëÇÏ±â À§ÇÔ
-// - ID3D12Resource ¿Í ID3D12DescriptorHeap ÀÇ ½ÖÀ¸·Î ±¸¼º (struct ConstantBuffer)
-//		- Root DescriptorHandle ·Î Àü´ŞÇÏ·Á¸é ¹Ù·Î GPU ÁÖ¼Ò¸¦ º¸³¾ ¼ö ÀÖÀ½
-//		- DescriptorHandle Table ·Î Àü´ŞÇÏ·Á¸é ¾Æ·¡ÀÇ ÀıÂ÷¸¦ µû¶ó¾ß ÇÔ
-//			- D3D12_DESCRIPTOR_HEAP_FLAG_NONE ÀÌ ¾Æ´Ï¹Ç·Î »ç¿ëÀ» À§ÇØ 
-//			  D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE ÀÎ DescriptorHandle Heap ¿¡ 
-//			  CopyDescriptorsSimple¸¦ ¼öÇàÇØ¾ß ÇÔ
-// - ³ªÁß¿¡ µü ÇÊ¿äÇÑ ÃÖ´ë Å©±â¸¸Å­ÇÔ Pool Å©±â¸¦ Àâ¾Æ¼­ »ç¿ë
+// - í•˜ë‚˜ì˜ ID3D12Resource ë¥¼ ì´ìš©í•˜ì—¬ ì—¬ëŸ¬ê°œì˜ ConstantBuffer ë¥¼ ì‚¬ìš©í•˜ê¸° ìœ„í•¨
+// - ID3D12Resource ì™€ ID3D12DescriptorHeap ì˜ ìŒìœ¼ë¡œ êµ¬ì„± (struct ConstantBuffer)
+//		- Root DescriptorHandle ë¡œ ì „ë‹¬í•˜ë ¤ë©´ ë°”ë¡œ GPU ì£¼ì†Œë¥¼ ë³´ë‚¼ ìˆ˜ ìˆìŒ
+//		- DescriptorHandle Table ë¡œ ì „ë‹¬í•˜ë ¤ë©´ ì•„ë˜ì˜ ì ˆì°¨ë¥¼ ë”°ë¼ì•¼ í•¨
+//			- D3D12_DESCRIPTOR_HEAP_FLAG_NONE ì´ ì•„ë‹ˆë¯€ë¡œ ì‚¬ìš©ì„ ìœ„í•´ 
+//			  D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE ì¸ DescriptorHandle Heap ì— 
+//			  CopyDescriptorsSimpleë¥¼ ìˆ˜í–‰í•´ì•¼ í•¨
+// - ë‚˜ì¤‘ì— ë”± í•„ìš”í•œ ìµœëŒ€ í¬ê¸°ë§Œí¼í•¨ Pool í¬ê¸°ë¥¼ ì¡ì•„ì„œ ì‚¬ìš©
 // ================================================================================
 
 class ConstantBufferPool {
 public:
 	ConstantBufferPool();
 
-	void Initialize(ComPtr<ID3D12Device> pd3dDevice, UINT CBVSize, size_t nMaxCBVCount);
+	void Initialize(ComPtr<ID3D12Device> pd3dDevice, size_t nCBVCountIn256Bytes, UINT minCBVSize = 256, UINT maxCBVSize = 65536);
 
 	template<typename T>
 	ConstantBuffer& Allocate();
 	void Reset();
 
 private:
-	std::vector<ConstantBuffer>		m_CBuffers = {};
+	//std::vector<ConstantBuffer>		m_CBuffers = {};
 	
 	ComPtr<ID3D12DescriptorHeap>	m_pCBVHeap = nullptr;
 	ComPtr<ID3D12Resource>			m_pResource = nullptr;
 	UINT8*							m_pMappedPtr = nullptr;
 
-	UINT	m_nCBVSize = 0;
-	UINT	m_nAllocated = 0;
-	UINT	m_nMaxCBVCount = 0;
+	std::unordered_map<size_t, std::vector<ConstantBuffer>> m_CBuffers;
+
+	std::unordered_map<size_t, UINT>						m_nCBVCount;
+	std::unordered_map<size_t, UINT>						m_nAllocated;
+	size_t m_nMaxCBVSize = 0;
 
 };
 
 template<typename T>
 inline ConstantBuffer& ConstantBufferPool::Allocate()
 {
-	std::div_t sizeDevideByCBufferSize = std::div(ConstantBufferSize<T>::value, 256);
-	int nRequired = sizeDevideByCBufferSize.rem > 0 ? sizeDevideByCBufferSize.quot + 1 : sizeDevideByCBufferSize.quot;
-	UINT allocIndex = m_nAllocated;
-	m_nAllocated += nRequired;
-	return m_CBuffers[allocIndex];
+	size_t requiredCBSize = ConstantBufferSize<T>::value;
+	assert(requiredCBSize <= m_nMaxCBVSize);
+	assert(m_nAllocated[requiredCBSize] <= m_nCBVCount[requiredCBSize]);
+
+	return m_CBuffers[requiredCBSize][m_nAllocated[requiredCBSize]++];
+
+
+	//std::div_t sizeDevideByCBufferSize = std::div(ConstantBufferSize<T>::value, 256);
+	//int nRequired = sizeDevideByCBufferSize.rem > 0 ? sizeDevideByCBufferSize.quot + 1 : sizeDevideByCBufferSize.quot;
+	//UINT allocIndex = m_nAllocated;
+	//m_nAllocated += nRequired;
+	//return m_CBuffers[allocIndex];
 }

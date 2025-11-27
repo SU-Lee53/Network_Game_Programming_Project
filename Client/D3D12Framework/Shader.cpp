@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Shader.h"
 #include <d3dcompiler.h>
 
@@ -133,8 +133,8 @@ void DiffusedShader::Initialize(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12Ro
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineDesc{};
 	{
 		d3dPipelineDesc.pRootSignature = (pd3dRootSignature) ? pd3dRootSignature.Get() : RenderManager::g_pd3dGlobalRootSignature.Get();
-		d3dPipelineDesc.VS = CreateVertexShader();
-		d3dPipelineDesc.PS = CreatePixelShader();
+		d3dPipelineDesc.VS = SHADER->GetShaderByteCode("VSDiffused");
+		d3dPipelineDesc.PS = SHADER->GetShaderByteCode("PSDiffused");
 		d3dPipelineDesc.RasterizerState = CreateRasterizerState();
 		d3dPipelineDesc.BlendState = CreateBlendState();
 		d3dPipelineDesc.DepthStencilState = CreateDepthStencilState();
@@ -168,16 +168,6 @@ D3D12_INPUT_LAYOUT_DESC DiffusedShader::CreateInputLayout()
 	return inputLayoutDesc;
 }
 
-D3D12_SHADER_BYTECODE DiffusedShader::CreateVertexShader()
-{
-	return CompileShaderFromFile(L"./HLSL/DiffusedShader.hlsl", "VSDiffusedInstanced", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
-}
-
-D3D12_SHADER_BYTECODE DiffusedShader::CreatePixelShader()
-{
-	return CompileShaderFromFile(L"./HLSL/DiffusedShader.hlsl", "PSDiffused", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TexturedShader
 
@@ -189,8 +179,8 @@ void TexturedShader::Initialize(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12Ro
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineDesc{};
 	{
 		d3dPipelineDesc.pRootSignature = (pd3dRootSignature) ? pd3dRootSignature.Get() : RenderManager::g_pd3dGlobalRootSignature.Get();
-		d3dPipelineDesc.VS = CreateVertexShader();
-		d3dPipelineDesc.PS = CreatePixelShader();
+		d3dPipelineDesc.VS = SHADER->GetShaderByteCode("VSTextured");
+		d3dPipelineDesc.PS = SHADER->GetShaderByteCode("PSTextured");
 		d3dPipelineDesc.RasterizerState = CreateRasterizerState();
 		d3dPipelineDesc.BlendState = CreateBlendState();
 		d3dPipelineDesc.DepthStencilState = CreateDepthStencilState();
@@ -224,16 +214,6 @@ D3D12_INPUT_LAYOUT_DESC TexturedShader::CreateInputLayout()
 	return inputLayoutDesc;
 }
 
-D3D12_SHADER_BYTECODE TexturedShader::CreateVertexShader()
-{
-	return CompileShaderFromFile(L"./HLSL/TexturedShader.hlsl", "VSTextured", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
-}
-
-D3D12_SHADER_BYTECODE TexturedShader::CreatePixelShader()
-{
-	return CompileShaderFromFile(L"./HLSL/TexturedShader.hlsl", "PSTextured", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TexturedNormalShader
 
@@ -245,8 +225,8 @@ void TexturedIlluminatedShader::Initialize(ComPtr<ID3D12Device> pd3dDevice, ComP
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineDesc{};
 	{
 		d3dPipelineDesc.pRootSignature = (pd3dRootSignature) ? pd3dRootSignature.Get() : RenderManager::g_pd3dGlobalRootSignature.Get();
-		d3dPipelineDesc.VS = CreateVertexShader();
-		d3dPipelineDesc.PS = CreatePixelShader();
+		d3dPipelineDesc.VS = SHADER->GetShaderByteCode("TexturedIlluminatedVS");
+		d3dPipelineDesc.PS = SHADER->GetShaderByteCode("TexturedIlluminatedPS");
 		d3dPipelineDesc.RasterizerState = CreateRasterizerState();
 		d3dPipelineDesc.BlendState = CreateBlendState();
 		d3dPipelineDesc.DepthStencilState = CreateDepthStencilState();
@@ -281,16 +261,6 @@ D3D12_INPUT_LAYOUT_DESC TexturedIlluminatedShader::CreateInputLayout()
 	return inputLayoutDesc;
 }
 
-D3D12_SHADER_BYTECODE TexturedIlluminatedShader::CreateVertexShader()
-{
-	return CompileShaderFromFile(L"./HLSL/TexturedIlluminatedShader.hlsl", "VSTexturedIlluminated", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
-}
-
-D3D12_SHADER_BYTECODE TexturedIlluminatedShader::CreatePixelShader()
-{
-	return CompileShaderFromFile(L"./HLSL/TexturedIlluminatedShader.hlsl", "PSTexturedIlluminated", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TexturedNormalShader
 
@@ -302,8 +272,8 @@ void TexturedNormalShader::Initialize(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineDesc{};
 	{
 		d3dPipelineDesc.pRootSignature = (pd3dRootSignature) ? pd3dRootSignature.Get() : RenderManager::g_pd3dGlobalRootSignature.Get();
-		d3dPipelineDesc.VS = CreateVertexShader();
-		d3dPipelineDesc.PS = CreatePixelShader();
+		d3dPipelineDesc.VS = SHADER->GetShaderByteCode("TexturedNormalVS");
+		d3dPipelineDesc.PS = SHADER->GetShaderByteCode("TexturedNormalGS");
 		d3dPipelineDesc.RasterizerState = CreateRasterizerState();
 		d3dPipelineDesc.BlendState = CreateBlendState();
 		d3dPipelineDesc.DepthStencilState = CreateDepthStencilState();
@@ -339,17 +309,6 @@ D3D12_INPUT_LAYOUT_DESC TexturedNormalShader::CreateInputLayout()
 	return inputLayoutDesc;
 }
 
-D3D12_SHADER_BYTECODE TexturedNormalShader::CreateVertexShader()
-{
-	return CompileShaderFromFile(L"./HLSL/TexturedNormalShader.hlsl", "VSTexturedNormal", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
-}
-
-D3D12_SHADER_BYTECODE TexturedNormalShader::CreatePixelShader()
-{
-	return CompileShaderFromFile(L"./HLSL/TexturedNormalShader.hlsl", "PSTexturedNormal", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FullScreenShader
 
@@ -363,8 +322,8 @@ void FullScreenShader::Initialize(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineDesc{};
 	{
 		d3dPipelineDesc.pRootSignature = (pd3dRootSignature) ? pd3dRootSignature.Get() : RenderManager::g_pd3dGlobalRootSignature.Get();
-		d3dPipelineDesc.VS = CreateVertexShader();
-		d3dPipelineDesc.PS = CreatePixelShader();
+		d3dPipelineDesc.VS = SHADER->GetShaderByteCode("FullScreenVS");
+		d3dPipelineDesc.PS = SHADER->GetShaderByteCode("FullScreenPS");
 		d3dPipelineDesc.RasterizerState = CreateRasterizerState();
 		d3dPipelineDesc.BlendState = CreateBlendState();
 		d3dPipelineDesc.DepthStencilState = CreateDepthStencilState();
@@ -396,16 +355,6 @@ D3D12_INPUT_LAYOUT_DESC FullScreenShader::CreateInputLayout()
 	inputLayoutDesc.pInputElementDescs = m_d3dInputElements.data();
 
 	return inputLayoutDesc;
-}
-
-D3D12_SHADER_BYTECODE FullScreenShader::CreateVertexShader()
-{
-	return CompileShaderFromFile(L"./HLSL/FullScreenShader.hlsl", "VSFullScreen", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
-}
-
-D3D12_SHADER_BYTECODE FullScreenShader::CreatePixelShader()
-{
-	return CompileShaderFromFile(L"./HLSL/FullScreenShader.hlsl", "PSFullScreen", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
 }
 
 void FullScreenShader::CreateRootSignature(ComPtr<ID3D12Device> pd3dDevice)

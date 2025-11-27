@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,9 +19,6 @@ protected:
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 	virtual D3D12_BLEND_DESC CreateBlendState();
 	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
-
-	virtual D3D12_SHADER_BYTECODE CreateVertexShader() = 0;
-	virtual D3D12_SHADER_BYTECODE CreatePixelShader() = 0;
 
 	D3D12_SHADER_BYTECODE CompileShaderFromFile(const std::wstring& wstrFileName, const std::string& strShaderName, const std::string& strShaderProfile, ID3DBlob** ppd3dShaderBlob);
 	D3D12_SHADER_BYTECODE ReadCompiledShaderFromFile(const std::wstring& wstrFileName, ID3DBlob** ppd3dShaderBlob);
@@ -50,20 +47,11 @@ public:
 
 protected:
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout() override;
-
-	virtual D3D12_SHADER_BYTECODE CreateVertexShader() override;
-	virtual D3D12_SHADER_BYTECODE CreatePixelShader() override;
-
-	D3D12_SHADER_BYTECODE CreateInstancedVertexShader();
-
-	// m_PipelineStates[0] -> No Instancing
-	// m_PipelineStates[1] -> Inscancing
-
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TexturedShader
-// ≈ÿΩ∫√ƒ ∏ «Œ "∏∏"
+// ÌÖçÏä§Ï≥ê ÎßµÌïë "Îßå"
 
 class TexturedShader : public Shader {
 public:
@@ -72,15 +60,11 @@ public:
 
 protected:
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout() override;
-
-	virtual D3D12_SHADER_BYTECODE CreateVertexShader() override;
-	virtual D3D12_SHADER_BYTECODE CreatePixelShader() override;
-
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TexturedIlluminatedShader
-// ≈ÿΩ∫√ƒ ∏ «Œ + ¡∂∏Ì √≥∏Æ
+// ÌÖçÏä§Ï≥ê ÎßµÌïë + Ï°∞Î™Ö Ï≤òÎ¶¨
 
 class TexturedIlluminatedShader : public Shader {
 public:
@@ -89,15 +73,11 @@ public:
 
 protected:
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout() override;
-
-	virtual D3D12_SHADER_BYTECODE CreateVertexShader() override;
-	virtual D3D12_SHADER_BYTECODE CreatePixelShader() override;
-
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TexturedNormalShader
-// ≈ÿΩ∫√ƒ ∏ «Œ + ¡∂∏Ì √≥∏Æ + Normal Mapping
+// ÌÖçÏä§Ï≥ê ÎßµÌïë + Ï°∞Î™Ö Ï≤òÎ¶¨ + Normal Mapping
 
 class TexturedNormalShader : public Shader {
 public:
@@ -106,10 +86,6 @@ public:
 
 protected:
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout() override;
-
-	virtual D3D12_SHADER_BYTECODE CreateVertexShader() override;
-	virtual D3D12_SHADER_BYTECODE CreatePixelShader() override;
-
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,12 +98,8 @@ public:
 
 protected:
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout() override;
-
-	virtual D3D12_SHADER_BYTECODE CreateVertexShader() override;
-	virtual D3D12_SHADER_BYTECODE CreatePixelShader() override;
-
-
 	void CreateRootSignature(ComPtr<ID3D12Device> pd3dDevice);
+
 	virtual void SetRootSignature(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList) override {
 		pd3dCommandList->SetGraphicsRootSignature(m_pd3dFullScreenRootSignature.Get());
 	}

@@ -1,19 +1,8 @@
-#include "Common.hlsl"
+#include "EffectCommon.hlsl"
 
-struct VS_RAY_OUTPUT
+VS_PARTICLE_INPUT VSRay()
 {
-    float3 startPos : POSITION;
-    float3 direction : DIRECTION;
-};
-
-struct GS_RAY_OUTPUT
-{
-    float4 posH : SV_Position;
-};
-
-VS_RAY_OUTPUT VSRay(uint nVertexID : SV_VertexID)
-{
-    VS_RAY_OUTPUT output;
+    VS_PARTICLE_OUTPUT output;
     
     output.startPos = gvRayPositionW;
     output.direction = gvRaDirectionW;
@@ -22,7 +11,7 @@ VS_RAY_OUTPUT VSRay(uint nVertexID : SV_VertexID)
 }
 
 [maxvertexcount(24)]    // 6개의 면, 면당 정점 4개(strip)
-void GSRay(point VS_RAY_OUTPUT input[1], inout TriangleStream<GS_RAY_OUTPUT> outStream)
+void GSRay(point VS_PARTICLE_OUTPUT input[1], inout TriangleStream<GS_PARTICLE_OUTPUT> outStream)
 {
     float4x4 W = gsbInstanceDatas[gnInstanceBase];
     float4x4 VP = mul(gCameraData.gmtxView, gCameraData.gmtxProjection);

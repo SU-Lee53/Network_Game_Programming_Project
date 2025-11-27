@@ -120,6 +120,21 @@
     <Filter Include="소스 파일\98. Utility Headers\ImGui">
       <UniqueIdentifier>{74aade14-99bd-4e6c-81aa-abf2c4249323}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02. Managers\Render">
+      <UniqueIdentifier>{07e37425-9892-4b53-bda9-8c832b9b8d03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02. Managers\Resources">
+      <UniqueIdentifier>{1088e032-fbd1-4c60-995a-24fffdd8f3d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02. Managers\Game">
+      <UniqueIdentifier>{701454cf-cfe6-44f5-abdb-8212cb1b98ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02. Managers\Utility">
+      <UniqueIdentifier>{6430f860-255c-4ca4-8460-d8efded20b1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04. Renderer\Effects">
+      <UniqueIdentifier>{9f72f7cf-8a68-46be-a138-f477af259713}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -158,9 +173,6 @@
     <ClInclude Include="ShaderResource.h">
       <Filter>소스 파일\04. Renderer\Shader Resources\Base</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClInclude>
     <ClInclude Include="RenderPass.h">
       <Filter>소스 파일\04. Renderer\RenderPass</Filter>
     </ClInclude>
@@ -188,9 +200,6 @@
     <ClInclude Include="Material.h">
       <Filter>소스 파일\04. Renderer\Shader Resources\Material</Filter>
     </ClInclude>
-    <ClInclude Include="RenderManager.h">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClInclude>
     <ClInclude Include="DirectXTex\DDSTextureLoader12.h">
       <Filter>소스 파일\DirectXTex</Filter>
     </ClInclude>
@@ -212,23 +221,8 @@
     <ClInclude Include="DescriptorHeap.h">
       <Filter>소스 파일\04. Renderer\Shader Resources</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderManager.h">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="GameTimer.h">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClInclude>
     <ClInclude Include="MeshRenderer.h">
       <Filter>소스 파일\03. Game\GameObject\Components\MeshRenderer</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>소스 파일\02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>소스 파일\03. Game\Light</Filter>
@@ -238,12 +232,6 @@
     </ClInclude>
     <ClInclude Include="CubeObject.h">
       <Filter>소스 파일\03. Game\GameObject\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelManager.h">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="AssimpLoader.h">
-      <Filter>소스 파일\02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="EarthObject.h">
       <Filter>소스 파일\03. Game\GameObject\Derived GameObjects</Filter>
@@ -305,13 +293,49 @@
     <ClInclude Include="ImGui\imstb_textedit.h">
       <Filter>소스 파일\98. Utility Headers\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Packets.h">
+      <Filter>소스 파일\98. Utility Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>소스 파일\02. Managers\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>소스 파일\02. Managers\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="AssimpLoader.h">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClInclude>
     <ClInclude Include="GuiManager.h">
-      <Filter>소스 파일\02. Managers</Filter>
+      <Filter>소스 파일\02. Managers\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>소스 파일\02. Managers\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>소스 파일\02. Managers\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
     </ClInclude>
     <ClInclude Include="NetworkManager.h">
-      <Filter>소스 파일\02. Managers</Filter>
+      <Filter>소스 파일\02. Managers\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Packets.h">
+    <ClInclude Include="ModelManager.h">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectManager.h">
+      <Filter>소스 파일\02. Managers\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>소스 파일\04. Renderer\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomGenerator.h">
       <Filter>소스 파일\98. Utility Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -349,9 +373,6 @@
     <ClCompile Include="ShaderResource.cpp">
       <Filter>소스 파일\04. Renderer\Shader Resources\Base</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClCompile>
     <ClCompile Include="RenderPass.cpp">
       <Filter>소스 파일\04. Renderer\RenderPass</Filter>
     </ClCompile>
@@ -372,9 +393,6 @@
     </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>소스 파일\04. Renderer\Shader Resources\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderManager.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="DirectXTex\DDSTextureLoader12.cpp">
       <Filter>소스 파일\DirectXTex</Filter>
@@ -397,23 +415,8 @@
     <ClCompile Include="DescriptorHeap.cpp">
       <Filter>소스 파일\04. Renderer\Shader Resources</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderManager.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="GameTimer.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClCompile>
     <ClCompile Include="MeshRenderer.cpp">
       <Filter>소스 파일\03. Game\GameObject\Components\MeshRenderer</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>소스 파일\03. Game\Light</Filter>
@@ -423,12 +426,6 @@
     </ClCompile>
     <ClCompile Include="CubeObject.cpp">
       <Filter>소스 파일\03. Game\GameObject\Test</Filter>
-    </ClCompile>
-    <ClCompile Include="AssimpLoader.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelManager.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="EarthObject.cpp">
       <Filter>소스 파일\03. Game\GameObject\Derived GameObjects</Filter>
@@ -484,11 +481,47 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>소스 파일\98. Utility Headers\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>소스 파일\02. Managers\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>소스 파일\02. Managers\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="AssimpLoader.cpp">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClCompile>
     <ClCompile Include="GuiManager.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
+      <Filter>소스 파일\02. Managers\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>소스 파일\02. Managers\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>소스 파일\02. Managers\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
     </ClCompile>
     <ClCompile Include="NetworkManager.cpp">
-      <Filter>소스 파일\02. Managers</Filter>
+      <Filter>소스 파일\02. Managers\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectManager.cpp">
+      <Filter>소스 파일\02. Managers\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>소스 파일\04. Renderer\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomGenerator.cpp">
+      <Filter>소스 파일\98. Utility Headers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -536,6 +569,12 @@
       <Filter>소스 파일\05. HLSL</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\SkyboxShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\EffectShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\EffectCommon.hlsl">
       <Filter>소스 파일\05. HLSL</Filter>
     </FxCompile>
   </ItemGroup>

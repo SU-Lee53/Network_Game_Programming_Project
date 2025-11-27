@@ -15,6 +15,7 @@ std::unique_ptr<AssimpLoader>		GameFramework::g_pModelLoader = nullptr;
 std::unique_ptr<ModelManager>		GameFramework::g_pModelManager = nullptr;
 std::unique_ptr<GuiManager>			GameFramework::g_pGuiManager = nullptr;
 std::unique_ptr<NetworkManager>		GameFramework::g_pNetworkManager = nullptr;
+std::unique_ptr<EffectManager>		GameFramework::g_pEffectManager = nullptr;
 
 GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 {
@@ -32,13 +33,17 @@ GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 	g_pModelLoader = std::make_unique<AssimpLoader>();
 	g_pGuiManager = std::make_unique<GuiManager>(g_pD3DCore->GetDevice());
 	g_pNetworkManager = std::make_unique<NetworkManager>();
+	g_pEffectManager = std::make_unique<EffectManager>();
 
 	g_pShaderManager->Initialize();
+	g_pEffectManager->Initialize(g_pD3DCore->GetDevice(), g_pD3DCore->GetCommandList());
 
 	g_pTextureManager->LoadGameTextures();
 	g_pModelManager->LoadGameModels();
 
 	g_pSceneManager->Initialize();
+
+	g_pShaderManager->ReleaseBlobs();
 
 	g_pGameTimer->Start();
 
@@ -59,6 +64,7 @@ void GameFramework::Update()
 	g_pSceneManager->ProcessInput();
 	g_pSceneManager->Update();
 
+	g_pEffectManager->Update(DT);
 }
 
 void GameFramework::Render()
@@ -68,6 +74,7 @@ void GameFramework::Render()
 	// TODO : Render Logic Here
 	g_pRenderManager->Render(g_pD3DCore->GetCommandList());
 	g_pSceneManager->Render(g_pD3DCore->GetCommandList());		// 별도의 렌더링 방법을 갖는다면 여기서 렌더링 함
+	g_pEffectManager->Render(g_pD3DCore->GetCommandList());
 	g_pGuiManager->Render(g_pD3DCore->GetCommandList());
 
 	g_pD3DCore->RenderEnd();

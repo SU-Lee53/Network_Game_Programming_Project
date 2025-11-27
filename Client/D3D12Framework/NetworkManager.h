@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #define SERVERPORT 9000
 
 // 11.10 이승욱
@@ -22,12 +22,13 @@ public:
 	// 2025.11.19
 	// by 이승욱
 	void WritePacketData(const ClientToServerPacket& packet);
-	ServertoClientPlayerPacket GetReceivedPacketData();
-	// 2025.11.27
-	// by 이승욱
-	ServertoClientRockPacket GetReceivedRockPacketData();
-	bool IsConnected() { return m_bConnected; }
-	bool IsGameStarted() { return m_bGameBegin; }
+	ServertoClientPlayerPacket GetReceivedPacketData() const;
+
+	bool IsConnected() const { return m_bConnected; }
+	bool IsGameStarted() const { return m_bGameBegin; }
+	bool IsOffline() const { return m_bOfflineMode; }
+
+	int GetPlayerID() const { return m_nPlayerID; }
 
 private:
 	// 2025.11.03 
@@ -58,6 +59,8 @@ private:
 	ServertoClientRockPacket m_PacketRocksReceived{};
 
 	bool m_bGameBegin = false;
+
+	bool m_bOfflineMode = true;
 
 public:
 };

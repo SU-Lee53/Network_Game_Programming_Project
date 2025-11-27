@@ -13,6 +13,7 @@
 #include "AssimpLoader.h"
 #include "GuiManager.h"
 #include "NetworkManager.h"
+#include "EffectManager.h"
 
 class GameFramework {
 public:
@@ -38,6 +39,7 @@ public:
 	static std::unique_ptr<ModelManager>		g_pModelManager;
 	static std::unique_ptr<GuiManager>			g_pGuiManager;
 	static std::unique_ptr<NetworkManager>		g_pNetworkManager;
+	static std::unique_ptr<EffectManager>		g_pEffectManager;
 
 };
 
@@ -52,6 +54,7 @@ public:
 #define MODEL			GameFramework::g_pModelManager
 #define GUI				GameFramework::g_pGuiManager
 #define NETWORK			GameFramework::g_pNetworkManager
+#define EFFECT			GameFramework::g_pEffectManager
 
 #define MODELLOADER			GameFramework::g_pModelLoader
 
