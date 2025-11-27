@@ -13,7 +13,7 @@ struct PlayerShotData {
 struct RockData {
 	XMFLOAT4X4 mtxRockTransform;
 	BYTE nrockID;
-	BYTE nIsAlive;
+	bool nIsAlive;
 };
 
 struct StartPacket {
@@ -31,7 +31,11 @@ struct CLIENT {
 struct ServertoClientPlayerPacket {
 	CLIENT client[CLIENT_NUM];
 };
+////////////
+//11.27
+//ServertoClientRockPacket 수정 by 민정원
 
 struct ServertoClientRockPacket {
-	std::vector<RockData> rockData;
+	std::array<RockData , 50> rockData;
+	int size;
 };

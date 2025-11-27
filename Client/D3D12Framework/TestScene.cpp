@@ -176,16 +176,18 @@ void TestScene::Update()
 
 		// send recv every frame
 		ServertoClientPlayerPacket receivePacket = NETWORK->GetReceivedPacketData();
-		
+		ServertoClientRockPacket receiveRockPacket = std::move(NETWORK->GetReceivedRockPacketData());
 		strReceived.clear();
-		strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
-		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[0].transformData.mtxPlayerTransform._41, receivePacket.client[0].transformData.mtxPlayerTransform._42, receivePacket.client[0].transformData.mtxPlayerTransform._43, receivePacket.client[0].transformData.mtxPlayerTransform._44);
+		strReceived += std::format("Position : {} {} {} {}\n\n", receiveRockPacket.rockData[48].mtxRockTransform._41, receiveRockPacket.rockData[48].mtxRockTransform._42, receiveRockPacket.rockData[48].mtxRockTransform._43, receiveRockPacket.rockData[48].mtxRockTransform._44);
+		strReceived += std::format("Position : {} {} {} {}\n\n", receiveRockPacket.rockData[49].mtxRockTransform._41, receiveRockPacket.rockData[49].mtxRockTransform._42, receiveRockPacket.rockData[49].mtxRockTransform._43, receiveRockPacket.rockData[49].mtxRockTransform._44);
+		//strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
+		//strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[0].transformData.mtxPlayerTransform._41, receivePacket.client[0].transformData.mtxPlayerTransform._42, receivePacket.client[0].transformData.mtxPlayerTransform._43, receivePacket.client[0].transformData.mtxPlayerTransform._44);
 
-		strReceived += std::format("ID : {}\n", receivePacket.client[1].id);
-		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[1].transformData.mtxPlayerTransform._41, receivePacket.client[1].transformData.mtxPlayerTransform._42, receivePacket.client[1].transformData.mtxPlayerTransform._43, receivePacket.client[1].transformData.mtxPlayerTransform._44);
-
-		strReceived += std::format("ID : {}\n", receivePacket.client[2].id);
-		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[2].transformData.mtxPlayerTransform._41, receivePacket.client[2].transformData.mtxPlayerTransform._42, receivePacket.client[2].transformData.mtxPlayerTransform._43, receivePacket.client[2].transformData.mtxPlayerTransform._44);
+		//strReceived += std::format("ID : {}\n", receivePacket.client[1].id);
+		//strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[1].transformData.mtxPlayerTransform._41, receivePacket.client[1].transformData.mtxPlayerTransform._42, receivePacket.client[1].transformData.mtxPlayerTransform._43, receivePacket.client[1].transformData.mtxPlayerTransform._44);
+		//
+		//strReceived += std::format("ID : {}\n", receivePacket.client[2].id);
+		//strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[2].transformData.mtxPlayerTransform._41, receivePacket.client[2].transformData.mtxPlayerTransform._42, receivePacket.client[2].transformData.mtxPlayerTransform._43, receivePacket.client[2].transformData.mtxPlayerTransform._44);
 		
 		m_ullDataReceived++;
 		ImGui::Text(strReceived.c_str());

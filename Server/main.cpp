@@ -16,6 +16,8 @@ ServertoClientRockPacket SendRockPacket;
 HANDLE hSendEvent;
 HANDLE hStartEvent;
 HANDLE hRecvEvent;
+HANDLE hLogicStartEvent;
+HANDLE hLogicEndEvent;
 int readyCount = 0;
 int sendCount = 0;
 
@@ -34,8 +36,13 @@ std::uniform_int_distribution<int> uid(0, 2);
 // 2025.11.20
 // array<std::unique_ptr<Player> , 3> By 민정원
 // Rock 담아둘 벡터 정의
-//std::vector<std::unique_ptr<Rock>>	Rocks;
-//std::array<std::unique_ptr<Player> , 3>	Players;
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.26
+// std::list<std::unique_ptr<Rock>> By 민정원
+// Rock 담아둘 벡터 list로 변경
+std::list<std::unique_ptr<Rock>>			Rocks;
+std::array<std::unique_ptr<Player> , 3>		Players;
+int RockIndex = 0;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +68,10 @@ std::uniform_int_distribution<int> uid(0, 2);
 // 임계영역 구분 Update
 // Client_id 먼저 client들에게 send 후 while() 접근
 // 시작 전 client별 아이디와 게임 시작 신호 패킷 전송
-
+// 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.25
+// 보낼때 Rock 데이터도 같이 보냄.
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -118,6 +128,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		SendPlayerPacket.client[client_num] = recvPacket;
 		SendPlayerPacket.client[client_num].flag = true;
+		Players[client_num].get()->SetWorldMatrix(SendPlayerPacket.client[client_num].transformData.mtxPlayerTransform);
 
 		EnterCriticalSection(&cs);
 		readyCount++;
@@ -128,17 +139,18 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		{
 			ResetEvent(hRecvEvent);
 			SetEvent(hSendEvent);  // 이벤트 시그널
+			SetEvent(hLogicStartEvent);
 		}
 
 		// 2단계: 모두 모일 때까지 대기
 		WaitForSingleObject(hSendEvent, INFINITE);
-
+		WaitForSingleObject(hLogicEndEvent, INFINITE);
 		// 3단계: 데이터 전송
 		retval = send(client_sock, (char*)&SendPlayerPacket, sizeof(SendPlayerPacket), 0);
+		retval = send(client_sock, (char*)&SendRockPacket, sizeof(SendRockPacket), 0);
 
 		// 4단계: 전송 완료 후 정리
 		EnterCriticalSection(&cs);
-
 		sendCount++;
 
 		// 마지막 스레드가 리셋 및 다음 라운드 준비
@@ -151,6 +163,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			readyCount = 0;
 			sendCount = 0;
 			ResetEvent(hSendEvent);  // 다음 라운드를 위해 리셋
+			ResetEvent(hLogicEndEvent);
 			SetEvent(hRecvEvent);
 		}
 		LeaveCriticalSection(&cs);
@@ -175,9 +188,15 @@ int main(int argc, char* argv[])
 	hStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 	hSendEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 	hRecvEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
+	hLogicStartEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	hLogicEndEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	for (int i = 0; i < Players.size(); ++i) {
+		Players[i] = std::make_unique<Player>();
+	}
 	int retval;
 	WSADATA wsa;
-
+	
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
@@ -226,13 +245,31 @@ int main(int argc, char* argv[])
 		}
 	}
 
-
-	// Logich Loop
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// 2025.11.26
+	// Rock 생성후 Send By 민정원
+	// Client에서 Recv까지 확인.
 	while (true)
 	{
-		//Sleep(1000);
-		//auto rock = CreateRock(SendPlayerPacket.client[uid(dre)]);
-		//Rocks.push_back(rock);
+		WaitForSingleObject(hLogicStartEvent, INFINITE);
+		Rocks.remove_if([](const auto& rockPtr) {
+			return !rockPtr->GetIsAlive();  // true인 것 삭제
+			});
+		if (Rocks.size() < 50) {
+			Rocks.push_back(CreateRock(Players[uid(dre)].get()));
+			Rocks.back().get()->SetPosition(10.f * Rocks.size(), 20.f * Rocks.size(), 30.f * Rocks.size());
+		}
+		int index = 0;
+		for (auto& rockPtr : Rocks) {
+			Rock* rock = rockPtr.get();
+			SendRockPacket.rockData[index].mtxRockTransform = rock->GetWorldMatrix();
+			SendRockPacket.rockData[index].nIsAlive = rock->GetIsAlive();
+			SendRockPacket.rockData[index].nrockID = index;
+			++index;
+		}
+		SendRockPacket.size = Rocks.size();
+		SetEvent(hLogicEndEvent);
+		ResetEvent(hLogicStartEvent);
 	}
 
 	DeleteCriticalSection(&cs);

@@ -31,6 +31,13 @@ XMFLOAT3 Object::GetPosition() const
 	return XMFLOAT3(m_xmf4x4WorldMatrix._41, m_xmf4x4WorldMatrix._42, m_xmf4x4WorldMatrix._43);
 }
 
+void Object::SetPosition(const float& x, const float& y, const float& z)
+{
+	m_xmf4x4WorldMatrix._41 = x;
+	m_xmf4x4WorldMatrix._42 = y;
+	m_xmf4x4WorldMatrix._43 = z;
+}
+
 void Object::UpdateBoundingSphere()
 {
 	m_xmBoundingSphere.Center = GetPosition();

@@ -146,13 +146,19 @@ void NetworkManager::Disconnect()
 // 11.19
 // 인자 제거, m_PacketReceived 로 데이터 받아옴
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.27
+// ReceiveData By 민정원
+// Rock 데이터 받는코드 추가
+
 bool NetworkManager::ReceiveData()
 {
 	int retval = 0;
 	retval = recv(m_hClientSocket, (char*)&m_PacketReceived, sizeof(ServertoClientPlayerPacket), MSG_WAITALL);
+	retval += recv(m_hClientSocket, (char*)&m_PacketRocksReceived, sizeof(ServertoClientRockPacket), MSG_WAITALL);
 	SetEvent(g_hPacketReceivedEvent);  // 이벤트 시그널
 
-	return retval == sizeof(ServertoClientPlayerPacket);
+	return retval == sizeof(ServertoClientPlayerPacket) + sizeof(ServertoClientRockPacket);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,10 +180,21 @@ void NetworkManager::WritePacketData(const ClientToServerPacket& packet)
 
 ServertoClientPlayerPacket NetworkManager::GetReceivedPacketData()
 {
-	WaitForSingleObject(g_hPlayerWritePacketEvent, INFINITE);
+	WaitForSingleObject(g_hPacketReceivedEvent, INFINITE);
 	return m_PacketReceived;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.04
+// GetReceivedPacketData By 이승욱
+// 서버에서 가져온 패킷을 리턴
+// 그전에 NetworkManager 가 서버에서 패킷을 받아와야하므로 이벤트로 동기화함
+
+ServertoClientRockPacket NetworkManager::GetReceivedRockPacketData()
+{
+	WaitForSingleObject(g_hPacketReceivedEvent, INFINITE);
+	return m_PacketRocksReceived;
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 2025.11.16
 // ProcessNetwork By 이승욱

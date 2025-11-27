@@ -23,7 +23,9 @@ public:
 	// by 이승욱
 	void WritePacketData(const ClientToServerPacket& packet);
 	ServertoClientPlayerPacket GetReceivedPacketData();
-
+	// 2025.11.27
+	// by 이승욱
+	ServertoClientRockPacket GetReceivedRockPacketData();
 	bool IsConnected() { return m_bConnected; }
 	bool IsGameStarted() { return m_bGameBegin; }
 
@@ -50,6 +52,10 @@ private:
 
 	ClientToServerPacket m_PacketToSend{};
 	ServertoClientPlayerPacket m_PacketReceived{};
+
+	// 2025.11.27
+	// by 민정원
+	ServertoClientRockPacket m_PacketRocksReceived{};
 
 	bool m_bGameBegin = false;
 
