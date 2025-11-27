@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #define SERVERPORT 9000
 
 // 11.10 이승욱
@@ -24,6 +24,7 @@ public:
 	void WritePacketData(const ClientToServerPacket& packet);
 	ServertoClientPlayerPacket GetReceivedPacketData() const;
 
+	ServertoClientRockPacket GetReceivedRockPacketData();
 	bool IsConnected() const { return m_bConnected; }
 	bool IsGameStarted() const { return m_bGameBegin; }
 	bool IsOffline() const { return m_bOfflineMode; }
