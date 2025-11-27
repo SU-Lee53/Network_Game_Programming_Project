@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 class SpaceshipPlayer;
+class RockObject;
 
 class TestScene : public Scene {
 public:
@@ -29,6 +30,9 @@ protected:
 
 	// 11.15 이승욱
 	std::array<std::shared_ptr<SpaceshipPlayer>, 2> m_pOtherPlayers;
+
+	std::shared_ptr<RockObject> m_pRockObj;
+
 
 };
 

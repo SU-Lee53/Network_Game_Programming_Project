@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "TestScene.h"
 #include "Transform.h"
 #include "CubeObject.h"
@@ -7,6 +7,7 @@
 #include "EarthObject.h"
 #include "MarsObject.h"
 #include "SunObject.h"
+#include "RockObject.h"
 #include "SpaceshipPlayer.h"
 #include "PlayerRenderer.h"
 
@@ -61,6 +62,9 @@ void TestScene::BuildObjects()
 	AddObject(pEarth);
 	AddObject(pMars);
 	AddObject(pSun);
+
+	m_pRockObj = std::make_shared<RockObject>();
+	m_pRockObj->Initialize();
 
 
 	m_pPlayer = std::make_shared<SpaceshipPlayer>();
@@ -214,9 +218,24 @@ void TestScene::SyncSceneWithServer()
 
 			EFFECT->AddEffect<RayEffect>(param);
 		}
-
 		nOtherPlayerIndex++;
 	}
+
+	// Draw Rocks
+	ServertoClientRockPacket rockPacket =  NETWORK->GetReceivedRockPacketData();
+	for (int i = 0; i < rockPacket.size; ++i) {
+		rockPacket.rockData[i].mtxRockTransform;
+
+
+		m_pRockObj->GetTransform().SetWorldMatrix(rockPacket.rockData[i].mtxRockTransform);
+		m_pRockObj->Update();
+
+		//RENDER->Add<MeshRenderer>(m_pRockObj->GetMeshRenderer(), renderParam);
+
+	}
+
+
+
 }
 
 void TestScene::ProcessInput()

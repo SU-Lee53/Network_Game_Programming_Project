@@ -1,8 +1,8 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "RockObject.h"
 
 // 10.23
-// TODO : ¿©±â´Â ±×³É Ã³À½ºÎÅÍ ´Ù½ÃÇÏ´Â°Ô ºü¸¦µí¤·¤·....
+// TODO : ì—¬ê¸°ëŠ” ê·¸ëƒ¥ ì²˜ìŒë¶€í„° ë‹¤ì‹œí•˜ëŠ”ê²Œ ë¹ ë¥¼ë“¯ã…‡ã…‡....
 
 RockObject::RockObject()
 {
@@ -19,7 +19,7 @@ void RockObject::Initialize()
 		SetChild(pSphere);
 
 
-		auto& p = FindMeshedFrame("Cube");
+		auto& p = FindMeshedFrame("Sphere001");
 		p->GetMeshRenderer()->SetTexture(TEXTURE->Get("Rock_Diffuse"), 0, TEXTURE_TYPE_DIFFUSE);
 		p->GetMeshRenderer()->SetTexture(TEXTURE->Get("Rock_Normal"), 0, TEXTURE_TYPE_NORMAL);
 
@@ -31,6 +31,7 @@ void RockObject::Initialize()
 
 void RockObject::Update()
 {
+	GameObject::Update();
 }
 
 void RockObject::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)

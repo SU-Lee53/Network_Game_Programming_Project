@@ -112,6 +112,7 @@ void NetworkManager::ConnectToServer()
 
 bool NetworkManager::SendData()
 {
+	if (!m_bConnected) return;
 	assert(m_bConnected);
 	int nBytesToSend = sizeof(ClientToServerPacket);
 	int retval{};
@@ -159,6 +160,7 @@ void NetworkManager::Disconnect()
 
 bool NetworkManager::ReceiveData()
 {
+	if (!m_bConnected) return;
 	int retval = 0;
 	retval = recv(m_hClientSocket, (char*)&m_PacketReceived, sizeof(ServertoClientPlayerPacket), MSG_WAITALL);
 	retval += recv(m_hClientSocket, (char*)&m_PacketRocksReceived, sizeof(ServertoClientRockPacket), MSG_WAITALL);
