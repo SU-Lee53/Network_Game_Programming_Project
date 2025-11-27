@@ -16,7 +16,7 @@ public:
 	virtual ~Rock();
 
 	void SetDirection(const XMFLOAT3& PlayerPosition);
-	const BYTE& GetIsAlive() { return nIsAlive; }
+	const bool& GetIsAlive() { return nIsAlive; }
 private:
 	XMFLOAT3 m_xmf3Direction{};
 	BYTE nIsAlive;

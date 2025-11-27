@@ -17,6 +17,7 @@ public:
 	void SetBoundingRadius(float radius);
 	float GetBoundingRadius() const { return m_fBoundingRadius; }
 	XMFLOAT3 GetPosition() const;
+	void SetPosition(const float& x, const float& y, const float& z );
 	const BoundingSphere& GetBoundingSphere() const { return m_xmBoundingSphere; }
 	void UpdateBoundingSphere();
 
