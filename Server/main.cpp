@@ -116,7 +116,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	retval = send(client_sock, (char*)&startPacket, sizeof(StartPacket), 0);
 
-	ResetEvent(hStartEvent);
 
 	while (true)
 	{
@@ -268,8 +267,8 @@ int main(int argc, char* argv[])
 			++index;
 		}
 		SendRockPacket.size = Rocks.size();
-		SetEvent(hLogicEndEvent);
 		ResetEvent(hLogicStartEvent);
+		SetEvent(hLogicEndEvent);
 	}
 
 	DeleteCriticalSection(&cs);
