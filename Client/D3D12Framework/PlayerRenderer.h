@@ -40,9 +40,5 @@ private:
 
 	std::weak_ptr<SpaceshipPlayer> m_wpPlayerRef;
 
-	// Ray, billboard 용 Pipeline 별도 준비
-	std::vector<ComPtr<ID3D12PipelineState>>	m_pd3dEffectPipelineStates = {};
-
-
 };
 

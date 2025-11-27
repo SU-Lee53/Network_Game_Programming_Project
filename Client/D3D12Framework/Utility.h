@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 extern void ShowErrorMessage(std::string_view file, int line, std::string_view message);
 #define SHOW_ERROR(strMsg)		ShowErrorMessage(__FILE__, __LINE__, strMsg);
@@ -12,7 +12,7 @@ inline std::wstring StringToWString(const std::string& str, UINT codePage = CP_U
     std::wstring wstr(size_needed, 0);
     MultiByteToWideChar(codePage, 0, str.c_str(), -1, &wstr[0], size_needed);
 
-    // ¸¶Áö¸·¿¡ µé¾î°£ null ¹®ÀÚ Á¦°Å
+    // ë§ˆì§€ë§‰ì— ë“¤ì–´ê°„ null ë¬¸ì ì œê±°
     if (!wstr.empty() && wstr.back() == L'\0')
         wstr.pop_back();
 

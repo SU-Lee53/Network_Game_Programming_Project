@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Player.h"	// Includes GameObject
 #include "Camera.h"
 #include "Light.h"
@@ -24,8 +24,10 @@ public:
 	virtual void Update() = 0;
 	virtual void Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommansList) = 0;
 
+	virtual void SyncSceneWithServer() {}
+
 public:
-	std::shared_ptr<GameObject> GetPlayer() const { return m_pPlayer; }
+	std::shared_ptr<Player> GetPlayer() const { return m_pPlayer; }
 	std::shared_ptr<Camera> GetCamera() const { return m_pPlayer->GetCamera(); }
 	std::vector<std::shared_ptr<GameObject>>& GetObjectsInScene() { return m_pGameObjects; }
 

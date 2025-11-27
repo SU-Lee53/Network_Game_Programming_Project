@@ -85,6 +85,7 @@ using namespace Microsoft::WRL;
 #include "ShaderResource.h"
 #include "DescriptorHeap.h"
 #include "Packets.h"
+#include "RandomGenerator.h"
 
 // Assimp
 #include <assimp/Importer.hpp>

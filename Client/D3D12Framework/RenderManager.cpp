@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "RenderManager.h"
 #include "MeshRenderer.h"
 
@@ -11,32 +11,32 @@ ComPtr<ID3D12RootSignature> RenderManager::g_pd3dGlobalRootSignature = nullptr;
 							  +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+--
 					  Value   |   Camera  |   Lights  |  CubeMap  |  Material |  Diffused |   Normal  |   World   |  Material |  Diffused |InstanceBuf|  ...
 							  +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+--
-				  data type   |        ¿©±â±îÁö Scene Data        |            Object ¿¹½Ã1(ÀÎ½ºÅÏ½Ì X)           |       Object ¿¹½Ã2(ÀÎ½ºÅÏ½Ì)      |  ...
+				  data type   |        ì—¬ê¸°ê¹Œì§€ Scene Data        |            Object ì˜ˆì‹œ1(ì¸ìŠ¤í„´ì‹± X)           |       Object ì˜ˆì‹œ2(ì¸ìŠ¤í„´ì‹±)      |  ...
 							  +-----------------------------------+-----------------------------------+-----------+-----------------------+-----------+--
-				¹ÙÀÎµù ÇÔ¼ö   | SetGraphicsRootDescriptorTable(0) | SetGraphicsRootDescriptorTable(1) |   ...(2)  |        ...(1)         |   ...(3)  |
+				ë°”ì¸ë”© í•¨ìˆ˜   | SetGraphicsRootDescriptorTable(0) | SetGraphicsRootDescriptorTable(1) |   ...(2)  |        ...(1)         |   ...(3)  |
 							  +-----------------------------------+-----------------------------------+-----------+-----------------------+-----------+
-							  - ±×¸²Ã³·³ Object(MeshRenderer) ¸¶´Ù ±¸¼ºÀÌ ´Ù¸¦ ¼ö ÀÖÀ½
-							  - Bind °¡ ¾ÈµÈ´Ù°í ¾Èµ¹¾Æ°¡´Â°Ô ¾Æ´Ñ°ÍÀ¸·Î ¾Ï -> Shader ¿¡¼­ Á¢±ÙÀ» ¾ÈÇÏ¸é Bind ¾ÈµÇµµ °¡´ÉÇÑ °ÍÀ¸·Î ¾Ë°íÀÖÀ½
-							  - ½ÇÁ¦·Î µÉÁö´Â ³ªµµ ¾ÆÁ÷ ¸ğ¸§¤¾¤¾
+							  - ê·¸ë¦¼ì²˜ëŸ¼ Object(MeshRenderer) ë§ˆë‹¤ êµ¬ì„±ì´ ë‹¤ë¥¼ ìˆ˜ ìˆìŒ
+							  - Bind ê°€ ì•ˆëœë‹¤ê³  ì•ˆëŒì•„ê°€ëŠ”ê²Œ ì•„ë‹Œê²ƒìœ¼ë¡œ ì•” -> Shader ì—ì„œ ì ‘ê·¼ì„ ì•ˆí•˜ë©´ Bind ì•ˆë˜ë„ ê°€ëŠ¥í•œ ê²ƒìœ¼ë¡œ ì•Œê³ ìˆìŒ
+							  - ì‹¤ì œë¡œ ë ì§€ëŠ” ë‚˜ë„ ì•„ì§ ëª¨ë¦„ã…ã…
 
-	- 10.18 °èÈ¹ ¼öÁ¤
-		- ÀÎ½ºÅÏ½Ì ÇÏ°í ¾ÈÇÏ°í ±¸ºĞÀº ¾øÀ½
-		- 1°³Â¥¸®µµ InstanceBuffer ¿¡ ¿ùµåÇà·ÄÀ» ¶§·Á¹Ú¾Æ Per-Pass Data ·Î Bind
-		- ³ªÁß¿¡ Differed ÇÒ¶§°¡ µÇ¸é G-Buffer ¸¦ Per-Shader µ¥ÀÌÅÍ¿¡ ¹ÚÀ¸¸é µÊ (Áö±İÀº ÀÏ´Ü World¸¸)
-		- ±×·¯¸é ±×¸²Àº ¾Æ·¡Ã³·³ ¹Ù²ñ
+	- 10.18 ê³„íš ìˆ˜ì •
+		- ì¸ìŠ¤í„´ì‹± í•˜ê³  ì•ˆí•˜ê³  êµ¬ë¶„ì€ ì—†ìŒ
+		- 1ê°œì§œë¦¬ë„ InstanceBuffer ì— ì›”ë“œí–‰ë ¬ì„ ë•Œë ¤ë°•ì•„ Per-Pass Data ë¡œ Bind
+		- ë‚˜ì¤‘ì— Differed í• ë•Œê°€ ë˜ë©´ G-Buffer ë¥¼ Per-Shader ë°ì´í„°ì— ë°•ìœ¼ë©´ ë¨ (ì§€ê¸ˆì€ ì¼ë‹¨ Worldë§Œ)
+		- ê·¸ëŸ¬ë©´ ê·¸ë¦¼ì€ ì•„ë˜ì²˜ëŸ¼ ë°”ë€œ
 
 							  +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+------------+--
  D3D12_DESCRIPTOR_HEAP_TYPE   |    CBV    |    CBV    |    SRV    |    SRV    |    CBV    |    SRV    |    SRV    |    CBV    |    SRV    |     SRV    |  ...
 							  +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+------------+--
 					  Value   |   Camera  |   Lights  |  CubeMap  | World Inst|  Material |  Diffused |   Normal  |  Material |  Diffused | World Inst |  ...
 							  +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+------------+--
-				  data type   |             Scene Data            | Pass Data |            Object ¿¹½Ã1           |      Object ¿¹½Ã2     | Pass Data  |  ...
+				  data type   |             Scene Data            | Pass Data |            Object ì˜ˆì‹œ1           |      Object ì˜ˆì‹œ2     | Pass Data  |  ...
 							  +-----------------------+-----------+-----------+-----------+-----------------------+-----------------------+------------+--
-				¹ÙÀÎµù ÇÔ¼ö   |          ...(0)       |   ...(1)  |   ...(2)  |   ...(3)  |        ...(4)         |   ...(3)  |   ...(4)  |   ...(1)   |
+				ë°”ì¸ë”© í•¨ìˆ˜   |          ...(0)       |   ...(1)  |   ...(2)  |   ...(3)  |        ...(4)         |   ...(3)  |   ...(4)  |   ...(1)   |
 							  +-----------------------+-----------+-----------+-----------+-----------------------+-----------------------+------------+
 
 	- 10.27
-		- ³Ê¹« ¸¹ÀÌ ¹Ù²ñ ³ªÁß¿¡ ÁÖ¼® ¼öÁ¤ ÇÊ¿ä
+		- ë„ˆë¬´ ë§ì´ ë°”ë€œ ë‚˜ì¤‘ì— ì£¼ì„ ìˆ˜ì • í•„ìš”
 */
 
 RenderManager::RenderManager(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
@@ -60,8 +60,8 @@ void RenderManager::CreateGlobalRootSignature(ComPtr<ID3D12Device> pd3dDevice, C
 	CD3DX12_DESCRIPTOR_RANGE d3dDescriptorRanges[7];
 	d3dDescriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0, 0, 0);	// Per Scene (Camera)
 	d3dDescriptorRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0, 0);	// Per Scene (Cubemap)
-	d3dDescriptorRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, 0, 0);	// Per Pass	 (World º¯È¯)
-	d3dDescriptorRanges[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 2, 2, 0, 0);	// Per Object (Material, instance base) + ÇÊ¿äÇÑ°æ¿ì World
+	d3dDescriptorRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, 0, 0);	// Per Pass	 (World ë³€í™˜)
+	d3dDescriptorRanges[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 2, 2, 0, 0);	// Per Object (Material, instance base) + í•„ìš”í•œê²½ìš° World
 	d3dDescriptorRanges[4].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 2, 0, 0);	// Diffuse, Normal/Height
 	d3dDescriptorRanges[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 4, 0, 0);	// Player Data
 	d3dDescriptorRanges[6].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4, 0, 0);	// Billboard texture
@@ -82,7 +82,7 @@ void RenderManager::CreateGlobalRootSignature(ComPtr<ID3D12Device> pd3dDevice, C
 			float3 gvPositionW;
 			float2 gvBillboardSizeW;    // billboard
 			float3 gvLookW;             // ray direction
-			float3 gvUpW;               // ray Up -> Ãà ±¸¼ºÀ» À§ÇÔ
+			float3 gvUpW;               // ray Up -> ì¶• êµ¬ì„±ì„ ìœ„í•¨
 			float gfRayLength;          // ray length
 			float gfRayHalfWidth;       // ray halfWidth
 		};
@@ -159,7 +159,7 @@ void RenderManager::CreateSpriteRootSignature(ComPtr<ID3D12Device> pd3dDevice, C
 	d3dDescriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0, 0);
 
 	CD3DX12_ROOT_PARAMETER d3dRootParameters[2];
-	d3dRootParameters[0].InitAsConstants(4, 0, 0,D3D12_SHADER_VISIBILITY_ALL);			// Sprite Å©±â
+	d3dRootParameters[0].InitAsConstants(4, 0, 0,D3D12_SHADER_VISIBILITY_ALL);			// Sprite í¬ê¸°
 	d3dRootParameters[1].InitAsDescriptorTable(1, d3dDescriptorRanges, D3D12_SHADER_VISIBILITY_ALL);	// Scene (Cubemap(Skybox))
 
 	CD3DX12_STATIC_SAMPLER_DESC d3dSamplerDesc;
@@ -229,9 +229,9 @@ void RenderManager::CreateSpritePipelineState(ComPtr<ID3D12Device> pd3dDevice)
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineDesc{};
 	{
 		d3dPipelineDesc.pRootSignature = m_pSpriteRootSignature.Get();
-		d3dPipelineDesc.VS = Shader::CompileShader(L"./HLSL/SpriteShader.hlsl", "VSSprite", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
-		d3dPipelineDesc.GS = Shader::CompileShader(L"./HLSL/SpriteShader.hlsl", "GSSprite", "gs_5_1", m_pd3dGeometryShaderBlob.GetAddressOf());
-		d3dPipelineDesc.PS = Shader::CompileShader(L"./HLSL/SpriteShader.hlsl", "PSSprite", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
+		d3dPipelineDesc.VS = Shader::CompileShader(L"../HLSL/SpriteShader.hlsl", "VSSprite", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
+		d3dPipelineDesc.GS = Shader::CompileShader(L"../HLSL/SpriteShader.hlsl", "GSSprite", "gs_5_1", m_pd3dGeometryShaderBlob.GetAddressOf());
+		d3dPipelineDesc.PS = Shader::CompileShader(L"../HLSL/SpriteShader.hlsl", "PSSprite", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
 		d3dPipelineDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 		d3dPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 		d3dPipelineDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
@@ -245,7 +245,7 @@ void RenderManager::CreateSpritePipelineState(ComPtr<ID3D12Device> pd3dDevice)
 		d3dPipelineDesc.InputLayout.NumElements = 0;
 		d3dPipelineDesc.InputLayout.pInputElementDescs = nullptr;
 		d3dPipelineDesc.SampleMask = UINT_MAX;
-		d3dPipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;	// GS°¡ Á¡À» ¹ŞÀ½
+		d3dPipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;	// GSê°€ ì ì„ ë°›ìŒ
 		d3dPipelineDesc.NumRenderTargets = 1;
 		d3dPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		d3dPipelineDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -268,9 +268,9 @@ void RenderManager::CreateSkyboxPipelineState(ComPtr<ID3D12Device> pd3dDevice)
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineDesc{};
 	{
 		d3dPipelineDesc.pRootSignature = g_pd3dGlobalRootSignature.Get();
-		d3dPipelineDesc.VS = Shader::CompileShader(L"./HLSL/SkyboxShader.hlsl", "VSSkybox", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
-		d3dPipelineDesc.GS = Shader::CompileShader(L"./HLSL/SkyboxShader.hlsl", "GSSkybox", "gs_5_1", m_pd3dGeometryShaderBlob.GetAddressOf());
-		d3dPipelineDesc.PS = Shader::CompileShader(L"./HLSL/SkyboxShader.hlsl", "PSSkybox", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
+		d3dPipelineDesc.VS = Shader::CompileShader(L"../HLSL/SkyboxShader.hlsl", "VSSkybox", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
+		d3dPipelineDesc.GS = Shader::CompileShader(L"../HLSL/SkyboxShader.hlsl", "GSSkybox", "gs_5_1", m_pd3dGeometryShaderBlob.GetAddressOf());
+		d3dPipelineDesc.PS = Shader::CompileShader(L"../HLSL/SkyboxShader.hlsl", "PSSkybox", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
 		d3dPipelineDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 		d3dPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;
 		d3dPipelineDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
@@ -281,7 +281,7 @@ void RenderManager::CreateSkyboxPipelineState(ComPtr<ID3D12Device> pd3dDevice)
 		d3dPipelineDesc.InputLayout.NumElements = 0;
 		d3dPipelineDesc.InputLayout.pInputElementDescs = nullptr;
 		d3dPipelineDesc.SampleMask = UINT_MAX;
-		d3dPipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;	// GS°¡ Á¡À» ¹ŞÀ½
+		d3dPipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;	// GSê°€ ì ì„ ë°›ìŒ
 		d3dPipelineDesc.NumRenderTargets = 1;
 		d3dPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		d3dPipelineDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -298,10 +298,10 @@ void RenderManager::CreateSkyboxPipelineState(ComPtr<ID3D12Device> pd3dDevice)
 void RenderManager::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 {
 	/*
-			1. ±âÁ¸ °úÁ¦ ¹æ½Ä´ë·Î Map °ú vector¸¦ º´Çà
-			2. vector·Î Pre-Pass ¼öÇà
-			3. Map¿¡ º¸°üµÈ ÀÎµ¦½º¸¦ µû¶ó Forward, Differed ºĞÇÒ
-			4. std::span view ¸¦ ÀÌ¿ëÇÏ¿© Forward, Differed ·»´õ¸µ °¢°¢ ¼öÇà
+			1. ê¸°ì¡´ ê³¼ì œ ë°©ì‹ëŒ€ë¡œ Map ê³¼ vectorë¥¼ ë³‘í–‰
+			2. vectorë¡œ Pre-Pass ìˆ˜í–‰
+			3. Mapì— ë³´ê´€ëœ ì¸ë±ìŠ¤ë¥¼ ë”°ë¼ Forward, Differed ë¶„í• 
+			4. std::span view ë¥¼ ì´ìš©í•˜ì—¬ Forward, Differed ë Œë”ë§ ê°ê° ìˆ˜í–‰
 			5. Post-Processing
 			+ Sprite
 	
@@ -317,7 +317,7 @@ void RenderManager::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 	pd3dCommandList->SetGraphicsRootSignature(g_pd3dGlobalRootSignature.Get());
 	pd3dCommandList->SetDescriptorHeaps(1, m_DescriptorHeapForDraw.GetD3DDescriptorHeap().GetAddressOf());
 	
-	// Scene Data ¹ÙÀÎµù
+	// Scene Data ë°”ì¸ë”©
 	DescriptorHandle descHandle = m_DescriptorHeapForDraw.GetDescriptorHandleFromHeapStart();
 	
 	CB_CAMERA_DATA camData = CUR_SCENE->GetCamera()->MakeCBData();
@@ -338,8 +338,8 @@ void RenderManager::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 	// 1
 	pd3dCommandList->SetGraphicsRootConstantBufferView(ROOT_PARAMETER_SCENE_LIGHT_DATA, lightCBuffer.GPUAddress);
 
-	// Pass ¼öÇà
-	// Run ¾È¿¡¼­ descHandle ÀÇ offset ÀÌ »ç¿ëµÈ¸¸Å­ ¿òÁ÷ÀÓ
+	// Pass ìˆ˜í–‰
+	// Run ì•ˆì—ì„œ descHandle ì˜ offset ì´ ì‚¬ìš©ëœë§Œí¼ ì›€ì§ì„
 	m_pForwardPass->Run(m_pd3dDevice, pd3dCommandList, m_InstanceDatas[OBJECT_RENDER_FORWARD], descHandle);
 
 	RenderSkybox(pd3dCommandList, descHandle);

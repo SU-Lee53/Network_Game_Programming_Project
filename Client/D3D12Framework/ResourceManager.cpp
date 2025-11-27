@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "ResourceManager.h"
 #include "Texture.h"
 #include "TextureManager.h"
@@ -9,7 +9,7 @@ ResourceManager::ResourceManager(ComPtr<ID3D12Device> pDevice)
 	CreateCommandList();
 	CreateFence();
 
-	m_ConstantBufferPool.Initialize(pDevice, ConstantBufferSize<Matrix>::value, 1024);
+	m_ConstantBufferPool.Initialize(pDevice, 1'0000);
 }
 
 ResourceManager::~ResourceManager()

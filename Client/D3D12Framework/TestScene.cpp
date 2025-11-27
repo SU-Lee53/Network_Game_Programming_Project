@@ -166,46 +166,21 @@ void TestScene::Update()
 
 	RENDER->Add(TEXTURE->Get("Crosshair"), spriteParam);
 
-	ServertoClientPlayerPacket receivePacket;
+
+	if (!NETWORK->IsOffline()) {
+		ClientToServerPacket packet = m_pPlayer->MakePacketToSend();
+		NETWORK->WritePacketData(packet);
+	}
 
 	// NETWORK TEST ZONE
 	ImGui::Begin("Test");
 	{
-		ClientToServerPacket packet = m_pPlayer->MakePacketToSend();
-		NETWORK->WritePacketData(packet);
-
-		// send recv every frame
-		ServertoClientPlayerPacket receivePacket = NETWORK->GetReceivedPacketData();
-		
-		strReceived.clear();
-		strReceived += std::format("ID : {}\n", receivePacket.client[0].id);
-		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[0].transformData.mtxPlayerTransform._41, receivePacket.client[0].transformData.mtxPlayerTransform._42, receivePacket.client[0].transformData.mtxPlayerTransform._43, receivePacket.client[0].transformData.mtxPlayerTransform._44);
-
-		strReceived += std::format("ID : {}\n", receivePacket.client[1].id);
-		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[1].transformData.mtxPlayerTransform._41, receivePacket.client[1].transformData.mtxPlayerTransform._42, receivePacket.client[1].transformData.mtxPlayerTransform._43, receivePacket.client[1].transformData.mtxPlayerTransform._44);
-
-		strReceived += std::format("ID : {}\n", receivePacket.client[2].id);
-		strReceived += std::format("Position : {} {} {} {}\n\n", receivePacket.client[2].transformData.mtxPlayerTransform._41, receivePacket.client[2].transformData.mtxPlayerTransform._42, receivePacket.client[2].transformData.mtxPlayerTransform._43, receivePacket.client[2].transformData.mtxPlayerTransform._44);
-		
-		m_ullDataReceived++;
-		ImGui::Text(strReceived.c_str());
-
-		// m_pOtherPlayers 에 반영
-		// 실제로는 플레이어의 ID 를 알아야 반영이 가능할듯 함
-		m_pOtherPlayers[0]->GetTransform().SetWorldMatrix(receivePacket.client[1].transformData.mtxPlayerTransform);
-		m_pOtherPlayers[1]->GetTransform().SetWorldMatrix(receivePacket.client[2].transformData.mtxPlayerTransform);
-
-		if (receivePacket.client[1].shotData.v3RayDirection != Vector3(0, 0, 0)) {
-			m_pOtherPlayers[0]->m_bIsFire = true;
-		}
-
-		if (receivePacket.client[2].shotData.v3RayDirection != Vector3(0, 0, 0)) {
-			m_pOtherPlayers[1]->m_bIsFire = true;
-		}
-
 	}
 	ImGui::End();
 
+	if (!NETWORK->IsOffline()) {
+		SyncSceneWithServer();
+	}
 
 	RenderParameter renderParameter{};
 	for (auto& pOtherPlayer : m_pOtherPlayers) {
@@ -218,6 +193,30 @@ void TestScene::Update()
 void TestScene::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommansList)
 {
 	RenderObjects(pd3dCommansList);
+}
+
+void TestScene::SyncSceneWithServer()
+{
+	// send recv every frame
+	ServertoClientPlayerPacket receivedPacket = NETWORK->GetReceivedPacketData();
+
+	int nOtherPlayerIndex = 0;
+	for (int i = 0; i < 3; ++i) {
+		if (receivedPacket.client[i].id == NETWORK->GetPlayerID()) {
+			continue;
+		}
+		m_pOtherPlayers[nOtherPlayerIndex]->GetTransform().SetWorldMatrix(receivedPacket.client[i].transformData.mtxPlayerTransform);
+		if (receivedPacket.client[i].shotData.v3RayDirection != Vector3(0, 0, 0)) {
+			EffectParameter param;
+			param.xmf3Position = receivedPacket.client[i].shotData.v3RayPosition;
+			param.xmf3Force = receivedPacket.client[i].shotData.v3RayDirection;	// use force to direction
+			param.fElapsedTime = 0.f;
+
+			EFFECT->AddEffect<RayEffect>(param);
+		}
+
+		nOtherPlayerIndex++;
+	}
 }
 
 void TestScene::ProcessInput()

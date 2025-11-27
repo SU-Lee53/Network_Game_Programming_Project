@@ -17,5 +17,10 @@ std::unique_ptr<Rock> CreateRock(const CLIENT& PlayerPacket)
 // Rock 과 Player 의 Ray 간의 충돌 검사
 void CheckRayIntersection()
 {
-	
+	// TODO 구현
+	// Ray 와 OBB 충돌검출 함수
+	// BoundingOrientedBox::Intersects(XMVECTOR origin, XMVECTOR direction, float& dist);
+
+
+
 }

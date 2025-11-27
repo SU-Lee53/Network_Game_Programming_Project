@@ -73,6 +73,11 @@ void NetworkManager::ConnectToServer()
 		}
 		ImGui::Text(m_strErrorLog.c_str());
 
+		if (ImGui::Button("Offline Mode")) {
+			m_bConnected = true;
+			m_bGameBegin = true;
+		}
+
 		if (m_bConnected) {
 			ImGui::Text("Wait for game start...");
 		}
@@ -173,9 +178,9 @@ void NetworkManager::WritePacketData(const ClientToServerPacket& packet)
 // 서버에서 가져온 패킷을 리턴
 // 그전에 NetworkManager 가 서버에서 패킷을 받아와야하므로 이벤트로 동기화함
 
-ServertoClientPlayerPacket NetworkManager::GetReceivedPacketData()
+ServertoClientPlayerPacket NetworkManager::GetReceivedPacketData() const
 {
-	WaitForSingleObject(g_hPlayerWritePacketEvent, INFINITE);
+	WaitForSingleObject(g_hPacketReceivedEvent, INFINITE);
 	return m_PacketReceived;
 }
 
@@ -199,6 +204,7 @@ DWORD WINAPI NetworkManager::ProcessNetwork(LPVOID arg)
 		NETWORK->m_nPlayerID = startPacket.id;
 		if (startPacket.startFlag) {
 			NETWORK->m_bGameBegin = true;
+			NETWORK->m_bOfflineMode = false;
 			break;
 		}
 	}

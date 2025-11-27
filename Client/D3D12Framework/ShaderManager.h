@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 class ShaderManager {
 public:
@@ -14,13 +14,20 @@ public:
 	template<typename T> requires std::derived_from<T, Shader>
 	std::shared_ptr<T> Get();
 
+	D3D12_SHADER_BYTECODE GetShaderByteCode(const std::string& strShaderName);
+
+	void CompileShaders();
+	void ReleaseBlobs();
+
 
 private:
 	ComPtr<ID3D12Device>				m_pd3dDevice = nullptr;		// Reference to D3DCore::m_pd3dDevice
 
 private:
 	std::unordered_map<std::type_index, std::shared_ptr<Shader>> m_pShaderMap;
+	std::unordered_map<std::string, D3D12_SHADER_BYTECODE> m_pCompiledShaderByteCodeMap;
 
+	std::vector<ComPtr<ID3DBlob>> m_pd3dBlobs;
 };
 
 template<typename T> requires std::derived_from<T, Shader>
