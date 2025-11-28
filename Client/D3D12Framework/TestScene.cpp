@@ -223,11 +223,21 @@ void TestScene::SyncSceneWithServer()
 
 	ServertoClientRockPacket rockPacket =  NETWORK->GetReceivedRockPacketData();
 	for (int i = 0; i < rockPacket.size; ++i) {
-		rockPacket.rockData[i].mtxRockTransform;
 
+		if (rockPacket.rockData[i].nIsAlive) {
+			m_pRockObj->GetTransform().SetWorldMatrix(rockPacket.rockData[i].mtxRockTransform);
+			m_pRockObj->Update();
+		}
+		else {
+			Matrix mtxRock = rockPacket.rockData[i].mtxRockTransform;
+			EffectParameter effectParam;
+			effectParam.xmf3Position = mtxRock.Translation();
+			effectParam.xmf3Force = Vector3(0, 0, 0);
+			effectParam.fElapsedTime = 0.f;
+			effectParam.fAdditionalData = 0.f;
 
-		m_pRockObj->GetTransform().SetWorldMatrix(rockPacket.rockData[i].mtxRockTransform);
-		m_pRockObj->Update();
+			EFFECT->AddEffect<ExplosionEffect>(effectParam);
+		}
 
 		//RENDER->Add<MeshRenderer>(m_pRockObj->GetMeshRenderer(), renderParam);
 

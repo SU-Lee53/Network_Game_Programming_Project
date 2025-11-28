@@ -3,6 +3,7 @@
 #include "Logic.h"
 #include "Rock.h"
 #include "Player.h"
+#include "ObjectCollections.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    512
@@ -40,9 +41,12 @@ std::uniform_int_distribution<int> uid(0, 2);
 // 2025.11.26
 // std::list<std::unique_ptr<Rock>> By 민정원
 // Rock 담아둘 벡터 list로 변경
-std::list<std::unique_ptr<Rock>>			Rocks;
-std::array<std::unique_ptr<Player> , 3>		Players;
-int RockIndex = 0;
+
+// 11.28 이승욱
+// ObjectCollections.h 로 일단 이동
+//std::list<std::unique_ptr<Rock>>			Rocks;
+//std::array<std::unique_ptr<Player> , 3>		Players;
+//int RockIndex = 0;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,6 +132,10 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		SendPlayerPacket.client[client_num] = recvPacket;
 		SendPlayerPacket.client[client_num].flag = true;
 		Players[client_num].get()->SetWorldMatrix(SendPlayerPacket.client[client_num].transformData.mtxPlayerTransform);
+		Ray receivedRay;
+		receivedRay.xmf3RayStartPosition = SendPlayerPacket.client[client_num].shotData.v3RayPosition;
+		receivedRay.xmf3RayDirection = SendPlayerPacket.client[client_num].shotData.v3RayDirection;
+		Players[client_num]->SetRayData(receivedRay);
 
 		EnterCriticalSection(&cs);
 		readyCount++;
@@ -260,6 +268,7 @@ int main(int argc, char* argv[])
 		if (Rocks.size() < 50) {
 			Rocks.push_back(CreateRock(Players[uid(dre)].get()));
 			Rocks.back().get()->SetPosition(10.f * Rocks.size(), 20.f * Rocks.size(), 30.f * Rocks.size());
+			Rocks.back()->UpdateBoundingSphere();
 		}
 		int index = 0;
 		for (auto& rockPtr : Rocks) {
@@ -269,6 +278,10 @@ int main(int argc, char* argv[])
 			SendRockPacket.rockData[index].nrockID = index;
 			++index;
 		}
+
+		CheckRayIntersection();
+
+
 		SendRockPacket.size = Rocks.size();
 		ResetEvent(hLogicStartEvent);
 		SetEvent(hLogicEndEvent);

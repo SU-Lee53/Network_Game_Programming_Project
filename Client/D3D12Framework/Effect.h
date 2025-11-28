@@ -3,10 +3,11 @@
 #define MAX_EFFECT_PER_DRAW 100
 
 struct EffectParameter {
-	XMFLOAT3	xmf3Position;
+	Vector3		xmf3Position;
 	float		fElapsedTime = 0.f;
-	XMFLOAT3	xmf3Force;
-	float		fAdditionalData;
+	Vector3		xmf3Force;
+	float		fAdditionalData = 0.f;
+
 };
 
 struct CB_PARTICLE_DATA {

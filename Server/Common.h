@@ -4,6 +4,9 @@
 #include <winsock2.h> // 윈속2 메인 헤더
 #include <ws2tcpip.h> // 윈속2 확장 헤더
 
+#undef min
+#undef max
+
 #include <tchar.h> // _T(), ...
 #include <stdio.h> // printf(), ...
 #include <stdlib.h> // exit(), ...
@@ -26,6 +29,9 @@
 using namespace DirectX;
 
 #pragma comment(lib, "ws2_32") // ws2_32.lib 링크
+
+// 오브젝트 컨테이너 모음
+//#include "ObjectCollections.h"
 
 // 소켓 함수 오류 출력 후 종료
 inline void err_quit(const char* msg)
@@ -90,6 +96,6 @@ namespace Vector3
 // Rock 과 Player 의 Ray 간의 충돌 검사
 struct Ray 
 {
-	XMFLOAT3 xmf3RayStartPosition;
-	XMFLOAT3 xmf3RayDirection;
+	XMFLOAT3 xmf3RayStartPosition = XMFLOAT3(0.f, 0.f, 0.f);
+	XMFLOAT3 xmf3RayDirection = XMFLOAT3(0.f, 0.f, 0.f);
 };

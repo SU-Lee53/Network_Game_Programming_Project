@@ -19,9 +19,11 @@ public:
 	virtual void Update();
 	void SetDirection(const XMFLOAT3& PlayerPosition);
 	const bool& GetIsAlive() { return nIsAlive; }
+
+	void SetDead() { nIsAlive = false; }
 private:
 	XMFLOAT3 m_xmf3Direction{};
-	BYTE nIsAlive;
+	bool nIsAlive = true;
 };
 
 
