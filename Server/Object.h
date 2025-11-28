@@ -20,6 +20,7 @@ public:
 	void SetPosition(const float& x, const float& y, const float& z );
 	const BoundingSphere& GetBoundingSphere() const { return m_xmBoundingSphere; }
 	void UpdateBoundingSphere();
+	virtual void Update();
 
 protected:
 	XMFLOAT4X4 m_xmf4x4WorldMatrix;           // 월드 변환 행렬

@@ -248,6 +248,9 @@ int main(int argc, char* argv[])
 	// 2025.11.26
 	// Rock 생성후 Send By 민정원
 	// Client에서 Recv까지 확인.
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// 2025.11.28
+	// 데드락 현상 수정 By 민정원
 	while (true)
 	{
 		WaitForSingleObject(hLogicStartEvent, INFINITE);

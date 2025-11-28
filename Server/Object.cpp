@@ -43,3 +43,8 @@ void Object::UpdateBoundingSphere()
 	m_xmBoundingSphere.Center = GetPosition();
 	m_xmBoundingSphere.Radius = m_fBoundingRadius;
 }
+
+void Object::Update()
+{
+
+}

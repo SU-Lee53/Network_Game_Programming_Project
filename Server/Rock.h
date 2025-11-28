@@ -15,6 +15,8 @@ public:
 	Rock();
 	virtual ~Rock();
 
+
+	virtual void Update();
 	void SetDirection(const XMFLOAT3& PlayerPosition);
 	const bool& GetIsAlive() { return nIsAlive; }
 private:

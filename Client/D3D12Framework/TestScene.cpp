@@ -221,15 +221,6 @@ void TestScene::SyncSceneWithServer()
 		nOtherPlayerIndex++;
 	}
 
-	strReceived += std::format("ID : {}\n", receivedPacket.client[0].id);
-	strReceived += std::format("Position : {} {} {} {}\n\n", receivedPacket.client[0].transformData.mtxPlayerTransform._41, receivedPacket.client[0].transformData.mtxPlayerTransform._42, receivedPacket.client[0].transformData.mtxPlayerTransform._43, receivedPacket.client[0].transformData.mtxPlayerTransform._44);
-
-	strReceived += std::format("ID : {}\n", receivedPacket.client[1].id);
-	strReceived += std::format("Position : {} {} {} {}\n\n", receivedPacket.client[1].transformData.mtxPlayerTransform._41, receivedPacket.client[1].transformData.mtxPlayerTransform._42, receivedPacket.client[1].transformData.mtxPlayerTransform._43, receivedPacket.client[1].transformData.mtxPlayerTransform._44);
-	
-	strReceived += std::format("ID : {}\n", receivedPacket.client[2].id);
-	strReceived += std::format("Position : {} {} {} {}\n\n", receivedPacket.client[2].transformData.mtxPlayerTransform._41, receivedPacket.client[2].transformData.mtxPlayerTransform._42, receivedPacket.client[2].transformData.mtxPlayerTransform._43, receivedPacket.client[2].transformData.mtxPlayerTransform._44);
-	// Draw Rocks
 	ServertoClientRockPacket rockPacket =  NETWORK->GetReceivedRockPacketData();
 	for (int i = 0; i < rockPacket.size; ++i) {
 		rockPacket.rockData[i].mtxRockTransform;
@@ -241,8 +232,6 @@ void TestScene::SyncSceneWithServer()
 		//RENDER->Add<MeshRenderer>(m_pRockObj->GetMeshRenderer(), renderParam);
 
 	}
-
-	ImGui::Text(strReceived.c_str());
 
 }
 
