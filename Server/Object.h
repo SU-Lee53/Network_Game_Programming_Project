@@ -5,6 +5,10 @@
 // 2025.11.20
 // 오브젝트 구조 By 민정원
 // 오브젝트 구조 정의
+//
+// 11.28
+// 충돌 함수 추가
+
 
 class Object
 {
@@ -20,6 +24,9 @@ public:
 	void SetPosition(const float& x, const float& y, const float& z );
 	const BoundingSphere& GetBoundingSphere() const { return m_xmBoundingSphere; }
 	void UpdateBoundingSphere();
+
+	bool CheckCollision(const Object* pOther);
+	bool CheckCollision(const Ray& ray, float& fDistance);
 
 protected:
 	XMFLOAT4X4 m_xmf4x4WorldMatrix;           // 월드 변환 행렬

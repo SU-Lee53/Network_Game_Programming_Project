@@ -43,3 +43,16 @@ void Object::UpdateBoundingSphere()
 	m_xmBoundingSphere.Center = GetPosition();
 	m_xmBoundingSphere.Radius = m_fBoundingRadius;
 }
+
+bool Object::CheckCollision(const Object* pOther)
+{
+	return m_xmBoundingSphere.Intersects(pOther->GetBoundingSphere());
+}
+
+bool Object::CheckCollision(const Ray& ray, float& fDistance)
+{
+	XMVECTOR xmvRayPos = XMLoadFloat3(&ray.xmf3RayStartPosition);
+	XMVECTOR xmvRayDir = XMLoadFloat3(&ray.xmf3RayDirection);
+
+	return m_xmBoundingSphere.Intersects(xmvRayPos, xmvRayDir, fDistance);
+}
