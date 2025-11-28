@@ -275,7 +275,7 @@ int main(int argc, char* argv[])
 		}
 
 		CheckRayIntersection();
-
+		CheckPlayerIntersection();
 
 		SendRockPacket.size = Rocks.size();
 		ResetEvent(hLogicStartEvent);

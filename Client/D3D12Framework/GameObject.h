@@ -1,15 +1,15 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
 
 /*
 	- 10.18
-		- Script ±â¹İÀÇ Object ´Â °®´Ù¹ö¸°´Ù -> º°µµ ·ÎÁ÷ÀÌ ÇÊ¿äÇÏ´Ù¸é »ó¼Ó¹Ş¾Æ »ç¿ëÇÏµµ·Ï ÇÔ
+		- Script ê¸°ë°˜ì˜ Object ëŠ” ê°–ë‹¤ë²„ë¦°ë‹¤ -> ë³„ë„ ë¡œì§ì´ í•„ìš”í•˜ë‹¤ë©´ ìƒì†ë°›ì•„ ì‚¬ìš©í•˜ë„ë¡ í•¨
 
 	- 10.21
-		- MeshRenderer ¸¦ Component ¿¡¼­ ±×³É ÀÏ¹İÀûÀÎ ÇÊµå·Î º¯°æÇÑ´Ù
-			- °øÀ¯ÇØ¼­ ÀÎ½ºÅÏ½Ì¿¡ ½á¸ÔÀ» ¹°°ÇÀÌ Owner ¸¦ °¡Áø °íÀ¯ °´Ã¼ÀÎ°ÍÀÌ ¸»ÀÌ ¾ÈµÇ±ä ÇßÀ½
+		- MeshRenderer ë¥¼ Component ì—ì„œ ê·¸ëƒ¥ ì¼ë°˜ì ì¸ í•„ë“œë¡œ ë³€ê²½í•œë‹¤
+			- ê³µìœ í•´ì„œ ì¸ìŠ¤í„´ì‹±ì— ì¨ë¨¹ì„ ë¬¼ê±´ì´ Owner ë¥¼ ê°€ì§„ ê³ ìœ  ê°ì²´ì¸ê²ƒì´ ë§ì´ ì•ˆë˜ê¸´ í–ˆìŒ
 */
 
 struct MESHLOADINFO;
@@ -25,7 +25,7 @@ public:
 	virtual void ProcessInput() {}
 	virtual void Update();
 
-	// RenderManager °¡ ¾Æ´Ñ º°µµÀÇ ·»´õ¸µ ¹æ¹ıÀÌ Á¸ÀçÇÏ´Â °æ¿ì ÀÌ°É·Î ·»´õ¸µ ÇÔ
+	// RenderManager ê°€ ì•„ë‹Œ ë³„ë„ì˜ ë Œë”ë§ ë°©ë²•ì´ ì¡´ì¬í•˜ëŠ” ê²½ìš° ì´ê±¸ë¡œ ë Œë”ë§ í•¨
 	virtual void Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList);
 
 public:
@@ -78,8 +78,8 @@ protected:
 
 protected:
 	// Frame Hierarchy
-	// ´ÜÀÏ ¸ğµ¨ÀÇ °æ¿ì¿¡´Â ÇØ´ç GameObject ÀÌ Root ÀÌ°í parent ¿Í child ´Â ¾øÀ½
-	// °èÃş ¸ğµ¨ÀÇ °æ¿ì Root ÀÇ Mesh ´Â ºñ¾îÀÖ°í, ÀÚ½ÄµéÀ» ¼øÈ¸ÇÏ¸ç Mesh µéÀ» ·»´õ¸µ ÇÔ
+	// ë‹¨ì¼ ëª¨ë¸ì˜ ê²½ìš°ì—ëŠ” í•´ë‹¹ GameObject ì´ Root ì´ê³  parent ì™€ child ëŠ” ì—†ìŒ
+	// ê³„ì¸µ ëª¨ë¸ì˜ ê²½ìš° Root ì˜ Mesh ëŠ” ë¹„ì–´ìˆê³ , ìì‹ë“¤ì„ ìˆœíšŒí•˜ë©° Mesh ë“¤ì„ ë Œë”ë§ í•¨
 
 	std::weak_ptr<GameObject> m_pParent;
 	std::vector<std::shared_ptr<GameObject>> m_pChildren = {};
@@ -131,9 +131,10 @@ inline 	std::shared_ptr<T> GameObject::GetComponent()
 template<typename T>
 std::shared_ptr<T> GameObject::CopyObject(std::shared_ptr<GameObject> pParent)
 {
+	Transform x{ 0,0,-100 };
 	std::shared_ptr<T> pClone = std::make_shared<T>();
 	pClone->m_strFrameName = m_strFrameName;
-	pClone->m_Transform = m_Transform;
+	pClone->m_Transform = x;
 	pClone->m_pMeshRenderer = m_pMeshRenderer;
 	pClone->m_pComponents = m_pComponents;
 	pClone->m_pParent = pParent;
@@ -154,18 +155,18 @@ inline std::shared_ptr<T> GameObject::CopyObject(std::shared_ptr<T> srcObject, s
 	pClone->m_strFrameName = srcObject->m_strFrameName;
 	pClone->m_Transform = srcObject->m_Transform;
 
-	// ¼öÁ¤ÇÊ¿ä (10.21)
-	// µ¶¸³µÈ °´Ã¼ÀÌµÇ ³»ºÎ ³»¿ë¹°Àº °°¾Æ¾ß ÇÏ°í, Owner ´Â »õ·Î ÁöÁ¤µÇ¾î¾ß ÇÔ
-	// ¿øº» Component ÀÇ Å¸ÀÔÀÌ º¸Á¸µÇ¾î¾ß ÇÔ
-	// ¾Æ´Ï¸é MeshRenderer °¡ Component °¡ ¾Æ´Ï°Ô ÇØ¹ö¸®´Â ¹æ¹ıµµ ÀÖ±äÇÔ -> Owner °³³äÀÌ ¾ø¾îÁö´Ï ¼ÓÆíÇÏ°Ô º¹»ç °¡´É
-	// Component °¡ ¾ó¸¶³ª ´Ã¾î³¯Áö ¾ÆÁ÷ ¸ğ¸£´Â »óÈ²¿¡¼­ ÀüºÎ´Ù Copy ¸¦ ±¸ÇöÇÏ´Â°ÍÀº ¸Å¿ì ¹«¸®°¡ ÀÖÀ»µí
-	// ¾Ö½Ã´çÃÊ Mesh ¸¦ °øÀ¯ÇÏ´Â°Ô "ÀÎ½ºÅÏ½Ì"ÀÎ »óÈ²¿¡ Owner °³³äÀ» ºÎ¿©ÇÏ¿© °íÀ¯ÇÏ°Ô ¸¸µå´Â°Ô °ú¿¬ ¿ÇÀºÁö?
+	// ìˆ˜ì •í•„ìš” (10.21)
+	// ë…ë¦½ëœ ê°ì²´ì´ë˜ ë‚´ë¶€ ë‚´ìš©ë¬¼ì€ ê°™ì•„ì•¼ í•˜ê³ , Owner ëŠ” ìƒˆë¡œ ì§€ì •ë˜ì–´ì•¼ í•¨
+	// ì›ë³¸ Component ì˜ íƒ€ì…ì´ ë³´ì¡´ë˜ì–´ì•¼ í•¨
+	// ì•„ë‹ˆë©´ MeshRenderer ê°€ Component ê°€ ì•„ë‹ˆê²Œ í•´ë²„ë¦¬ëŠ” ë°©ë²•ë„ ìˆê¸´í•¨ -> Owner ê°œë…ì´ ì—†ì–´ì§€ë‹ˆ ì†í¸í•˜ê²Œ ë³µì‚¬ ê°€ëŠ¥
+	// Component ê°€ ì–¼ë§ˆë‚˜ ëŠ˜ì–´ë‚ ì§€ ì•„ì§ ëª¨ë¥´ëŠ” ìƒí™©ì—ì„œ ì „ë¶€ë‹¤ Copy ë¥¼ êµ¬í˜„í•˜ëŠ”ê²ƒì€ ë§¤ìš° ë¬´ë¦¬ê°€ ìˆì„ë“¯
+	// ì• ì‹œë‹¹ì´ˆ Mesh ë¥¼ ê³µìœ í•˜ëŠ”ê²Œ "ì¸ìŠ¤í„´ì‹±"ì¸ ìƒí™©ì— Owner ê°œë…ì„ ë¶€ì—¬í•˜ì—¬ ê³ ìœ í•˜ê²Œ ë§Œë“œëŠ”ê²Œ ê³¼ì—° ì˜³ì€ì§€?
 	for (int i = 0; i < COMPONENT_TYPE_COUNT; ++i) {
 		pClone->m_pComponents[i] = srcObject->m_pComponents[i];
 		pClone->m_pComponents[i]->SetOwner(pClone);
 	}
 	
-	// ¼öÁ¤¿Ï (10.21)
+	// ìˆ˜ì •ì™„ (10.21)
 	pClone->m_pMeshRenderer = srcObject->m_pMeshRenderer;
 	pClone->m_pComponents = srcObject->m_pComponents;
 	pClone->m_pParent = pParent;

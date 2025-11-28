@@ -16,3 +16,9 @@ std::unique_ptr<Rock> CreateRock(const Player* Player);
 // CheckRayIntersection() By 이승욱
 // Rock 과 Player 의 Ray 간의 충돌 검사
 void CheckRayIntersection();
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.28
+// CheckPlayerIntersection() By 최명준
+// Player와 Player 간의 충돌 검사
+void CheckPlayerIntersection();

@@ -44,3 +44,25 @@ void CheckRayIntersection()
 		}
 	}
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.28
+// CheckPlayerIntersection() By 최명준
+// Player와 Player간의 충돌 검사
+
+void CheckPlayerIntersection()
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			if (i == j)
+				continue;
+
+			if (Players[i]->GetBoundingSphere().Intersects(Players[j]->GetBoundingSphere()))
+			{
+				Players[i]->SetDamagefromPlayer();
+			}
+		}
+	}
+}

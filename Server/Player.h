@@ -9,7 +9,7 @@
 
 class Player : public Object
 {
-	int hp;
+
 
 public:
 	Player();
@@ -17,9 +17,12 @@ public:
 
 	void SetRayData(const Ray& ray);
 	const Ray& GetRayData() const;
-
+	void SetDamagefromPlayer();
 
 private:
 	Ray m_RayData;
+
+private:
+	int hp;
 
 };
