@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "MsgProtocol.h"
 #include "Common.h"
 
@@ -15,3 +15,10 @@ std::unique_ptr<Rock> CreateRock(const Player* Player);
 // CheckRayIntersection() By 이승욱
 // Rock 과 Player 의 Ray 간의 충돌 검사
 inline void CheckRayIntersection();
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.28
+// Player() By 최명준
+// Player 와 Player 의 충돌 검사
+void CollisionPlayers(std::array<const Player&, 3> pPlayer);

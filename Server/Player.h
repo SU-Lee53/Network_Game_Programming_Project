@@ -6,6 +6,8 @@
 
 class Player : public Object
 {
+	int hp;
+
 public:
 	Player();
 	virtual ~Player();

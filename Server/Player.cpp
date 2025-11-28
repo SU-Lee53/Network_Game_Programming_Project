@@ -2,6 +2,8 @@
 
 Player::Player()
 {
+	hp = 100;
+
 	XMStoreFloat4x4(&m_xmf4x4WorldMatrix, XMMatrixIdentity());
 	m_fBoundingRadius = 2.0f;
 

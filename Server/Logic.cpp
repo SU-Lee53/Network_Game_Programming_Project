@@ -1,7 +1,7 @@
 ﻿#include "Logic.h"
 #include "Rock.h"
 #include "Player.h"
-
+#include "Object.h"
 
 std::unique_ptr<Rock> CreateRock(const Player* Player)
 {
@@ -24,4 +24,18 @@ void CheckRayIntersection()
 
 
 
+}
+
+void CollisionPlayers(std::array<const Player&, 3> pPlayer)
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			if (pPlayer[i].GetBoundingSphere().Intersects(pPlayer[j].GetBoundingSphere()))
+			{
+
+			}
+		}
+	}
 }
