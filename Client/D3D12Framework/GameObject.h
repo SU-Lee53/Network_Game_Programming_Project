@@ -131,10 +131,9 @@ inline 	std::shared_ptr<T> GameObject::GetComponent()
 template<typename T>
 std::shared_ptr<T> GameObject::CopyObject(std::shared_ptr<GameObject> pParent)
 {
-	Transform x{ 0,0,-100 };
 	std::shared_ptr<T> pClone = std::make_shared<T>();
 	pClone->m_strFrameName = m_strFrameName;
-	pClone->m_Transform = x;
+	pClone->m_Transform = m_Transform;
 	pClone->m_pMeshRenderer = m_pMeshRenderer;
 	pClone->m_pComponents = m_pComponents;
 	pClone->m_pParent = pParent;
