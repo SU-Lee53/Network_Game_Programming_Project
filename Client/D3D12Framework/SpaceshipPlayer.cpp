@@ -55,6 +55,23 @@ void SpaceshipPlayer::ProcessInput()
 		m_bIsFire = true;
 		m_bRayDataSended = false;	// Ray 발사시 Data 가 보내야 함을 알림
 
+		//float fScreenX = WinCore::sm_dwClientWidth;
+		//float fScreenY = WinCore::sm_dwClientHeight;
+
+		float fNdcX = 0.f;	// (fScreenX / WinCore::sm_dwClientWidth) * 2.f - 1.f;
+		float fNdcY = 0.f;	// (fScreenY / WinCore::sm_dwClientHeight) * -2.f + 1.f;
+
+		Vector3 v3NearPoint = Vector3(fNdcX, fNdcY, 0.f);
+		Vector3 v3FarPoint = Vector3(fNdcX, fNdcY, 1.f);
+
+		Matrix mtxInvVP = CUR_SCENE->GetCamera()->GetViewProjectMatrix().Invert();
+
+		v3NearPoint = XMVector3TransformCoord(v3NearPoint, mtxInvVP);
+		v3FarPoint = XMVector3TransformCoord(v3FarPoint, mtxInvVP);
+
+		m_vRayDirection = v3FarPoint - v3NearPoint;
+		m_vRayDirection.Normalize();
+
 		// Draw Ray Effect
 		EffectParameter param;
 		param.xmf3Position = GetRayPos();
@@ -191,5 +208,5 @@ Vector3 SpaceshipPlayer::GetRayPos()
 
 Vector3 SpaceshipPlayer::GetRayDirection()
 {
-	return m_Transform.GetLook();
+	return m_vRayDirection; // m_Transform.GetLook();
 }
