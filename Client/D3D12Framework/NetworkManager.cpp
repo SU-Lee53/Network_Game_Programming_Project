@@ -16,6 +16,7 @@
 CRITICAL_SECTION NetworkManager::g_hCS{};
 HANDLE NetworkManager::g_hPlayerWritePacketEvent = nullptr;
 HANDLE NetworkManager::g_hPacketReceivedEvent = nullptr;
+HANDLE NetworkManager::g_hNetworkThread = nullptr;
 
 NetworkManager::NetworkManager()
 {
@@ -38,6 +39,11 @@ NetworkManager::NetworkManager()
 	g_hPlayerWritePacketEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 	g_hPacketReceivedEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
+}
+
+NetworkManager::~NetworkManager()
+{
+	Disconnect();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,6 +120,7 @@ bool NetworkManager::SendData()
 {
 	if (!m_bConnected) 
 		return false;
+
 	assert(m_bConnected);
 	int nBytesToSend = sizeof(ClientToServerPacket);
 	int retval{};
@@ -236,8 +243,6 @@ DWORD WINAPI NetworkManager::ProcessNetwork(LPVOID arg)
 		NETWORK->SendData();
 		NETWORK->ReceiveData();
 	}
-
-	NETWORK->Disconnect();
 
 	return 0;
 }

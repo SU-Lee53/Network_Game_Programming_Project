@@ -16,6 +16,7 @@ std::unique_ptr<ModelManager>		GameFramework::g_pModelManager = nullptr;
 std::unique_ptr<GuiManager>			GameFramework::g_pGuiManager = nullptr;
 std::unique_ptr<NetworkManager>		GameFramework::g_pNetworkManager = nullptr;
 std::unique_ptr<EffectManager>		GameFramework::g_pEffectManager = nullptr;
+std::unique_ptr<SoundManager>		GameFramework::g_pSoundManager = nullptr;
 
 GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 {
@@ -34,6 +35,7 @@ GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 	g_pGuiManager = std::make_unique<GuiManager>(g_pD3DCore->GetDevice());
 	g_pNetworkManager = std::make_unique<NetworkManager>();
 	g_pEffectManager = std::make_unique<EffectManager>();
+	g_pSoundManager = std::make_unique<SoundManager>();
 
 	g_pShaderManager->Initialize();
 	g_pEffectManager->Initialize(g_pD3DCore->GetDevice(), g_pD3DCore->GetCommandList());
@@ -44,6 +46,9 @@ GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 	g_pSceneManager->Initialize();
 
 	g_pShaderManager->ReleaseBlobs();
+
+	g_pSoundManager->Initialize();
+
 
 	g_pGameTimer->Start();
 
@@ -57,6 +62,7 @@ void GameFramework::Update()
 {
 	g_pGameTimer->Tick();
 	g_pGuiManager->Update();
+	g_pSoundManager->Update();
 
 	g_pRenderManager->Clear();
 
@@ -83,4 +89,9 @@ void GameFramework::Render()
 
 	g_pD3DCore->Present();
 	g_pD3DCore->MoveToNextFrame();
+}
+
+void GameFramework::CleanUp()
+{
+	SCENE->CleanUp();
 }

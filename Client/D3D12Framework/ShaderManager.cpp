@@ -9,6 +9,14 @@ ShaderManager::ShaderManager(ComPtr<ID3D12Device> pDevice)
 
 ShaderManager::~ShaderManager()
 {
+	OutputDebugStringA("ShaderManager Destroy\n");
+	OutputDebugStringA("==========================================================================================");
+	OutputDebugStringA(std::format("DiffusedShader Ref Count : {}\n", m_pShaderMap[typeid(DiffusedShader)].use_count()).c_str());
+	OutputDebugStringA(std::format("FullScreenShader Ref Count : {}\n", m_pShaderMap[typeid(FullScreenShader)].use_count()).c_str());
+	OutputDebugStringA(std::format("TexturedShader Ref Count : {}\n", m_pShaderMap[typeid(TexturedShader)].use_count()).c_str());
+	OutputDebugStringA(std::format("TexturedIlluminatedShader Ref Count : {}\n", m_pShaderMap[typeid(TexturedIlluminatedShader)].use_count()).c_str());
+	OutputDebugStringA(std::format("TexturedNormalShader Ref Count : {}\n", m_pShaderMap[typeid(TexturedNormalShader)].use_count()).c_str());
+	OutputDebugStringA("==========================================================================================");
 }
 
 void ShaderManager::Initialize()

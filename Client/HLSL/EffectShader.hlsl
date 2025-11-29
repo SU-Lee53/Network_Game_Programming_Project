@@ -122,8 +122,13 @@ VS_PARTICLE_OUTPUT VSRay(VS_PARTICLE_INPUT input, uint nInstanceID : SV_Instance
 {
 	VS_PARTICLE_OUTPUT output;
 	
+	int dataIndex = gnDataIndex + nInstanceID;
+	float fElapsedTime = gParticleData[dataIndex].fElapsedTime;
+	float fTime = frac(fElapsedTime / input.lifeTime);
+	float fFade = pow(1 - fTime, 2);
+	
 	output.positionW = input.position;
-	output.color = input.color;
+	output.color = float4(input.color.xyz, fFade);
 	output.size = input.initialSize;
 	output.nInstanceID = nInstanceID;
 
@@ -151,7 +156,7 @@ void GSRay(point VS_PARTICLE_OUTPUT input[1], inout TriangleStream<GS_PARTICLE_O
 	float3 vRight = normalize(cross(vUpRef, vRayDirectionW));
 	float3 vUp = normalize(cross(vRayDirectionW, vRight));
 	
-	float fRayHalfWidth = 0.05f;
+	float fRayHalfWidth = 0.1f;
 	float3 rx = vRight * fRayHalfWidth;
 	float3 ry = vUp * fRayHalfWidth;
 
@@ -203,5 +208,5 @@ void GSRay(point VS_PARTICLE_OUTPUT input[1], inout TriangleStream<GS_PARTICLE_O
 
 float4 PSRay(GS_PARTICLE_OUTPUT input) : SV_Target
 {
-    return float4(1.f, 0.f, 0.f, 1.f); // Red
+    return input.color; // Red
 }

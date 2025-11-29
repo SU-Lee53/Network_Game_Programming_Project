@@ -338,6 +338,9 @@
     <ClInclude Include="RandomGenerator.h">
       <Filter>소스 파일\98. Utility Headers</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameFramework.cpp">
@@ -523,6 +526,9 @@
     <ClCompile Include="RandomGenerator.cpp">
       <Filter>소스 파일\98. Utility Headers</Filter>
     </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>소스 파일\02. Managers\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="D3D12Framework.rc">
@@ -538,49 +544,49 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="HLSL\DiffusedShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\Common.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\TexturedShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\FullScreenShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\TexturedIlluminatedShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\Light.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\TexturedNormalShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\BillboardShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\SpriteShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\RayShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\SkyboxShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\EffectShader.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\EffectCommon.hlsl">
-      <Filter>소스 파일\05. HLSL</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="SimpleMath.inl">
       <Filter>소스 파일\98. Utility Headers\SimpleMath</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\HLSL\EffectShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\FullScreenShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\Light.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\RayShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\SkyboxShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\SpriteShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\TexturedIlluminatedShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\TexturedNormalShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\TexturedShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\BillboardShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\Common.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\DiffusedShader.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\HLSL\EffectCommon.hlsl">
+      <Filter>소스 파일\05. HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

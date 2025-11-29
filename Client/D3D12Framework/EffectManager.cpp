@@ -23,16 +23,16 @@ void EffectManager::Update(float fTimeElapsed)
 	}
 
 	for (auto& effectPair : m_pEffects) {
-		// Lifetime 이 지난 이펙트들을 제거
 		auto& [pEffect, parameters] = effectPair.second;
+		for (auto& param : parameters) {
+			param.fElapsedTime += fTimeElapsed;
+		}
+
+		// Lifetime 이 지난 이펙트들을 제거
 		size_t nErased = std::erase_if(parameters, [&pEffect](const EffectParameter& param) {
 			return pEffect->IsEnd(param.fElapsedTime);
 			});
 		m_nParticles -= nErased;
-
-		for (auto& param : parameters) {
-			param.fElapsedTime += fTimeElapsed;
-		}
 	}
 }
 

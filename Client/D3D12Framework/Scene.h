@@ -5,6 +5,10 @@
 
 class Scene {
 public:
+	~Scene() {}
+
+
+public:
 	virtual void BuildObjects() = 0;
 	virtual void BuildLights() {}
 
@@ -20,6 +24,10 @@ public:
 	}
 
 public:
+	virtual void OnEnterScene() = 0;
+	virtual void OnLeaveScene() = 0;
+
+public:
 	virtual void ProcessInput() = 0;
 	virtual void Update() = 0;
 	virtual void Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommansList) = 0;
@@ -27,8 +35,8 @@ public:
 	virtual void SyncSceneWithServer() {}
 
 public:
-	std::shared_ptr<Player> GetPlayer() const { return m_pPlayer; }
-	std::shared_ptr<Camera> GetCamera() const { return m_pPlayer->GetCamera(); }
+	const std::shared_ptr<Player>& GetPlayer() const { return m_pPlayer; }
+	const std::shared_ptr<Camera>& GetCamera() const { return m_pPlayer->GetCamera(); }
 	std::vector<std::shared_ptr<GameObject>>& GetObjectsInScene() { return m_pGameObjects; }
 
 	CB_LIGHT_DATA MakeLightData();

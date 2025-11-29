@@ -79,6 +79,7 @@ void SpaceshipPlayer::ProcessInput()
 		param.fElapsedTime = 0.f;
 
 		EFFECT->AddEffect<RayEffect>(param);
+		SOUND->Play("laser_effect");
 
 	}
 
@@ -186,7 +187,7 @@ ClientToServerPacket SpaceshipPlayer::MakePacketToSend()
 	packet.id = 0;	// 일단 안보내도 됨
 	packet.transformData.mtxPlayerTransform = m_Transform.GetWorldMatrix();
 	if (m_bIsFire && !m_bRayDataSended) {
-		packet.shotData.v3RayPosition = GetRayPos();
+		packet.shotData.v3RayPosition = GetCamera()->GetPosition();
 		packet.shotData.v3RayDirection = GetRayDirection();
 		m_bRayDataSended = true;	// 한번 보냈음을 알림 (== 패킷을 만들었음)
 	}

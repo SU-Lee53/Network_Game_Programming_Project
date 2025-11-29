@@ -1,5 +1,5 @@
-#pragma once
-#include "Scene.h"	// Scene.h Æ÷ÇÔ
+ï»¿#pragma once
+#include "Scene.h"	// Scene.h í¬í•¨
 
 class SceneManager {
 public:
@@ -8,6 +8,7 @@ public:
 
 public:
 	void Initialize();
+	void CleanUp() {}
 
 public:
 	const std::unique_ptr<Scene>& GetCurrentScene() const { return m_upCurrentScene; }
@@ -28,6 +29,8 @@ private:
 template<typename T> requires std::derived_from<T, Scene>
 inline void SceneManager::ChangeScene()
 {
+	m_upCurrentScene->OnLeaveScene();
 	m_upCurrentScene.reset(new T());
 	m_upCurrentScene->BuildObjects();
+	m_upCurrentScene->OnEnterScene();
 }

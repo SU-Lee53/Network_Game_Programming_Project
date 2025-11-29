@@ -14,6 +14,7 @@
 #include "GuiManager.h"
 #include "NetworkManager.h"
 #include "EffectManager.h"
+#include "SoundManager.h"
 
 class GameFramework {
 public:
@@ -21,6 +22,8 @@ public:
 
 	void Update();
 	void Render();
+
+	void CleanUp();
 
 private:
 	//std::unique_ptr<Scene> m_pScene = nullptr;
@@ -40,6 +43,7 @@ public:
 	static std::unique_ptr<GuiManager>			g_pGuiManager;
 	static std::unique_ptr<NetworkManager>		g_pNetworkManager;
 	static std::unique_ptr<EffectManager>		g_pEffectManager;
+	static std::unique_ptr<SoundManager>		g_pSoundManager;
 
 };
 
@@ -55,6 +59,7 @@ public:
 #define GUI				GameFramework::g_pGuiManager
 #define NETWORK			GameFramework::g_pNetworkManager
 #define EFFECT			GameFramework::g_pEffectManager
+#define SOUND			GameFramework::g_pSoundManager
 
 #define MODELLOADER			GameFramework::g_pModelLoader
 

@@ -8,6 +8,7 @@ ModelManager::ModelManager(ComPtr<ID3D12Device> pDevice)
 
 ModelManager::~ModelManager()
 {
+	OutputDebugStringA("ModelManager Destroy\n");
 }
 
 void ModelManager::LoadGameModels()

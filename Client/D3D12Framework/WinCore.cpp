@@ -46,6 +46,12 @@ void WinCore::Run()
             m_pGameFramework->Render();
         }
     }
+
+
+	// ImGui Clean Up
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
 
@@ -105,7 +111,6 @@ LRESULT WinCore::WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam
     switch (message)
     {
     case WM_DESTROY:
-		//NETWORK->Disconnect();
         PostQuitMessage(0);
         break;
     default:

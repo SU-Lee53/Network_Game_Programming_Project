@@ -34,6 +34,15 @@ void TestScene::InitializeOtherPlayers()
 	}
 }
 
+void TestScene::OnEnterScene()
+{
+	SOUND->Play("bgm");
+}
+
+void TestScene::OnLeaveScene()
+{
+}
+
 void TestScene::BuildObjects()
 {
 	std::shared_ptr<CubeObject> pCube1 = std::make_shared<CubeObject>();
@@ -46,11 +55,6 @@ void TestScene::BuildObjects()
 	pObj1->SetChild(GameObject::CopyObject(pCube1));
 	pObj1->GetTransform().Scale(0.2f);
 	AddObject(pObj1);
-
-	//std::shared_ptr<GameObject> pObj2 = std::make_shared<GameObject>();
-	//pObj2->GetTransform().SetPosition(-15.f, 0.f, 30.f);
-	//pObj2->SetChild(GameObject::CopyObject(pCube1));
-	//AddObject(pObj2);
 
 	auto pMercury = std::make_shared<MercuryObject>();
 	auto pVenus = std::make_shared<VenusObject>();
@@ -210,9 +214,10 @@ void TestScene::SyncSceneWithServer()
 			continue;
 		}
 		m_pOtherPlayers[nOtherPlayerIndex]->GetTransform().SetWorldMatrix(receivedPacket.client[i].transformData.mtxPlayerTransform);
+
 		if (receivedPacket.client[i].shotData.v3RayDirection != Vector3(0, 0, 0)) {
 			EffectParameter param;
-			param.xmf3Position = receivedPacket.client[i].shotData.v3RayPosition;
+			param.xmf3Position = m_pOtherPlayers[nOtherPlayerIndex]->GetRayPos();
 			param.xmf3Force = receivedPacket.client[i].shotData.v3RayDirection;	// use force to direction
 			param.fElapsedTime = 0.f;
 
@@ -229,6 +234,7 @@ void TestScene::SyncSceneWithServer()
 	
 	strReceived += std::format("ID : {}\n", receivedPacket.client[2].id);
 	strReceived += std::format("Position : {} {} {} {}\n\n", receivedPacket.client[2].transformData.mtxPlayerTransform._41, receivedPacket.client[2].transformData.mtxPlayerTransform._42, receivedPacket.client[2].transformData.mtxPlayerTransform._43, receivedPacket.client[2].transformData.mtxPlayerTransform._44);
+	
 	// Draw Rocks
 	ServertoClientRockPacket rockPacket =  NETWORK->GetReceivedRockPacketData();
 	for (int i = 0; i < rockPacket.size; ++i) {
@@ -247,8 +253,6 @@ void TestScene::SyncSceneWithServer()
 
 			EFFECT->AddEffect<ExplosionEffect>(effectParam);
 		}
-
-		//RENDER->Add<MeshRenderer>(m_pRockObj->GetMeshRenderer(), renderParam);
 
 	}
 

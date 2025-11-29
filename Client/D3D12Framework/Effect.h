@@ -7,7 +7,6 @@ struct EffectParameter {
 	float		fElapsedTime = 0.f;
 	Vector3		xmf3Force;
 	float		fAdditionalData = 0.f;
-
 };
 
 struct CB_PARTICLE_DATA {

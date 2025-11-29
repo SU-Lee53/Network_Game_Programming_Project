@@ -17,6 +17,7 @@ D3DCore::D3DCore(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 D3DCore::~D3DCore()
 {
 	// TODO : Release debug layer
+	WaitForGPUComplete();
 
 }
 

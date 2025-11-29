@@ -70,10 +70,16 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 
+
 // fmod sound library
 #include <fmod.h>
 #include <fmod.hpp>
 #include <fmod_errors.h>
+#ifdef _DEBUG
+#pragma comment(lib, "fmodL_vc.lib")
+#else
+#pragma comment(lib, "fmod_vc.lib")
+#endif
 
 // WinSock
 #include "WinSockCommon.h"

@@ -6,6 +6,10 @@ class RockObject;
 
 class TestScene : public Scene {
 public:
+	virtual void OnEnterScene() override;
+	virtual void OnLeaveScene() override;
+
+public:
 	void BuildObjects() override;
 	virtual void BuildLights() override;
 	void Update() override;

@@ -7,6 +7,7 @@
 class NetworkManager {
 public:
 	NetworkManager();
+	~NetworkManager();
 
 public:
 	void ConnectToServer();
@@ -43,7 +44,7 @@ private:
 
 	// 2025.11.16
 	// by 이승욱
-	HANDLE g_hNetworkThread;
+	static HANDLE g_hNetworkThread;
 	static DWORD WINAPI ProcessNetwork(LPVOID arg);
 
 	// 2025.11.19

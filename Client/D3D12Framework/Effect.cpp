@@ -225,6 +225,8 @@ RayEffect::RayEffect()
 void RayEffect::Create(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, ComPtr<ID3D12RootSignature> pd3dRootSignature, int nParticles)
 {
 	m_nParticles = 1;
+	m_fTotalLifetime = 0.4f;
+
 	std::vector<ParticleVertexType> vertices(nParticles);
 	// Ray 본체가 될 파티클 1개 -> xmf3Force 가 Ray 의 방향이 됨
 	vertices[0].xmf3Position = XMFLOAT3(0.f, 0.f, 0.f);
@@ -233,10 +235,9 @@ void RayEffect::Create(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCom
 	vertices[0].xmf2InitialSize = XMFLOAT2(0.f, 0.f);
 	vertices[0].fRandomValue = 0.f;
 	vertices[0].fStartTime = 0.f;
-	vertices[0].fLifeTime = 1.f;
+	vertices[0].fLifeTime = m_fTotalLifetime;
 	vertices[0].fMass = 0.f;
 
-	m_fTotalLifetime = 0.05f;
 
 	m_pd3dParticleBuffer = RESOURCE->CreateBufferResource(vertices.data(), vertices.size() * sizeof(ParticleVertexType),
 		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);

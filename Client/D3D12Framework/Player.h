@@ -21,7 +21,7 @@ public:
 	virtual ClientToServerPacket MakePacketToSend() { return ClientToServerPacket{}; }
 
 public:
-	std::shared_ptr<Camera>& GetCamera() { return m_pCamera; };
+	const std::shared_ptr<Camera>& GetCamera() const { return m_pCamera; };
 
 protected:
 	std::shared_ptr<Camera> m_pCamera = nullptr;
