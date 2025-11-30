@@ -259,20 +259,40 @@ int main(int argc, char* argv[])
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// 2025.11.28
 	// 데드락 현상 수정 By 민정원
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// 2025.12.01
+	// Rock::Update() By 민정원
+	// Delta Time 계산 추가
+
+	// 델타 타임 계산을 위한 변수
+	LARGE_INTEGER frequency;
+	LARGE_INTEGER prevTime, currTime;
+	float deltaTime = 0.0f;
+
+	QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&prevTime);
+
 	while (true)
 	{
 		WaitForSingleObject(hLogicStartEvent, INFINITE);
+
+		QueryPerformanceCounter(&currTime);
+		deltaTime = (float)(currTime.QuadPart - prevTime.QuadPart) / (float)frequency.QuadPart;
+		prevTime = currTime;
+
 		Rocks.remove_if([](const auto& rockPtr) {
 			return !rockPtr->GetIsAlive();  // true인 것 삭제
 			});
 		if (Rocks.size() < 50) {
 			Rocks.push_back(CreateRock(Players[uid(dre)].get()));
-			Rocks.back().get()->SetPosition(10.f * Rocks.size(), 20.f * Rocks.size(), 30.f * Rocks.size());
-			Rocks.back()->UpdateBoundingSphere();
 		}
 		int index = 0;
 		for (auto& rockPtr : Rocks) {
 			Rock* rock = rockPtr.get();
+
+			// Rock 업데이트 (deltaTime 적용)
+			rock->Update(deltaTime);
+
 			SendRockPacket.rockData[index].mtxRockTransform = rock->GetWorldMatrix();
 			SendRockPacket.rockData[index].nIsAlive = rock->GetIsAlive();
 			SendRockPacket.rockData[index].nrockID = index;

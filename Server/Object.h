@@ -24,10 +24,11 @@ public:
 	void SetPosition(const float& x, const float& y, const float& z );
 	const BoundingSphere& GetBoundingSphere() const { return m_xmBoundingSphere; }
 	void UpdateBoundingSphere();
-	virtual void Update();
 
 	bool CheckCollision(const Object* pOther);
 	bool CheckCollision(const Ray& ray, float& fDistance);
+
+	virtual void Update(float deltaTime) {} ;
 
 protected:
 	XMFLOAT4X4 m_xmf4x4WorldMatrix;           // 월드 변환 행렬

@@ -9,6 +9,7 @@ std::unique_ptr<Rock> CreateRock(const Player* Player)
 	std::unique_ptr<Rock> rock = std::make_unique<Rock>();
 	auto PlayerTransform = Player->GetWorldMatrix();
 	XMFLOAT3 PlayerPosition = XMFLOAT3(PlayerTransform._41, PlayerTransform._42, PlayerTransform._43);
+	rock->SetPosition(0.f, 0.f, 500.f);
 	rock->SetDirection(PlayerPosition);
 	return rock;
 }
