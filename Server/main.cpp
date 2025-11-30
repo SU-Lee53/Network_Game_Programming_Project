@@ -264,20 +264,16 @@ int main(int argc, char* argv[])
 	// Rock::Update() By 민정원
 	// Delta Time 계산 추가
 
-	// 델타 타임 계산을 위한 변수
-	LARGE_INTEGER frequency;
-	LARGE_INTEGER prevTime, currTime;
+	auto prevTime = std::chrono::high_resolution_clock::now();
 	float deltaTime = 0.0f;
-
-	QueryPerformanceFrequency(&frequency);
-	QueryPerformanceCounter(&prevTime);
 
 	while (true)
 	{
 		WaitForSingleObject(hLogicStartEvent, INFINITE);
 
-		QueryPerformanceCounter(&currTime);
-		deltaTime = (float)(currTime.QuadPart - prevTime.QuadPart) / (float)frequency.QuadPart;
+		auto currTime = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<float> elapsed = currTime - prevTime;
+		deltaTime = elapsed.count();
 		prevTime = currTime;
 
 		Rocks.remove_if([](const auto& rockPtr) {
