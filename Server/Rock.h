@@ -15,13 +15,16 @@ public:
 	Rock();
 	virtual ~Rock();
 
+
 	void SetDirection(const XMFLOAT3& PlayerPosition);
 	const bool& GetIsAlive() { return nIsAlive; }
-
 	void SetDead() { nIsAlive = false; }
+
+	virtual void Update(float deltaTime) override;
 private:
 	XMFLOAT3 m_xmf3Direction{};
 	bool nIsAlive = true;
+	float m_nSpeed{};
 };
 
 

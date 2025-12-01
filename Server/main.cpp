@@ -256,27 +256,55 @@ int main(int argc, char* argv[])
 	// 2025.11.26
 	// Rock 생성후 Send By 민정원
 	// Client에서 Recv까지 확인.
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// 2025.11.28
+	// 데드락 현상 수정 By 민정원
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// 2025.12.01
+	// Rock::Update() By 민정원
+	// Delta Time 계산 추가
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// 2025.12.01
+	// 타이머 계산해서 돌생성으로 변경 By 민정원
+
+	auto prevTime = std::chrono::high_resolution_clock::now();
+	float deltaTime = 0.0f;
+	float spawnTimer = 0.0f;  // Rock 생성 타이머
+
 	while (true)
 	{
 		WaitForSingleObject(hLogicStartEvent, INFINITE);
+
+		auto currTime = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<float> elapsed = currTime - prevTime;
+		deltaTime = elapsed.count();
+		prevTime = currTime;
+
 		Rocks.remove_if([](const auto& rockPtr) {
 			return !rockPtr->GetIsAlive();  // true인 것 삭제
 			});
-		if (Rocks.size() < 50) {
+
+		spawnTimer += deltaTime;
+		if (spawnTimer >= 1.0f && Rocks.size() < 50) {
 			Rocks.push_back(CreateRock(Players[uid(dre)].get()));
-			Rocks.back().get()->SetPosition(10.f * Rocks.size(), 20.f * Rocks.size(), 30.f * Rocks.size());
-			Rocks.back()->UpdateBoundingSphere();
+			spawnTimer -= 1.0f;
 		}
+		CheckRayIntersection();
 		int index = 0;
 		for (auto& rockPtr : Rocks) {
 			Rock* rock = rockPtr.get();
+			bool IsAlive = rock->GetIsAlive();
+			if (IsAlive) {
+				rock->Update(deltaTime);
+			}
+
 			SendRockPacket.rockData[index].mtxRockTransform = rock->GetWorldMatrix();
-			SendRockPacket.rockData[index].nIsAlive = rock->GetIsAlive();
+			SendRockPacket.rockData[index].nIsAlive = IsAlive;
 			SendRockPacket.rockData[index].nrockID = index;
 			++index;
 		}
 
-		CheckRayIntersection();
+		
 
 
 		SendRockPacket.size = Rocks.size();
