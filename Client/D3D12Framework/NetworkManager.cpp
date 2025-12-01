@@ -2,6 +2,7 @@
 #include "NetworkManager.h"
 #include "TestScene.h"
 #include "SpaceshipPlayer.h"
+#include "Packets.h"
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,9 +37,9 @@ NetworkManager::NetworkManager()
 	InitializeCriticalSection(&g_hCS);
 
 	// 이벤트는 자동 리셋을 사용
-	g_hPlayerWritePacketEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-	g_hPacketReceivedEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-
+	g_hPlayerWritePacketEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+	
+	g_hPacketReceivedEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
 NetworkManager::~NetworkManager()
@@ -209,7 +210,6 @@ ServertoClientPlayerPacket NetworkManager::GetReceivedPacketData() const
 
 ServertoClientRockPacket NetworkManager::GetReceivedRockPacketData()
 {
-	WaitForSingleObject(g_hPacketReceivedEvent, INFINITE);
 	return m_PacketRocksReceived;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

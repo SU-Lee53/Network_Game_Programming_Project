@@ -10,6 +10,7 @@
 #include "RockObject.h"
 #include "SpaceshipPlayer.h"
 #include "PlayerRenderer.h"
+#include "Packets.h"
 
 using namespace std::string_literals;
 
@@ -189,9 +190,9 @@ void TestScene::Update()
 
 	// Explosive Test
 	//if (m_fTestTime >= 1.f) {
-	//	float fRandX = RandomGenerator::GenerateRandomFloatInRange(-50, 50);
-	//	float fRandY = RandomGenerator::GenerateRandomFloatInRange(-50, 50);
-	//	float fRandZ = RandomGenerator::GenerateRandomFloatInRange(-50, 50);
+	//	float fRandX = RandomGenerator::GenerateRandomFloatInRange(-20, 20);
+	//	float fRandY = RandomGenerator::GenerateRandomFloatInRange(-20, 20);
+	//	float fRandZ = RandomGenerator::GenerateRandomFloatInRange(-20, 20);
 	//
 	//	EffectParameter effectParam;
 	//	effectParam.xmf3Position = Vector3(fRandX, fRandY, fRandZ);
@@ -267,6 +268,9 @@ void TestScene::SyncSceneWithServer()
 		}
 
 	}
+
+	ImGui::Text(m_strLog2.c_str());
+	ImGui::Text(m_strLog1.c_str());
 
 }
 

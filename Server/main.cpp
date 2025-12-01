@@ -241,6 +241,11 @@ int main(int argc, char* argv[])
 			break;
 		}
 
+
+		// Nagle Off
+		int optval = 1;
+		setsockopt(client_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
+
 		hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL)
 		{
@@ -275,6 +280,8 @@ int main(int argc, char* argv[])
 	{
 		WaitForSingleObject(hLogicStartEvent, INFINITE);
 
+
+
 		auto currTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float> elapsed = currTime - prevTime;
 		deltaTime = elapsed.count();
@@ -290,6 +297,9 @@ int main(int argc, char* argv[])
 			spawnTimer -= 1.0f;
 		}
 		CheckRayIntersection();
+
+
+		memset(&SendRockPacket, 0, sizeof(ServertoClientRockPacket));
 		int index = 0;
 		for (auto& rockPtr : Rocks) {
 			Rock* rock = rockPtr.get();
@@ -299,7 +309,7 @@ int main(int argc, char* argv[])
 			}
 
 			SendRockPacket.rockData[index].mtxRockTransform = rock->GetWorldMatrix();
-			SendRockPacket.rockData[index].nIsAlive = IsAlive;
+			SendRockPacket.rockData[index].nIsAlive = rockPtr->GetIsAlive();
 			SendRockPacket.rockData[index].nrockID = index;
 			++index;
 		}
