@@ -186,6 +186,28 @@ void TestScene::Update()
 	}
 	ImGui::End();
 
+
+	// Explosive Test
+	//if (m_fTestTime >= 1.f) {
+	//	float fRandX = RandomGenerator::GenerateRandomFloatInRange(-50, 50);
+	//	float fRandY = RandomGenerator::GenerateRandomFloatInRange(-50, 50);
+	//	float fRandZ = RandomGenerator::GenerateRandomFloatInRange(-50, 50);
+	//
+	//	EffectParameter effectParam;
+	//	effectParam.xmf3Position = Vector3(fRandX, fRandY, fRandZ);
+	//	effectParam.xmf3Force = Vector3(0, 0, 0);
+	//	effectParam.fElapsedTime = 0.f;
+	//	effectParam.fAdditionalData = 0.f;
+	//
+	//	EFFECT->AddEffect<ExplosionEffect>(effectParam);
+	//
+	//	m_fTestTime = 0.f;
+	//}
+	//else {
+	//	m_fTestTime += DT;
+	//}
+
+
 	if (!NETWORK->IsOffline()) {
 		SyncSceneWithServer();
 	}

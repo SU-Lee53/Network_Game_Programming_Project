@@ -156,10 +156,10 @@ void ExplosionEffect::Create(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12Graph
 		vertices[i].xmf4Color.z = 0.f;
 		vertices[i].xmf4Color.w = 1.f;
 		vertices[i].xmf3InitialVelocity.x = RandomGenerator::GenerateRandomFloatInRange(-100.f, 100.f);
-		vertices[i].xmf3InitialVelocity.y = RandomGenerator::GenerateRandomFloatInRange(-80.f, 120.f);
+		vertices[i].xmf3InitialVelocity.y = RandomGenerator::GenerateRandomFloatInRange(-100.f, 100.f);
 		vertices[i].xmf3InitialVelocity.z = RandomGenerator::GenerateRandomFloatInRange(-100.f, 100.f);
 
-		vertices[i].xmf2InitialSize.x = vertices[i].xmf2InitialSize.y = RandomGenerator::GenerateRandomFloatInRange(1.f, 10.f);
+		vertices[i].xmf2InitialSize.x = vertices[i].xmf2InitialSize.y = RandomGenerator::GenerateRandomFloatInRange(1.f, 2.f);
 		vertices[i].fRandomValue = RandomGenerator::GenerateRandomFloatInRange(0.f, 1.f);
 		vertices[i].fStartTime = 0.f;
 		vertices[i].fLifeTime = RandomGenerator::GenerateRandomFloatInRange(0.5f, 5.f);

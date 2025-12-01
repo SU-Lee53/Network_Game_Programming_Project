@@ -37,6 +37,7 @@ protected:
 
 	std::shared_ptr<RockObject> m_pRockObj;
 
+	float m_fTestTime = 0.f;
 
 };
 

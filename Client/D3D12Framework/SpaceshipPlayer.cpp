@@ -31,7 +31,7 @@ void SpaceshipPlayer::Initialize()
 		pCamera->SetViewport(0, 0, WinCore::sm_dwClientWidth, WinCore::sm_dwClientHeight, 0.f, 1.f);
 		pCamera->SetScissorRect(0, 0, WinCore::sm_dwClientWidth, WinCore::sm_dwClientHeight);
 		pCamera->GenerateViewMatrix(XMFLOAT3(0.f, 0.f, -15.f), XMFLOAT3(0.f, 0.f, 1.f), XMFLOAT3(0.f, 1.f, 0.f));
-		pCamera->GenerateProjectionMatrix(1.01f, 400.0f, (WinCore::sm_dwClientWidth / WinCore::sm_dwClientHeight), 60.0f);
+		pCamera->GenerateProjectionMatrix(1.01f, 1000.0f, (WinCore::sm_dwClientWidth / WinCore::sm_dwClientHeight), 60.0f);
 		pCamera->SetOffset(Vector3(0.f, 5.f, -10.f));
 		pCamera->SetOwner(shared_from_this());
 		pCamera->SetTimeLag(0.05f);

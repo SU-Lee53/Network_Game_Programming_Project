@@ -7,11 +7,11 @@ void EffectManager::Initialize(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12Gra
 	CreateRootSignature();
 
 	std::shared_ptr<ExplosionEffect> pExplodeEffect = std::make_shared<ExplosionEffect>();
-	pExplodeEffect->Create(pd3dDevice, pd3dCommandList, m_pd3dRootSignature, 100000);
+	pExplodeEffect->Create(pd3dDevice, pd3dCommandList, m_pd3dRootSignature, 5000);
 	m_pEffects.insert({ typeid(ExplosionEffect), EffectPair{ pExplodeEffect, {}} });
 
 	std::shared_ptr<RayEffect> pRayEffect = std::make_shared<RayEffect>();
-	pRayEffect->Create(pd3dDevice, pd3dCommandList, m_pd3dRootSignature, 100000);
+	pRayEffect->Create(pd3dDevice, pd3dCommandList, m_pd3dRootSignature, 1);
 	m_pEffects.insert({ typeid(RayEffect), EffectPair{ pRayEffect, {}} });
 
 }
@@ -64,6 +64,7 @@ void EffectManager::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 		auto& [pEffect, parameters] = effectPair.second;
 		if (parameters.size() == 0) continue;
 		pEffect->Render(m_pd3dDevice, pd3dCommandList, nDataOffsetBaseInCBuffer, parameters.size());
+		nDataOffsetBaseInCBuffer += parameters.size();
 	}
 }
 
