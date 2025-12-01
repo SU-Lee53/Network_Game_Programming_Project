@@ -263,9 +263,13 @@ int main(int argc, char* argv[])
 	// 2025.12.01
 	// Rock::Update() By 민정원
 	// Delta Time 계산 추가
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// 2025.12.01
+	// 타이머 계산해서 돌생성으로 변경 By 민정원
 
 	auto prevTime = std::chrono::high_resolution_clock::now();
 	float deltaTime = 0.0f;
+	float spawnTimer = 0.0f;  // Rock 생성 타이머
 
 	while (true)
 	{
@@ -279,23 +283,28 @@ int main(int argc, char* argv[])
 		Rocks.remove_if([](const auto& rockPtr) {
 			return !rockPtr->GetIsAlive();  // true인 것 삭제
 			});
-		if (Rocks.size() < 50) {
+
+		spawnTimer += deltaTime;
+		if (spawnTimer >= 1.0f && Rocks.size() < 50) {
 			Rocks.push_back(CreateRock(Players[uid(dre)].get()));
+			spawnTimer -= 1.0f;
 		}
+		CheckRayIntersection();
 		int index = 0;
 		for (auto& rockPtr : Rocks) {
 			Rock* rock = rockPtr.get();
-
-			// Rock 업데이트 (deltaTime 적용)
-			rock->Update(deltaTime);
+			bool IsAlive = rock->GetIsAlive();
+			if (IsAlive) {
+				rock->Update(deltaTime);
+			}
 
 			SendRockPacket.rockData[index].mtxRockTransform = rock->GetWorldMatrix();
-			SendRockPacket.rockData[index].nIsAlive = rock->GetIsAlive();
+			SendRockPacket.rockData[index].nIsAlive = IsAlive;
 			SendRockPacket.rockData[index].nrockID = index;
 			++index;
 		}
 
-		CheckRayIntersection();
+		
 
 
 		SendRockPacket.size = Rocks.size();
