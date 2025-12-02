@@ -187,8 +187,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 // 일단은 main에서 클라이언트 연결만 하는 방식
 // Logic Loop는 잠시 비워둠
 
-// TODO : 3명 클라이언트 accept 될 시 이제 게임 시작하라는 신호 보내줄 수 있나
-
 int main(int argc, char* argv[])
 {
 	InitializeCriticalSection(&cs);
@@ -297,6 +295,7 @@ int main(int argc, char* argv[])
 			spawnTimer -= 1.0f;
 		}
 		CheckRayIntersection();
+		CheckPlayerIntersection();
 
 
 		memset(&SendRockPacket, 0, sizeof(ServertoClientRockPacket));
@@ -313,9 +312,6 @@ int main(int argc, char* argv[])
 			SendRockPacket.rockData[index].nrockID = index;
 			++index;
 		}
-
-		
-
 
 		SendRockPacket.size = Rocks.size();
 		ResetEvent(hLogicStartEvent);

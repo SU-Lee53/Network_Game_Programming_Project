@@ -9,15 +9,21 @@
 
 class Player : public Object
 {
+
+
 public:
 	Player();
 	virtual ~Player();
 
 	void SetRayData(const Ray& ray);
 	const Ray& GetRayData() const;
-
+	void SetDamagefromPlayer();
+	void SetDamagefromRock();
 
 private:
 	Ray m_RayData;
+
+private:
+	int hp;
 
 };
