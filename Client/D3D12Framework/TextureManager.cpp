@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "TextureManager.h"
 
 TextureManager::TextureManager(ComPtr<ID3D12Device> pDevice)
@@ -225,6 +225,7 @@ std::shared_ptr<Texture> TextureManager::CreateTextureArrayFromFile(const std::w
 		srvDesc.Texture2DArray.PlaneSlice = 0;
 		srvDesc.Texture2DArray.ResourceMinLODClamp = 0.0f;
 	}
+	pTexture->m_d3dSRV = srvDesc;
 
 	m_pd3dDevice->CreateShaderResourceView(pTexture->m_pTexResource.pResource.Get(), &srvDesc, pTexture->m_d3dDescriptorHeap.GetDescriptorHandleFromHeapStart().cpuHandle);
 

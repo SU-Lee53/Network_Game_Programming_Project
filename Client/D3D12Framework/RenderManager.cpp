@@ -328,15 +328,18 @@ void RenderManager::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 	camCBuffer.WriteData(&camData);
 	lightCBuffer.WriteData(&lightData);
 
-	m_pd3dDevice->CopyDescriptorsSimple(ConstantBufferSize<CB_CAMERA_DATA>::nDescriptors, descHandle.cpuHandle, camCBuffer.CBVHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	descHandle.cpuHandle.Offset(ConstantBufferSize<CB_CAMERA_DATA>::nDescriptors, D3DCore::g_nCBVSRVDescriptorIncrementSize);
+	m_pd3dDevice->CopyDescriptorsSimple(1, descHandle.cpuHandle, camCBuffer.CBVHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	descHandle.cpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
 	// 0
 	pd3dCommandList->SetGraphicsRootDescriptorTable(ROOT_PARAMETER_SCENE_CAM_DATA, descHandle.gpuHandle);
-	descHandle.gpuHandle.Offset(ConstantBufferSize<CB_CAMERA_DATA>::nDescriptors, D3DCore::g_nCBVSRVDescriptorIncrementSize);
+	descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
 	// 1
 	pd3dCommandList->SetGraphicsRootConstantBufferView(ROOT_PARAMETER_SCENE_LIGHT_DATA, lightCBuffer.GPUAddress);
+
+	descHandle.cpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
+	descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
 	// Pass 수행
 	// Run 안에서 descHandle 의 offset 이 사용된만큼 움직임
@@ -360,7 +363,7 @@ void RenderManager::RenderSprite(ComPtr<ID3D12GraphicsCommandList> pd3dCommandLi
 	for (int i = 0; i < m_Sprites.size(); ++i) {
 		pd3dCommandList->SetGraphicsRoot32BitConstants(0, 4, &m_Sprites[i].pSize, 0);
 
-		D3DCORE->GetDevice()->CopyDescriptorsSimple(1, descHandle.cpuHandle, m_Sprites[i].pTexture->GetDescriptorHeap().GetDescriptorHandleFromHeapStart().cpuHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		m_pd3dDevice->CopyDescriptorsSimple(1, descHandle.cpuHandle, m_Sprites[i].pTexture->GetDescriptorHeap().GetDescriptorHandleFromHeapStart().cpuHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 		descHandle.cpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
 		pd3dCommandList->SetGraphicsRootDescriptorTable(1, descHandle.gpuHandle);
@@ -374,14 +377,18 @@ void RenderManager::RenderSprite(ComPtr<ID3D12GraphicsCommandList> pd3dCommandLi
 void RenderManager::RenderSkybox(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descriptorHandleFromPassStart)
 {
 	pd3dCommandList->SetPipelineState(m_pd3dSkyboxPipelineState.Get());
+	DescriptorHandle descHandle = m_DescriptorHeapForDraw.GetDescriptorHandleFromHeapStart();
+	descHandle.cpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
+	descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
 	std::shared_ptr<Texture> pSkyboxTexture = TEXTURE->Get("Skybox");
 
-	D3DCORE->GetDevice()->CopyDescriptorsSimple(1, descriptorHandleFromPassStart.cpuHandle, pSkyboxTexture->GetDescriptorHeap().GetDescriptorHandleFromHeapStart().cpuHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	descriptorHandleFromPassStart.cpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
+	m_pd3dDevice->CopyDescriptorsSimple(1, descHandle.cpuHandle, pSkyboxTexture->GetDescriptorHeap().GetDescriptorHandleFromHeapStart().cpuHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	descHandle.cpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
-	pd3dCommandList->SetGraphicsRootDescriptorTable(ROOT_PARAMETER_SCENE_SKYBOX, descriptorHandleFromPassStart.gpuHandle);
-	descriptorHandleFromPassStart.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
+	pd3dCommandList->SetGraphicsRootDescriptorTable(ROOT_PARAMETER_SCENE_SKYBOX, descHandle.gpuHandle);
+	descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
+
 
 	pd3dCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	pd3dCommandList->DrawInstanced(1, 1, 0, 0);
