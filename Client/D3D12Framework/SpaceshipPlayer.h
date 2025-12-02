@@ -19,22 +19,31 @@ public:
 
 public:
 	bool IsFiring() { return m_bIsFire; }
-	Vector3 GetRayPos();
-	Vector3 GetRayDirection();
+	const Vector3& GetRayPos() const;
+	const Vector3& GetRayDirection() const;
 
 	float GetRoll() const { return m_fRoll; }
 
 public:
+	void SetShake(bool bShake);
+	bool IsShaking() { return m_bIsShaking; }
+
+public:
 	// 11.15 
-	// 타 플레이어 발사 확인을 위해 잠시 false 로 만듬
+	// 타 플레이어 발사 확인을 위해 잠시 public 로 만듬
 	bool m_bIsFire = false;
 
 private:
 	float m_fFireTimer = 0.f;
 	const float m_fFireDuration = 0.01f;
-	Vector3 m_vRayDirection;
+	Vector3 m_v3RayDirection;
 
+	bool m_bIsShaking = false;
+	float m_fShakingTimer = 0.f;
+	const float m_fShakingDuration = 0.3f;
+	Vector3 m_v3ShakeOriginPosition;
 
+private:
 	POINT m_oldCursorPos;
 
 	float m_fPlayerSpeed = 50.f;

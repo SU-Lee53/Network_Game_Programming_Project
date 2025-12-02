@@ -184,6 +184,10 @@ void TestScene::Update()
 	}
 	ImGui::End();
 
+	if (INPUT->GetButtonDown(VK_SPACE)) {
+		static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->SetShake(true);
+	}
+
 
 	// Explosive Test
 	//if (m_fTestTime >= 1.f) {

@@ -69,8 +69,8 @@ void SpaceshipPlayer::ProcessInput()
 		v3NearPoint = XMVector3TransformCoord(v3NearPoint, mtxInvVP);
 		v3FarPoint = XMVector3TransformCoord(v3FarPoint, mtxInvVP);
 
-		m_vRayDirection = v3FarPoint - v3NearPoint;
-		m_vRayDirection.Normalize();
+		m_v3RayDirection = v3FarPoint - v3NearPoint;
+		m_v3RayDirection.Normalize();
 
 		// Draw Ray Effect
 		EffectParameter param;
@@ -152,6 +152,8 @@ void SpaceshipPlayer::Update()
 	}
 
 	// view 먼저 한번 만들어서 카메라 기저 정상화
+
+	Vector3 v3PlayerPosInWorld = Vector3(0, 0, 0);
 	if (m_pCamera) {
 		m_Transform.SetRotation(m_pCamera->GetPitch(), m_pCamera->GetYaw(), XMConvertToRadians(m_fRoll));
 
@@ -167,7 +169,28 @@ void SpaceshipPlayer::Update()
 		v3PlayerPosition += v3CamLook * 8.0f;
 		m_Transform.SetPosition(v3PlayerPosition);
 
+		v3PlayerPosInWorld = v3PlayerPosition;
 	}
+
+	// 흔들기 로직
+	if (m_bIsShaking && m_fShakingTimer <= m_fShakingDuration) {
+		m_fShakingTimer += DT;
+
+		float dX = RandomGenerator::GenerateRandomFloatInRange(-0.2f, 0.2f);
+		float dY = RandomGenerator::GenerateRandomFloatInRange(-0.2f, 0.2f);
+		float dZ = RandomGenerator::GenerateRandomFloatInRange(-0.2f, 0.2f);
+		Vector3 v3NewPosition = v3PlayerPosInWorld + Vector3(dX, dY, dZ);
+
+		m_Transform.SetPosition(v3NewPosition);
+		
+	}
+	else if (m_bIsShaking && m_fShakingTimer > m_fShakingDuration) {
+		m_bIsShaking = false;
+		m_fShakingTimer = 0.f;
+
+	}
+
+
 
 	Player::Update();
 
@@ -199,15 +222,22 @@ ClientToServerPacket SpaceshipPlayer::MakePacketToSend()
 	return packet;
 }
 
-Vector3 SpaceshipPlayer::GetRayPos()
+const Vector3& SpaceshipPlayer::GetRayPos() const
 {
-	Vector3 v3PlayerPosition = Vector3(0,0,0);
+	Vector3 v3PlayerPosition = Vector3(0, 0, 0);
 	v3PlayerPosition += Vector3(0.0f, 0.2f, 3.0f);
 
 	return Vector3::Transform(v3PlayerPosition, m_Transform.GetWorldMatrix());
 }
 
-Vector3 SpaceshipPlayer::GetRayDirection()
+const Vector3& SpaceshipPlayer::GetRayDirection() const
 {
-	return m_vRayDirection; // m_Transform.GetLook();
+	return m_v3RayDirection; // m_Transform.GetLook();
 }
+
+void SpaceshipPlayer::SetShake(bool bShake)
+{
+	m_bIsShaking = bShake;
+	m_v3ShakeOriginPosition = m_Transform.GetPosition();
+}
+
