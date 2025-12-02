@@ -66,3 +66,17 @@ void CheckPlayerIntersection()
 		}
 	}
 }
+
+void CheckRockIntersection()
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		for (auto iter = Rocks.begin(); iter != Rocks.end(); ++iter)
+		{
+			if (Players[i]->GetBoundingSphere().Intersects(iter->get()->GetBoundingSphere()))
+			{
+				Players[i]->SetDamagefromRock();
+			}
+		}
+	}
+}

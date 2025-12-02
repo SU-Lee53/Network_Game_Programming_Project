@@ -22,3 +22,9 @@ void CheckRayIntersection();
 // CheckPlayerIntersection() By 최명준
 // Player와 Player 간의 충돌 검사
 void CheckPlayerIntersection();
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.12.02
+// CheckRockIntersection() By 최명준
+// Player와 Rock 간의 충돌 검사
+void CheckRockIntersection();

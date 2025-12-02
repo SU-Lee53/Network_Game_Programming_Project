@@ -35,3 +35,11 @@ void Player::SetDamagefromPlayer()
 		hp -= 0.001;
 	}
 }
+
+void Player::SetDamagefromRock()
+{
+	if (hp > 0)
+	{
+		hp -= 0.002;
+	}
+}
