@@ -7,6 +7,9 @@
 // 11.28 이승욱
 // Ray 추가
 
+// 12.02 최명준
+// id, hp, alive 추가
+
 class Player : public Object
 {
 
@@ -19,11 +22,13 @@ public:
 	const Ray& GetRayData() const;
 	void SetDamagefromPlayer();
 	void SetDamagefromRock();
+	int GetHp() { return hp; };
+	bool GetAlive() { return alive; };
 
 private:
 	Ray m_RayData;
 
 private:
 	int hp;
-
+	bool alive;
 };

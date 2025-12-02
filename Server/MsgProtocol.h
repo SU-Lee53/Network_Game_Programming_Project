@@ -1,6 +1,11 @@
 ﻿#pragma once
 #include "Common.h"
 
+struct PlayerInformData {
+	int hp;
+	bool alive;
+};
+
 struct PlayerTransformData {
 	XMFLOAT4X4 mtxPlayerTransform;
 };
@@ -25,6 +30,7 @@ struct CLIENT {
 	int id;
 	PlayerTransformData transformData;
 	PlayerShotData shotData;
+	PlayerInformData informData;
 	bool flag;
 };
 

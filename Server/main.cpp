@@ -76,6 +76,10 @@ std::uniform_int_distribution<int> uid(0, 2);
 //////////////////////////////////////////////////////////////////////////////////////////////
 // 2025.11.25
 // 보낼때 Rock 데이터도 같이 보냄.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.12.02
+// 보낼 때 Player의 hp, alive 정보도 같이 보냄.
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -136,6 +140,10 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		receivedRay.xmf3RayStartPosition = SendPlayerPacket.client[client_num].shotData.v3RayPosition;
 		receivedRay.xmf3RayDirection = SendPlayerPacket.client[client_num].shotData.v3RayDirection;
 		Players[client_num]->SetRayData(receivedRay);
+
+		// Player의 hp, alive를 전달
+		SendPlayerPacket.client[client_num].informData.alive = Players[client_num]->GetAlive();
+		SendPlayerPacket.client[client_num].informData.hp = Players[client_num]->GetHp();
 
 		EnterCriticalSection(&cs);
 		readyCount++;
@@ -296,6 +304,7 @@ int main(int argc, char* argv[])
 		}
 		CheckRayIntersection();
 		CheckPlayerIntersection();
+		CheckRockIntersection();
 
 
 		memset(&SendRockPacket, 0, sizeof(ServertoClientRockPacket));
