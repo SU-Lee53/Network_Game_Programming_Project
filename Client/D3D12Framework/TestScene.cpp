@@ -74,6 +74,16 @@ void TestScene::BuildObjects()
 
 	m_pPlayer = std::make_shared<SpaceshipPlayer>();
 
+	Vector2 v2ScreenCenter{ 0.5f, 0.5f };
+	Vector2 v2CrosshairSize{ 0.03f, 0.03f };
+	float fLeft = v2ScreenCenter.x - v2CrosshairSize.x;
+	float fTop = v2ScreenCenter.y - v2CrosshairSize.y;
+	float fRight = v2ScreenCenter.x + v2CrosshairSize.x;
+	float fBottom = v2ScreenCenter.y + v2CrosshairSize.y;
+
+	std::shared_ptr<TexturedSprite> pCrosshairSprite = std::make_shared<TexturedSprite>("Crosshair", fLeft, fTop, fRight, fBottom);
+	m_pSprites.push_back(pCrosshairSprite);
+
 	InitializeOtherPlayers();
 	InitializeObjects();
 	BuildLights();
@@ -163,19 +173,6 @@ void TestScene::Update()
 	pPlayerLight->m_v3Position = m_pPlayer->GetTransform().GetPosition();
 	pPlayerLight->m_v3Direction = m_pPlayer->GetTransform().GetLook();
 
-	Vector2 v2ScreenCenter{ 0.5f, 0.5f };
-	Vector2 v2CrosshairSize{ 0.03f, 0.03f };
-
-	RenderParameter spriteParam{};
-	spriteParam.eType = RENDER_ITEM_SPRITE;
-	spriteParam.spriteParams.fLeft = v2ScreenCenter.x - v2CrosshairSize.x;
-	spriteParam.spriteParams.fTop = v2ScreenCenter.y - v2CrosshairSize.y;
-	spriteParam.spriteParams.fRight = v2ScreenCenter.x + v2CrosshairSize.x;
-	spriteParam.spriteParams.fBottom = v2ScreenCenter.y + v2CrosshairSize.y;
-
-	RENDER->Add(TEXTURE->Get("Crosshair"), spriteParam);
-
-
 	if (!NETWORK->IsOffline()) {
 		ClientToServerPacket packet = m_pPlayer->MakePacketToSend();
 		NETWORK->WritePacketData(packet);
@@ -213,7 +210,6 @@ void TestScene::Update()
 		SyncSceneWithServer();
 	}
 
-	RenderParameter renderParameter{};
 	for (auto& pOtherPlayer : m_pOtherPlayers) {
 		pOtherPlayer->Update();
 	}

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Player.h"	// Includes GameObject
+#include "Sprite.h"	// Includes GameObject
 #include "Camera.h"
 #include "Light.h"
 
@@ -48,6 +49,7 @@ protected:
 
 protected:
 	std::vector<std::shared_ptr<GameObject>> m_pGameObjects = {};
+	std::vector<std::shared_ptr<Sprite>>		m_pSprites;
 	std::vector<std::shared_ptr<Light>> m_pLights = {};
 	
 	std::shared_ptr<Player> m_pPlayer = nullptr;

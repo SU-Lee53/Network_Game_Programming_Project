@@ -42,7 +42,7 @@ ComPtr<ID3D12RootSignature> RenderManager::g_pd3dGlobalRootSignature = nullptr;
 RenderManager::RenderManager(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 {
 	CreateGlobalRootSignature(pd3dDevice, pd3dCommandList);
-	CreateSpriteRootSignature(pd3dDevice, pd3dCommandList);
+	CreateSkyboxPipelineState(pd3dDevice);
 
 	m_pForwardPass = std::make_shared<ForwardPass>(pd3dDevice, pd3dCommandList);
 
@@ -148,117 +148,6 @@ void RenderManager::CreateGlobalRootSignature(ComPtr<ID3D12Device> pd3dDevice, C
 	m_DescriptorHeapForDraw.Initialize(pd3dDevice, d3dHeapDesc);
 }
 
-void RenderManager::CreateSpriteRootSignature(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
-{
-	m_pd3dDevice = pd3dDevice;
-
-	m_pForwardPass = std::make_shared<ForwardPass>(pd3dDevice, pd3dCommandList);
-
-	// Global Root Signature
-	CD3DX12_DESCRIPTOR_RANGE d3dDescriptorRanges[1];
-	d3dDescriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0, 0);
-
-	CD3DX12_ROOT_PARAMETER d3dRootParameters[2];
-	d3dRootParameters[0].InitAsConstants(4, 0, 0,D3D12_SHADER_VISIBILITY_ALL);			// Sprite 크기
-	d3dRootParameters[1].InitAsDescriptorTable(1, d3dDescriptorRanges, D3D12_SHADER_VISIBILITY_ALL);	// Scene (Cubemap(Skybox))
-
-	CD3DX12_STATIC_SAMPLER_DESC d3dSamplerDesc;
-	d3dSamplerDesc.Init(0);
-	d3dSamplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	d3dSamplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-	d3dSamplerDesc.MinLOD = 0;
-	d3dSamplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
-	d3dSamplerDesc.ShaderRegister = 0;
-	d3dSamplerDesc.RegisterSpace = 0;
-	d3dSamplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
-		| D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS
-		| D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
-
-	D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc{};
-	{
-		d3dRootSignatureDesc.NumParameters = _countof(d3dRootParameters);
-		d3dRootSignatureDesc.pParameters = d3dRootParameters;
-		d3dRootSignatureDesc.NumStaticSamplers = 1;
-		d3dRootSignatureDesc.pStaticSamplers = &d3dSamplerDesc;
-		d3dRootSignatureDesc.Flags = d3dRootSignatureFlags;
-	}
-
-	ComPtr<ID3DBlob> pd3dSignatureBlob = nullptr;
-	ComPtr<ID3DBlob> pd3dErrorBlob = nullptr;
-
-	HRESULT hr = D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, pd3dSignatureBlob.GetAddressOf(), pd3dErrorBlob.GetAddressOf());
-	if (FAILED(hr)) {
-		__debugbreak();
-	}
-	if (pd3dErrorBlob) {
-		char* pErrorString = (char*)pd3dErrorBlob->GetBufferPointer();
-		HWND hWnd = ::GetActiveWindow();
-		MessageBoxA(hWnd, pErrorString, NULL, 0);
-		OutputDebugStringA(pErrorString);
-		__debugbreak();
-	}
-
-	hr = pd3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), IID_PPV_ARGS(m_pSpriteRootSignature.GetAddressOf()));
-	if (FAILED(hr)) {
-		__debugbreak();
-	}
-
-	// DescriptorHandle Heap For Draw
-	D3D12_DESCRIPTOR_HEAP_DESC d3dHeapDesc;
-	{
-		d3dHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		d3dHeapDesc.NumDescriptors = 10;
-		d3dHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		d3dHeapDesc.NodeMask = 0;
-	}
-
-	m_DescriptorHeapForSprite.Initialize(pd3dDevice, d3dHeapDesc);
-
-	CreateSpritePipelineState(pd3dDevice);
-	CreateSkyboxPipelineState(pd3dDevice);
-}
-
-void RenderManager::CreateSpritePipelineState(ComPtr<ID3D12Device> pd3dDevice)
-{
-	ComPtr<ID3DBlob> m_pd3dVertexShaderBlob = nullptr;
-	ComPtr<ID3DBlob> m_pd3dGeometryShaderBlob = nullptr;
-	ComPtr<ID3DBlob> m_pd3dPixelShaderBlob = nullptr;
-
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineDesc{};
-	{
-		d3dPipelineDesc.pRootSignature = m_pSpriteRootSignature.Get();
-		d3dPipelineDesc.VS = Shader::CompileShader(L"../HLSL/SpriteShader.hlsl", "VSSprite", "vs_5_1", m_pd3dVertexShaderBlob.GetAddressOf());
-		d3dPipelineDesc.GS = Shader::CompileShader(L"../HLSL/SpriteShader.hlsl", "GSSprite", "gs_5_1", m_pd3dGeometryShaderBlob.GetAddressOf());
-		d3dPipelineDesc.PS = Shader::CompileShader(L"../HLSL/SpriteShader.hlsl", "PSSprite", "ps_5_1", m_pd3dPixelShaderBlob.GetAddressOf());
-		d3dPipelineDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-		d3dPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-		d3dPipelineDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-		d3dPipelineDesc.BlendState.RenderTarget[0].BlendEnable = true;
-		d3dPipelineDesc.BlendState.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-		d3dPipelineDesc.BlendState.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-		d3dPipelineDesc.BlendState.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-		d3dPipelineDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-		d3dPipelineDesc.DepthStencilState.DepthEnable = false;
-		d3dPipelineDesc.DepthStencilState.StencilEnable = false;
-		d3dPipelineDesc.InputLayout.NumElements = 0;
-		d3dPipelineDesc.InputLayout.pInputElementDescs = nullptr;
-		d3dPipelineDesc.SampleMask = UINT_MAX;
-		d3dPipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;	// GS가 점을 받음
-		d3dPipelineDesc.NumRenderTargets = 1;
-		d3dPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		d3dPipelineDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		d3dPipelineDesc.SampleDesc.Count = 1;
-		d3dPipelineDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-	}
-
-	HRESULT hr = pd3dDevice->CreateGraphicsPipelineState(&d3dPipelineDesc, IID_PPV_ARGS(m_pd3dSpritePipelineState.GetAddressOf()));
-	if (FAILED(hr)) {
-		__debugbreak();
-	}
-}
-
 void RenderManager::CreateSkyboxPipelineState(ComPtr<ID3D12Device> pd3dDevice)
 {
 	ComPtr<ID3DBlob> m_pd3dVertexShaderBlob = nullptr;
@@ -309,11 +198,6 @@ void RenderManager::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 
 	CUR_SCENE->GetCamera()->SetViewportsAndScissorRects(pd3dCommandList);
 
-	if (m_InstanceDatas[0].size() == 0 && m_InstanceDatas[1].size() == 0) {
-		RenderSprite(pd3dCommandList);
-		return;
-	}
-
 	pd3dCommandList->SetGraphicsRootSignature(g_pd3dGlobalRootSignature.Get());
 	pd3dCommandList->SetDescriptorHeaps(1, m_DescriptorHeapForDraw.GetD3DDescriptorHeap().GetAddressOf());
 	
@@ -347,31 +231,6 @@ void RenderManager::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 
 	RenderSkybox(pd3dCommandList, descHandle);
 
-	RenderSprite(pd3dCommandList);
-}
-
-void RenderManager::RenderSprite(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
-{
-	assert(m_Sprites.size() <= 10);
-
-	pd3dCommandList->SetGraphicsRootSignature(m_pSpriteRootSignature.Get());
-	pd3dCommandList->SetPipelineState(m_pd3dSpritePipelineState.Get());
-	pd3dCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
-	pd3dCommandList->SetDescriptorHeaps(1, m_DescriptorHeapForSprite.GetD3DDescriptorHeap().GetAddressOf());
-
-	DescriptorHandle& descHandle = m_DescriptorHeapForSprite.GetDescriptorHandleFromHeapStart();
-	for (int i = 0; i < m_Sprites.size(); ++i) {
-		pd3dCommandList->SetGraphicsRoot32BitConstants(0, 4, &m_Sprites[i].pSize, 0);
-
-		m_pd3dDevice->CopyDescriptorsSimple(1, descHandle.cpuHandle, m_Sprites[i].pTexture->GetDescriptorHeap().GetDescriptorHandleFromHeapStart().cpuHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		descHandle.cpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
-
-		pd3dCommandList->SetGraphicsRootDescriptorTable(1, descHandle.gpuHandle);
-		descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
-
-		pd3dCommandList->DrawInstanced(1, 1, 0, 0);
-	}
-
 }
 
 void RenderManager::RenderSkybox(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descriptorHandleFromPassStart)
@@ -401,6 +260,4 @@ void RenderManager::Clear()
 		m_InstanceDatas[i].clear();
 		m_nInstanceIndex[i] = 0;
 	}
-
-	m_Sprites.clear();
 }

@@ -15,6 +15,7 @@
 #include "NetworkManager.h"
 #include "EffectManager.h"
 #include "SoundManager.h"
+#include "UIManager.h"
 
 class GameFramework {
 public:
@@ -44,6 +45,7 @@ public:
 	static std::unique_ptr<NetworkManager>		g_pNetworkManager;
 	static std::unique_ptr<EffectManager>		g_pEffectManager;
 	static std::unique_ptr<SoundManager>		g_pSoundManager;
+	static std::unique_ptr<UIManager>			g_pUIManager;
 
 };
 
@@ -60,6 +62,7 @@ public:
 #define NETWORK			GameFramework::g_pNetworkManager
 #define EFFECT			GameFramework::g_pEffectManager
 #define SOUND			GameFramework::g_pSoundManager
+#define UI				GameFramework::g_pUIManager
 
 #define MODELLOADER			GameFramework::g_pModelLoader
 

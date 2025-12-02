@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Scene.h"
 
 void Scene::InitializeObjects()
@@ -32,8 +32,12 @@ void Scene::RenderObjects(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
 	if (m_pPlayer)
 		m_pPlayer->Render(pd3dCommandList);
 
-	for (auto& obj : m_pGameObjects) {
-		obj->Render(pd3dCommandList);
+	for (auto& pObj : m_pGameObjects) {
+		pObj->Render(pd3dCommandList);
+	}
+
+	for (auto& pSprite : m_pSprites) {
+		pSprite->AddToUI(pSprite->GetLayerIndex());
 	}
 }
 

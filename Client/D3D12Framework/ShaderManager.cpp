@@ -106,4 +106,26 @@ void ShaderManager::CompileShaders()
 	m_pd3dBlobs.push_back(m_pd3dGSBlob);
 	m_pd3dBlobs.push_back(m_pd3dPSBlob);
 
+	// Sprite.hlsl						   
+	m_pCompiledShaderByteCodeMap.insert({ "TextureSpriteVS", Shader::CompileShader(L"../HLSL/Sprite.hlsl", "VSTextureSprite", "vs_5_1", m_pd3dVSBlob.GetAddressOf()) });
+	m_pCompiledShaderByteCodeMap.insert({ "TextureSpriteGS", Shader::CompileShader(L"../HLSL/Sprite.hlsl", "GSTextureSprite", "gs_5_1", m_pd3dGSBlob.GetAddressOf()) });
+	m_pCompiledShaderByteCodeMap.insert({ "TextureSpritePS", Shader::CompileShader(L"../HLSL/Sprite.hlsl", "PSTextureSprite", "ps_5_1", m_pd3dPSBlob.GetAddressOf()) });
+	m_pd3dBlobs.push_back(m_pd3dVSBlob);
+	m_pd3dBlobs.push_back(m_pd3dGSBlob);
+	m_pd3dBlobs.push_back(m_pd3dPSBlob);
+
+	m_pCompiledShaderByteCodeMap.insert({ "TextSpriteVS", Shader::CompileShader(L"../HLSL/Sprite.hlsl", "VSTextSprite", "vs_5_1", m_pd3dVSBlob.GetAddressOf()) });
+	m_pCompiledShaderByteCodeMap.insert({ "TextSpriteGS", Shader::CompileShader(L"../HLSL/Sprite.hlsl", "GSTextSprite", "gs_5_1", m_pd3dGSBlob.GetAddressOf()) });
+	m_pCompiledShaderByteCodeMap.insert({ "TextSpritePS", Shader::CompileShader(L"../HLSL/Sprite.hlsl", "PSTextSprite", "ps_5_1", m_pd3dPSBlob.GetAddressOf()) });
+	m_pd3dBlobs.push_back(m_pd3dVSBlob);
+	m_pd3dBlobs.push_back(m_pd3dGSBlob);
+	m_pd3dBlobs.push_back(m_pd3dPSBlob);
+
+	m_pCompiledShaderByteCodeMap.insert({ "BillboardSpriteVS", Shader::CompileShader(L"../HLSL/Sprite.hlsl", "VSBillboardSprite", "vs_5_1", m_pd3dVSBlob.GetAddressOf()) });
+	m_pCompiledShaderByteCodeMap.insert({ "BillboardSpriteGS", Shader::CompileShader(L"../HLSL/Sprite.hlsl", "GSBillboardSprite", "gs_5_1", m_pd3dGSBlob.GetAddressOf()) });
+	m_pCompiledShaderByteCodeMap.insert({ "BillboardSpritePS", Shader::CompileShader(L"../HLSL/Sprite.hlsl", "PSBillboardSprite", "ps_5_1", m_pd3dPSBlob.GetAddressOf()) });
+	m_pd3dBlobs.push_back(m_pd3dVSBlob);
+	m_pd3dBlobs.push_back(m_pd3dGSBlob);
+	m_pd3dBlobs.push_back(m_pd3dPSBlob);
+
 }

@@ -1,16 +1,16 @@
-#pragma once
+ï»¿#pragma once
 #include "DescriptorHeap.h"
 #include "RenderPass.h"
 #include "MeshRenderer.h"
 
 /*
 	2025.10.08
-	- ´ë´ëÀûÀÎ °³Æí ÇÊ¿ä
-		- RenderManager -> RenderPass -> Pipeline ÀÇ ±¸Á¶´Â ¸Å¿ì º¹Àâ
-		- RenderManager ¿¡ Object ¸¦ ¸ğ¾ÆµÎ°í MeshRenderer¸¦ ÀÌ¿ëÇÏ¿© ·»´õ¸µ
-		- RenderPass ´Â ³²°Ü³õ°í, ·»´õ¸µ ´ÜÀ§¸¦ º¯°æÇÏ´Â ÀÇ¹Ì·Î ³Ñ¾î°¡¾ß ÇÒµí
+	- ëŒ€ëŒ€ì ì¸ ê°œí¸ í•„ìš”
+		- RenderManager -> RenderPass -> Pipeline ì˜ êµ¬ì¡°ëŠ” ë§¤ìš° ë³µì¡
+		- RenderManager ì— Object ë¥¼ ëª¨ì•„ë‘ê³  MeshRendererë¥¼ ì´ìš©í•˜ì—¬ ë Œë”ë§
+		- RenderPass ëŠ” ë‚¨ê²¨ë†“ê³ , ë Œë”ë§ ë‹¨ìœ„ë¥¼ ë³€ê²½í•˜ëŠ” ì˜ë¯¸ë¡œ ë„˜ì–´ê°€ì•¼ í• ë“¯
 
-		+ Global ·Î »ç¿ëÇÒ Root Signature RenderManager ¿¡¼­ °ü¸®ÇÏµµ·Ï ÇÏ´Â°Íµµ ±¦Âú¾Æº¸ÀÓ
+		+ Global ë¡œ ì‚¬ìš©í•  Root Signature RenderManager ì—ì„œ ê´€ë¦¬í•˜ë„ë¡ í•˜ëŠ”ê²ƒë„ ê´œì°®ì•„ë³´ì„
 */
 
 #define ROOT_PARAMETER_SCENE_CAM_DATA		0
@@ -30,40 +30,14 @@ enum OBJECT_RENDER_TYPE : UINT {
 	OBJECT_RENDER_TYPE_COUNT
 };
 
-enum RENDER_ITEM_TYPE {
-	RENDER_ITEM_MESH,
-	RENDER_ITEM_SPRITE
-};
-
-
 struct MeshRenderParameters {
 	Matrix mtxWorld;
 };
 
-struct SpriteRenderParameters {
-	float fLeft;
-	float fTop;
-	float fRight;
-	float fBottom;
-};
-
-// Âü°í·Î Matrix ¶§¹®¿¡ ±âº» »ı¼ºÀÚ ¾øÀ½
-struct RenderParameter {
-	UINT eType;
-	union {
-		MeshRenderParameters meshParams;
-		SpriteRenderParameters spriteParams;
-	};
-};
 
 struct InstancePair {
 	std::shared_ptr<MeshRenderer> meshRenderer;
 	std::vector<MeshRenderParameters> InstanceDatas;
-};
-
-struct SpritePair {
-	std::shared_ptr<Texture> pTexture;
-	SpriteRenderParameters pSize;
 };
 
 class RenderManager {
@@ -73,20 +47,16 @@ public:
 
 	void CreateGlobalRootSignature(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList);
 	
-	void CreateSpriteRootSignature(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList);
-	void CreateSpritePipelineState(ComPtr<ID3D12Device> pd3dDevice);
-
 	void CreateSkyboxPipelineState(ComPtr<ID3D12Device> pd3dDevice);
 
 	void Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList);
 
 private:
-	void RenderSprite(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList);
 	void RenderSkybox(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descriptorHandleFromPassStart);
 
 public:
 	template<typename T> requires std::derived_from<T, MeshRenderer> || std::same_as<T, Texture>
-	void Add(std::shared_ptr<T> pRenderItem, RenderParameter renderParam);
+	void Add(std::shared_ptr<T> pRenderItem, MeshRenderParameters renderParam);
 	void Clear();
 
 public:
@@ -112,12 +82,10 @@ public:
 	// Skybox
 	ComPtr<ID3D12PipelineState> m_pd3dSkyboxPipelineState;
 
-	// Pass º° ºĞ¸® ÇÊ¿ä ( Forward / Differed )
-	// ¹æ¹ıÀº ´õ ¿¬±¸ÇÒ °Í
+	// Pass ë³„ ë¶„ë¦¬ í•„ìš” ( Forward / Differed )
+	// ë°©ë²•ì€ ë” ì—°êµ¬í•  ê²ƒ
 	std::array<std::unordered_map<MeshRenderer, UINT>, OBJECT_RENDER_TYPE_COUNT> m_InstanceIndexMap;
 	std::array<std::vector<InstancePair>, 2> m_InstanceDatas;
-
-	std::vector<SpritePair> m_Sprites;
 
 	UINT m_nInstanceIndex[2] = {0, 0};
 
@@ -125,26 +93,19 @@ public:
 };
 
 template<typename T> requires std::derived_from<T, MeshRenderer> || std::same_as<T, Texture>
-inline void RenderManager::Add(std::shared_ptr<T> pRenderItem, RenderParameter renderParam)
+inline void RenderManager::Add(std::shared_ptr<T> pRenderItem, MeshRenderParameters renderParam)
 {
-	if constexpr (std::derived_from<T, MeshRenderer>) {
-		const MeshRenderer& key = *pRenderItem;
-		UINT nRenderType = pRenderItem->m_eObjectRenderType;
+	const MeshRenderer& key = *pRenderItem;
+	UINT nRenderType = pRenderItem->m_eObjectRenderType;
 
-		auto it = m_InstanceIndexMap[nRenderType].find(key);
-		if (it == m_InstanceIndexMap[nRenderType].end()) {
-			InstancePair instancePair{ pRenderItem, std::vector<MeshRenderParameters>{ renderParam.meshParams } };
+	auto it = m_InstanceIndexMap[nRenderType].find(key);
+	if (it == m_InstanceIndexMap[nRenderType].end()) {
+		InstancePair instancePair{ pRenderItem, std::vector<MeshRenderParameters>{ renderParam } };
 
-			m_InstanceIndexMap[nRenderType][key] = m_nInstanceIndex[nRenderType]++;
-			m_InstanceDatas[nRenderType].push_back(instancePair);
-		}
-		else {
-			m_InstanceDatas[nRenderType][it->second].InstanceDatas.emplace_back(renderParam.meshParams);
-		}
+		m_InstanceIndexMap[nRenderType][key] = m_nInstanceIndex[nRenderType]++;
+		m_InstanceDatas[nRenderType].push_back(instancePair);
 	}
 	else {
-		SpritePair spritePair{ pRenderItem, renderParam.spriteParams };
-
-		m_Sprites.push_back(spritePair);
+		m_InstanceDatas[nRenderType][it->second].InstanceDatas.emplace_back(renderParam);
 	}
 }

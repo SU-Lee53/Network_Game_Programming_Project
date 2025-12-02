@@ -6,20 +6,14 @@ void IntroScene::BuildObjects()
 {
 	m_pPlayer = std::make_shared<Player>();
 
+	std::shared_ptr<TexturedSprite> pTextureSprite = std::make_shared<TexturedSprite>("Opening", 0.f, 0.f, 1.0f, 1.0f);
+	m_pSprites.push_back(pTextureSprite);
+
 	InitializeObjects();
 }
 
 void IntroScene::Update()
 {
-	RenderParameter spriteParam{};
-	spriteParam.eType = RENDER_ITEM_SPRITE;
-	spriteParam.spriteParams.fLeft = 0;
-	spriteParam.spriteParams.fTop = 0;
-	spriteParam.spriteParams.fRight = 1;
-	spriteParam.spriteParams.fBottom = 1;
-
-	RENDER->Add(TEXTURE->Get("Opening"), spriteParam);
-
 	NETWORK->ConnectToServer();
 
 	UpdateObjects();

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
@@ -37,7 +37,7 @@ MeshRenderer& MeshRenderer::operator=(const MeshRenderer& other)
 	return *this;
 }
 
-// ¹®Á¦ ÀÖÀ» "¼öµµ" ÀÖÀ½ ³ªÁß¿¡ È®ÀÎ ÇÊ¿ä
+// ë¬¸ì œ ìˆì„ "ìˆ˜ë„" ìˆìŒ ë‚˜ì¤‘ì— í™•ì¸ í•„ìš”
 MeshRenderer& MeshRenderer::operator=(MeshRenderer&& other)
 {
 	if (this == &other) {
@@ -70,16 +70,11 @@ void MeshRenderer::Update(std::shared_ptr<GameObject> pOwner)
 	MeshRenderParameters meshParam{
 		.mtxWorld = pOwner->GetWorldMatrix().Transpose()
 	};
-
-	RenderParameter renderParam{};
-	renderParam.eType = RENDER_ITEM_MESH;
-	renderParam.meshParams = meshParam;
-
 #ifdef WITH_FRUSTUM_CULLING
 	
 #else
 	if (m_bAddToRenderManager && (m_pMesh && m_pMaterials.size() != 0)) {
-		RENDER->Add<MeshRenderer>(shared_from_this(), renderParam);
+		RENDER->Add<MeshRenderer>(shared_from_this(), meshParam);
 	}
 #endif
 }
@@ -119,8 +114,8 @@ void DiffusedRenderer::Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12Grap
 		pd3dCommandList->SetGraphicsRootDescriptorTable(4, descHandle.gpuHandle);
 		descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
-		// Texture (ÀÖ´Ù¸é)
-		//m_pMaterials[i]->UpdateShaderVariables(pd3dDevice, pd3dCommandList, descHandle);	// Texture °¡ ÀÖ´Ù¸é Descriptor °¡ º¹»çµÉ °ÍÀÌ°í ¾Æ´Ï¸é ¾ÈµÉ°Í
+		// Texture (ìˆë‹¤ë©´)
+		//m_pMaterials[i]->UpdateShaderVariables(pd3dDevice, pd3dCommandList, descHandle);	// Texture ê°€ ìˆë‹¤ë©´ Descriptor ê°€ ë³µì‚¬ë  ê²ƒì´ê³  ì•„ë‹ˆë©´ ì•ˆë ê²ƒ
 
 		const auto& pipelineStates = m_pMaterials[i]->GetShader()->GetPipelineStates();
 		pd3dCommandList->SetPipelineState(pipelineStates[0].Get());
@@ -162,8 +157,8 @@ void TexturedRenderer::Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12Grap
 		pd3dCommandList->SetGraphicsRootDescriptorTable(4, descHandle.gpuHandle);
 		descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
-		// Texture (ÀÖ´Ù¸é)
-		m_pMaterials[i]->UpdateShaderVariables(pd3dDevice, pd3dCommandList, descHandle);	// Texture °¡ ÀÖ´Ù¸é Descriptor °¡ º¹»çµÉ °ÍÀÌ°í ¾Æ´Ï¸é ¾ÈµÉ°Í
+		// Texture (ìˆë‹¤ë©´)
+		m_pMaterials[i]->UpdateShaderVariables(pd3dDevice, pd3dCommandList, descHandle);	// Texture ê°€ ìˆë‹¤ë©´ Descriptor ê°€ ë³µì‚¬ë  ê²ƒì´ê³  ì•„ë‹ˆë©´ ì•ˆë ê²ƒ
 
 		const auto& pipelineStates = m_pMaterials[i]->GetShader()->GetPipelineStates();
 		pd3dCommandList->SetPipelineState(pipelineStates[0].Get());
@@ -205,8 +200,8 @@ void TexturedIlluminatedRenderer::Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr
 		pd3dCommandList->SetGraphicsRootDescriptorTable(4, descHandle.gpuHandle);
 		descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
-		// Texture (ÀÖ´Ù¸é)
-		m_pMaterials[i]->UpdateShaderVariables(pd3dDevice, pd3dCommandList, descHandle);	// Texture °¡ ÀÖ´Ù¸é Descriptor °¡ º¹»çµÉ °ÍÀÌ°í ¾Æ´Ï¸é ¾ÈµÉ°Í
+		// Texture (ìˆë‹¤ë©´)
+		m_pMaterials[i]->UpdateShaderVariables(pd3dDevice, pd3dCommandList, descHandle);	// Texture ê°€ ìˆë‹¤ë©´ Descriptor ê°€ ë³µì‚¬ë  ê²ƒì´ê³  ì•„ë‹ˆë©´ ì•ˆë ê²ƒ
 
 		const auto& pipelineStates = m_pMaterials[i]->GetShader()->GetPipelineStates();
 		pd3dCommandList->SetPipelineState(pipelineStates[0].Get());
@@ -250,8 +245,8 @@ void TexturedNormalRenderer::Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D
 		pd3dCommandList->SetGraphicsRootDescriptorTable(ROOT_PARAMETER_OBJ_MATERIAL_DATA, descHandle.gpuHandle);
 		descHandle.gpuHandle.Offset(ConstantBufferSize<CB_PER_OBJECT_DATA>::nDescriptors, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
-		// Texture (ÀÖ´Ù¸é)
-		m_pMaterials[i]->UpdateShaderVariables(pd3dDevice, pd3dCommandList, descHandle);	// Texture °¡ ÀÖ´Ù¸é Descriptor °¡ º¹»çµÉ °ÍÀÌ°í ¾Æ´Ï¸é ¾ÈµÉ°Í
+		// Texture (ìˆë‹¤ë©´)
+		m_pMaterials[i]->UpdateShaderVariables(pd3dDevice, pd3dCommandList, descHandle);	// Texture ê°€ ìˆë‹¤ë©´ Descriptor ê°€ ë³µì‚¬ë  ê²ƒì´ê³  ì•„ë‹ˆë©´ ì•ˆë ê²ƒ
 
 		const auto& pipelineStates = m_pMaterials[i]->GetShader()->GetPipelineStates();
 		pd3dCommandList->SetPipelineState(pipelineStates[0].Get());

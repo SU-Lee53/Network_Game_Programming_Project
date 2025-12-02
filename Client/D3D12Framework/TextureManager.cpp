@@ -39,6 +39,11 @@ void TextureManager::LoadGameTextures()
 	// Crosshair
 	LoadTexture("Crosshair", L"../Resource/Crosshair.png");
 
+	// Font
+	LoadTexture("font", L"../Resource/font.dds");
+
+
+
 	// Skybox
 	LoadTextureArray("Skybox", L"../Resource/skybox/skybox.dds");
 }

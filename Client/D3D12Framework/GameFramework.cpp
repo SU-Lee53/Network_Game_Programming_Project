@@ -17,6 +17,7 @@ std::unique_ptr<GuiManager>			GameFramework::g_pGuiManager = nullptr;
 std::unique_ptr<NetworkManager>		GameFramework::g_pNetworkManager = nullptr;
 std::unique_ptr<EffectManager>		GameFramework::g_pEffectManager = nullptr;
 std::unique_ptr<SoundManager>		GameFramework::g_pSoundManager = nullptr;
+std::unique_ptr<UIManager>		GameFramework::g_pUIManager = nullptr;
 
 GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 {
@@ -40,6 +41,8 @@ GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 	g_pShaderManager->Initialize();
 	g_pEffectManager->Initialize(g_pD3DCore->GetDevice(), g_pD3DCore->GetCommandList());
 
+	g_pUIManager = std::make_unique<UIManager>(g_pD3DCore->GetDevice());
+
 	g_pTextureManager->LoadGameTextures();
 	g_pModelManager->LoadGameModels();
 
@@ -48,7 +51,6 @@ GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 	g_pShaderManager->ReleaseBlobs();
 
 	g_pSoundManager->Initialize();
-
 
 	g_pGameTimer->Start();
 
@@ -65,6 +67,7 @@ void GameFramework::Update()
 	g_pSoundManager->Update();
 
 	g_pRenderManager->Clear();
+	g_pUIManager->Clear();
 
 	g_pInputManager->Update();
 	g_pSceneManager->ProcessInput();
@@ -81,6 +84,7 @@ void GameFramework::Render()
 	g_pRenderManager->Render(g_pD3DCore->GetCommandList());
 	g_pSceneManager->Render(g_pD3DCore->GetCommandList());		// 별도의 렌더링 방법을 갖는다면 여기서 렌더링 함
 	g_pEffectManager->Render(g_pD3DCore->GetCommandList());
+	g_pUIManager->Render(g_pD3DCore->GetCommandList());
 	g_pGuiManager->Render(g_pD3DCore->GetCommandList());
 
 	g_pD3DCore->RenderEnd();
