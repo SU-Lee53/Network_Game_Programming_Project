@@ -3,6 +3,7 @@
 Player::Player()
 {
 	hp = 10000000;
+	alive = true;
 
 	XMStoreFloat4x4(&m_xmf4x4WorldMatrix, XMMatrixIdentity());
 	m_fBoundingRadius = 2.0f;
@@ -34,6 +35,10 @@ void Player::SetDamagefromPlayer()
 	{
 		hp -= 0.001;
 	}
+	else
+	{
+		alive = false;
+	}
 }
 
 void Player::SetDamagefromRock()
@@ -41,5 +46,9 @@ void Player::SetDamagefromRock()
 	if (hp > 0)
 	{
 		hp -= 0.002;
+	}
+	else
+	{
+		alive = false;
 	}
 }
