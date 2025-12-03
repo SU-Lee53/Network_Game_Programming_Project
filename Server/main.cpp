@@ -22,9 +22,6 @@ HANDLE hLogicEndEvent;
 int readyCount = 0;
 int sendCount = 0;
 
-
-std::random_device rd;
-std::default_random_engine dre(rd());
 std::uniform_int_distribution<int> uid(0, 2);
 
 
@@ -278,27 +275,23 @@ int main(int argc, char* argv[])
 	{
 		WaitForSingleObject(hLogicStartEvent, INFINITE);
 
-
-
 		auto currTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float> elapsed = currTime - prevTime;
 		deltaTime = elapsed.count();
 		prevTime = currTime;
 
 		Rocks.remove_if([](const auto& rockPtr) {
-			return !rockPtr->GetIsAlive();  // true인 것 삭제
+			return !rockPtr->GetIsAlive() || rockPtr->IsOutOfBounds();
 			});
 
 		spawnTimer += deltaTime;
 		if (spawnTimer >= 1.0f && Rocks.size() < 50) {
 			Rocks.push_back(CreateRock(Players[uid(dre)].get()));
-			spawnTimer -= 1.0f;
+			spawnTimer = 0;
 		}
 		CheckRayIntersection();
 		CheckPlayerIntersection();
 
-
-		memset(&SendRockPacket, 0, sizeof(ServertoClientRockPacket));
 		int index = 0;
 		for (auto& rockPtr : Rocks) {
 			Rock* rock = rockPtr.get();
@@ -308,12 +301,12 @@ int main(int argc, char* argv[])
 			}
 
 			SendRockPacket.rockData[index].mtxRockTransform = rock->GetWorldMatrix();
-			SendRockPacket.rockData[index].nIsAlive = rockPtr->GetIsAlive();
+			SendRockPacket.rockData[index].nIsAlive = IsAlive;
 			SendRockPacket.rockData[index].nrockID = index;
 			++index;
 		}
-
 		SendRockPacket.size = Rocks.size();
+
 		ResetEvent(hLogicStartEvent);
 		SetEvent(hLogicEndEvent);
 	}
