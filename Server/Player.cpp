@@ -2,9 +2,6 @@
 
 Player::Player()
 {
-	hp = 10000000;
-	alive = true;
-
 	XMStoreFloat4x4(&m_xmf4x4WorldMatrix, XMMatrixIdentity());
 	m_fBoundingRadius = 2.0f;
 
@@ -29,26 +26,41 @@ const Ray& Player::GetRayData() const
 	return m_RayData;
 }
 
+void Player::SetInformData(int fHP, float nScore, bool bAlive, bool bInvincible)
+{
+	m_fHP = fHP;
+	m_nScore = nScore;
+	m_bAlive = bAlive;
+	m_bInvincible = bInvincible;
+}
+
+void Player::GiveScore(int nScore)
+{
+	m_nScore += nScore;
+}
+
 void Player::SetDamagefromPlayer()
 {
-	if (hp > 0)
+	if (m_fHP > 0)
 	{
-		hp -= 0.001;
+		m_fHP -= 10.f;
 	}
-	else
-	{
-		alive = false;
+
+	// 추가
+	if (m_fHP <= 0) {
+		m_bAlive = false;
 	}
 }
 
 void Player::SetDamagefromRock()
 {
-	if (hp > 0)
+	if (m_fHP > 0)
 	{
-		hp -= 0.002;
+		m_fHP -= 20.f;
 	}
-	else
-	{
-		alive = false;
+
+	// 추가
+	if (m_fHP <= 0) {
+		m_bAlive = false;
 	}
 }

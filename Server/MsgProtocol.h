@@ -2,8 +2,10 @@
 #include "Common.h"
 
 struct PlayerInformData {
-	int hp;
+	int score;
+	float hp;
 	bool alive;
+	bool invincible;
 };
 
 struct PlayerTransformData {
@@ -42,6 +44,6 @@ struct ServertoClientPlayerPacket {
 //ServertoClientRockPacket 수정 by 민정원
 
 struct ServertoClientRockPacket {
-	std::array<RockData , 50> rockData;
+	std::array<RockData, 50> rockData;
 	int size;
 };

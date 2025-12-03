@@ -28,10 +28,15 @@ public:
 	void SetShake(bool bShake);
 	bool IsShaking() { return m_bIsShaking; }
 
+
 public:
 	// 11.15 
 	// 타 플레이어 발사 확인을 위해 잠시 public 로 만듬
 	bool m_bIsFire = false;
+
+	float m_fHP = 100;
+	bool m_bAlive = true;
+	int m_nScore = 0;
 
 private:
 	float m_fFireTimer = 0.f;

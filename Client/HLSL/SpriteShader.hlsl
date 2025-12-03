@@ -33,10 +33,10 @@ VS_SPRITE_OUTPUT VSSprite(uint nVertexID : SV_VertexID)
 [maxvertexcount(4)]
 void GSSprite(point VS_SPRITE_OUTPUT input[1], inout TriangleStream<GS_SPRITE_OUTPUT> outStream)
 {
-    float fLeft = gnLeft * 2.f - 1.f;
-    float fTop = 1.f - gnTop * 2.f;
-    float fRight = gnRight * 2.f - 1.f;
-    float fBottom = 1.f - gnBottom * 2.f;
+    float fLeft = (gnLeft * 2.f) - 1.f;
+    float fTop = 1.f - (gnTop * 2.f);
+    float fRight = (gnRight * 2.f) - 1.f;
+    float fBottom = 1.f - (gnBottom * 2.f);
     
     GS_SPRITE_OUTPUT vertex;
     

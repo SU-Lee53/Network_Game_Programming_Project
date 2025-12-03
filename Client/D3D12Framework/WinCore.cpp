@@ -3,7 +3,7 @@
 #include "Resource.h"
 
 HINSTANCE WinCore::sm_hInstance = NULL;
-HWND WinCore::sm_hWnd = NULL;
+HWND WinCore::g_hWnd = NULL;
 DWORD WinCore::sm_dwClientWidth = 0;
 DWORD WinCore::sm_dwClientHeight = 0;
 
@@ -89,16 +89,16 @@ BOOL WinCore::InitInstance(int cmdShow)
     DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
     AdjustWindowRect(&rc, dwStyle, FALSE);
 
-    sm_hWnd = CreateWindowW(m_wstrGameName.c_str(), m_wstrGameName.c_str(), dwStyle, CW_USEDEFAULT, 0,
+    g_hWnd = CreateWindowW(m_wstrGameName.c_str(), m_wstrGameName.c_str(), dwStyle, CW_USEDEFAULT, 0,
         rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, sm_hInstance, NULL);
 
-    if (!sm_hWnd)
+    if (!g_hWnd)
     {
         return FALSE;
     }
 
-    ShowWindow(sm_hWnd, cmdShow);
-    UpdateWindow(sm_hWnd);
+    ShowWindow(g_hWnd, cmdShow);
+    UpdateWindow(g_hWnd);
 
     return TRUE;
 }

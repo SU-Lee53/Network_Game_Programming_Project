@@ -31,6 +31,9 @@ using namespace DirectX;
 
 #pragma comment(lib, "ws2_32") // ws2_32.lib 링크
 
+static std::random_device rd;
+static std::default_random_engine dre(rd());
+
 // 오브젝트 컨테이너 모음
 //#include "ObjectCollections.h"
 
