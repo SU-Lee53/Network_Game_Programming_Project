@@ -2,14 +2,47 @@
 #include "Rock.h"
 #include "Player.h"
 #include "ObjectCollections.h"
-#include <map>
+#include <random>
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.11.25
+// rock을 반원형태의 공간에서 랜덤한 위치에 생성하게 변경 By 민정원
+// 2025.12.03
+// 반구형 랜덤 위치 생성 구현
+
+std::uniform_real_distribution<float> angleDist(0.0f, 1.0f);  // 0~1 범위로 각도 선택
+std::uniform_real_distribution<float> yDist(0.0f, 100.0f);  // Y 높이 범위
 
 std::unique_ptr<Rock> CreateRock(const Player* Player)
 {
 	std::unique_ptr<Rock> rock = std::make_unique<Rock>();
+
+
+	// 반원 각도 생성 (270° ~ 360° + 0° ~ 90°)
+	float angleChoice = angleDist(dre);
+	float theta;
+	if (angleChoice < 0.5f) {
+		// 270° ~ 360° 구간 (1.5π ~ 2π)
+		std::uniform_real_distribution<float> theta1Dist(XM_PI + XM_PIDIV2, XM_2PI);
+		theta = theta1Dist(dre);
+	}
+	else {
+		// 0° ~ 90° 구간 (0 ~ 0.5π)
+		std::uniform_real_distribution<float> theta2Dist(0.0f, XM_PIDIV2);
+		theta = theta2Dist(dre);
+	}
+
+	float radius = 1000.f;
+	float y = yDist(dre);
+
+	// 극좌표를 직교 좌표로 변환 (XZ 평면)
+	float x = radius * cosf(theta);
+	float z = radius * sinf(theta);
+
+	rock->SetPosition(x, y, z);
+
 	auto PlayerTransform = Player->GetWorldMatrix();
 	XMFLOAT3 PlayerPosition = XMFLOAT3(PlayerTransform._41, PlayerTransform._42, PlayerTransform._43);
-	rock->SetPosition(0.f, 0.f, 500.f);
 	rock->SetDirection(PlayerPosition);
 	return rock;
 }

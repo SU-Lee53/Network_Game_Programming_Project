@@ -1,5 +1,7 @@
 ﻿#include "Rock.h"
 
+std::uniform_real_distribution<float> accelDist(10.0f, 15.0f);
+
 Rock::Rock()
 {
 	XMStoreFloat4x4(&m_xmf4x4WorldMatrix, XMMatrixIdentity());
@@ -7,6 +9,9 @@ Rock::Rock()
 
 	m_xmBoundingSphere.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_xmBoundingSphere.Radius = m_fBoundingRadius;
+
+	
+	m_fAcceleration = accelDist(dre);
 }
 
 Rock::~Rock()
@@ -19,13 +24,23 @@ void Rock::SetDirection(const XMFLOAT3& PlayerPosition)
 	m_xmf3Direction = Vector3::Normalize(Direction);
 }
 
+bool Rock::IsOutOfBounds() const
+{
+	XMFLOAT3 pos = GetPosition();
+	XMVECTOR posVector = XMLoadFloat3(&pos);
+	float distanceSq = XMVectorGetX(XMVector3LengthSq(posVector));
+	return distanceSq >= 1100.f * 1100.f;  // 1100² = 1210000
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 // 2025.12.01
 // Rock::Update() By 민정원
 // Delta Time 계산 추가
+// 2025.12.03
+// 가속도를 멤버 변수로 변경 (랜덤)
 void Rock::Update(float deltaTime)
 {
-	m_nSpeed += 8.f * deltaTime;
+	m_nSpeed += m_fAcceleration * deltaTime;
 	XMFLOAT3 currentPos = GetPosition();
 
 	XMFLOAT3 movement;

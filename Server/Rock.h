@@ -19,12 +19,14 @@ public:
 	void SetDirection(const XMFLOAT3& PlayerPosition);
 	const bool& GetIsAlive() { return nIsAlive; }
 	void SetDead() { nIsAlive = false; }
+	bool IsOutOfBounds() const;  // 거리 1100 이상 체크
 
 	virtual void Update(float deltaTime) override;
 private:
 	XMFLOAT3 m_xmf3Direction{};
 	bool nIsAlive = true;
 	float m_nSpeed{};
+	float m_fAcceleration{};  // 가속도 (랜덤)
 };
 
 
