@@ -24,7 +24,7 @@ GuiManager::GuiManager(ComPtr<ID3D12Device> pd3dDevice)
     //ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
-    ImGui_ImplWin32_Init(WinCore::sm_hWnd);
+    ImGui_ImplWin32_Init(WinCore::g_hWnd);
     ImGui_ImplDX12_Init(D3DCORE->GetDevice().Get(), D3DCore::g_nCBVSRVDescriptorIncrementSize,
         DXGI_FORMAT_R8G8B8A8_UNORM, m_pFontSrvDescriptorHeap->GetD3DDescriptorHeap().Get(),
         m_pFontSrvDescriptorHeap->GetDescriptorHandleFromHeapStart().cpuHandle,

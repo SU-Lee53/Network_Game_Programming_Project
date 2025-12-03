@@ -163,12 +163,12 @@ void TextSprite::Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCo
 		textData.nLength = m_nTextLength;
 		textData.xmf4TextColor = m_xmf4TextColor;
 	}
-	cbText.WriteData(&spriteData);
+	cbText.WriteData(&textData);
 
 	pd3dDevice->CopyDescriptorsSimple(1, descHandle.cpuHandle, cbText.CBVHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	descHandle.cpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
-	pd3dCommandList->SetGraphicsRootDescriptorTable(1, descHandle.gpuHandle);
+	pd3dCommandList->SetGraphicsRootDescriptorTable(2, descHandle.gpuHandle);
 	descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 
 	pd3dCommandList->DrawInstanced(m_nTextLength, 1, 0, 0);

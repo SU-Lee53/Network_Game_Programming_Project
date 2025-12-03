@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 const ULONG MAX_SAMPLE_COUNT = 50; // Maximum frame time sample count
 
@@ -12,9 +12,10 @@ public:
 	void Stop();
 	void Reset();
 
-	unsigned long GameTimer::GetFrameRate(const std::wstring& wsvGameName, std::wstring& wstrString);
 	float GetTimeElapsed();
 	float GetTotalTime();
+
+	unsigned long GetFrameRate(const std::wstring& wsvGameName, std::wstring& wstrString);
 
 private:
 	double							m_fTimeScale;

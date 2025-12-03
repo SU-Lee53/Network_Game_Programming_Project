@@ -36,10 +36,9 @@ void SpaceshipPlayer::Initialize()
 		pCamera->SetOwner(shared_from_this());
 		pCamera->SetTimeLag(0.05f);
 
-		float fPosX = RandomGenerator::GenerateRandomFloatInRange(-100.f, -100.f);
-		float fPosY = RandomGenerator::GenerateRandomFloatInRange(-100.f, -100.f);
-		float fPosZ = RandomGenerator::GenerateRandomFloatInRange(-100.f, -100.f);
-
+		float fPosX = RandomGenerator::GenerateRandomFloatInRange(-100.f, 100.f);
+		float fPosY = RandomGenerator::GenerateRandomFloatInRange(-100.f, 100.f);
+		float fPosZ = RandomGenerator::GenerateRandomFloatInRange(-100.f, 100.f);
 
 		pCamera->SetPosition(fPosX, fPosY, fPosZ);
 
@@ -226,8 +225,10 @@ ClientToServerPacket SpaceshipPlayer::MakePacketToSend()
 		packet.shotData.v3RayPosition = Vector3(0.f, 0.f, 0.f);
 		packet.shotData.v3RayDirection = Vector3(0.f, 0.f, 0.f);
 	}
-	packet.informData.alive = m_bAlive;
 	packet.informData.hp = m_fHP;
+	packet.informData.score = m_nScore;
+	packet.informData.alive = m_bAlive;
+	packet.informData.bInvincible = m_bBarrelRoll;
 
 	return packet;
 }

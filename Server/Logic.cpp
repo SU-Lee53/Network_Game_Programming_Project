@@ -21,9 +21,15 @@ std::unique_ptr<Rock> CreateRock(const Player* Player)
 
 void CheckRayIntersection()
 {
+	using namespace DirectX;
+
 	std::map<Rock*, std::vector<Player*>> pIntersectionResultMap;
 
 	for (int i = 0; i < 3; ++i) {
+		if (Players[i]->IsAlive() == false) {
+			continue;
+		}
+
 		const Ray& ray = Players[i]->GetRayData();
 		XMVECTOR xmvRayDirection = XMLoadFloat3(&ray.xmf3RayDirection);
 
@@ -49,12 +55,30 @@ void CheckRayIntersection()
 	}
 
 	// 점수를 줄 플레이어를 선정하여 점수를 준다
+	const int nScoreBase = 10;
 	for (const auto& [pRock, pPlayers] : pIntersectionResultMap) {
 		if (pPlayers.size() == 1) {
-			pPlayers[0]->
+			XMFLOAT3 xmf3PlayerPos = pPlayers[0]->GetPosition();
+			XMFLOAT3 xmf3RockPos = pRock->GetPosition();
+			float fDistance = XMVectorGetX(XMVector3Length(XMVectorSubtract(XMLoadFloat3(&xmf3RockPos), XMLoadFloat3(&xmf3PlayerPos))));
+			pPlayers[0]->GiveScore(nScoreBase * (fDistance * 0.1));
 		}
 		else {
+			float fMinDistance = std::numeric_limits<float>::max();
+			XMFLOAT3 xmf3RockPos = pRock->GetPosition();
+			XMVECTOR xmvRockPos = XMLoadFloat3(&xmf3RockPos);
+			Player* pScoringPlayer = nullptr;		// 점수를 얻을 플레이어
+			for (auto pPlayer : pPlayers) {
+				XMFLOAT3 xmf3PlayerPos = pPlayer->GetPosition();
+				float fDistance = XMVectorGetX(XMVector3Length(XMVectorSubtract(XMLoadFloat3(&xmf3RockPos), XMLoadFloat3(&xmf3PlayerPos))));
+				if (fDistance < fMinDistance) {
+					pScoringPlayer = pPlayer;
+				}
+			}
 
+			if (pScoringPlayer) {
+				pScoringPlayer->GiveScore(nScoreBase * (fMinDistance * 0.1));
+			}
 		}
 
 	}

@@ -15,11 +15,11 @@ RockObject::~RockObject()
 void RockObject::Initialize()
 {
 	if (!m_bInitialized) {
-		std::shared_ptr<GameObject> pSphere = MODEL->Get("Sphere_4");	// 1
+		std::shared_ptr<GameObject> pSphere = MODEL->Get("Rock");	// 1
 		SetChild(pSphere);
 
 
-		auto& p = FindMeshedFrame("Sphere001");
+		auto& p = FindMeshedFrame("Cube");
 		p->GetMeshRenderer()->SetTexture(TEXTURE->Get("Rock_Diffuse"), 0, TEXTURE_TYPE_DIFFUSE);
 		p->GetMeshRenderer()->SetTexture(TEXTURE->Get("Rock_Normal"), 0, TEXTURE_TYPE_NORMAL);
 

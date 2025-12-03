@@ -12,6 +12,8 @@ public:
 	void Update() override;
 	void Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommansList) override;
 
+	virtual void SyncSceneWithServer() override;
+
 
 };
 

@@ -2,6 +2,7 @@
 #include "GameFramework.h"
 #include "TestScene.h"
 #include "Scene.h"
+#include "SpaceshipPlayer.h"
 
 std::unique_ptr<D3DCore>			GameFramework::g_pD3DCore = nullptr;
 std::unique_ptr<ResourceManager>	GameFramework::g_pResourceManager = nullptr;
@@ -30,7 +31,7 @@ GameFramework::GameFramework(BOOL bEnableDebugLayer, BOOL bEnableGBV)
 	g_pModelManager = std::make_unique<ModelManager>(g_pD3DCore->GetDevice());
 	g_pRenderManager = std::make_unique<RenderManager>(g_pD3DCore->GetDevice(), g_pD3DCore->GetCommandList());
 	g_pSceneManager = std::make_unique<SceneManager>();
-	g_pInputManager = std::make_unique<InputManager>(WinCore::sm_hWnd);
+	g_pInputManager = std::make_unique<InputManager>(WinCore::g_hWnd);
 	g_pGameTimer = std::make_unique<GameTimer>();
 	g_pModelLoader = std::make_unique<AssimpLoader>();
 	g_pGuiManager = std::make_unique<GuiManager>(g_pD3DCore->GetDevice());
@@ -93,6 +94,17 @@ void GameFramework::Render()
 
 	g_pD3DCore->Present();
 	g_pD3DCore->MoveToNextFrame();
+
+
+	std::wstring tstrFrameRate;
+	g_pGameTimer->GetFrameRate(L"Game", tstrFrameRate);
+	tstrFrameRate = std::format(L"{}", tstrFrameRate);
+	if (auto pPlayer = dynamic_pointer_cast<SpaceshipPlayer>(CUR_SCENE->GetPlayer()))
+	{
+		tstrFrameRate += std::format(L" Score : {}, HP : {}", pPlayer->m_nScore, pPlayer->m_fHP);
+	}
+	::SetWindowText(WinCore::g_hWnd, tstrFrameRate.data());
+
 }
 
 void GameFramework::CleanUp()

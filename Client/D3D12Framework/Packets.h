@@ -12,8 +12,10 @@ enum PACKET_TYPE {
 };
 
 struct PlayerInformData {
-	int hp;
+	int score;
+	float hp;
 	bool alive;
+	bool bInvincible;
 };
 
 struct PlayerTransformData {

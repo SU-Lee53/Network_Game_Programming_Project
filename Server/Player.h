@@ -15,16 +15,25 @@ public:
 
 	void SetRayData(const Ray& ray);
 	const Ray& GetRayData() const;
-	void SetDamagefromPlayer();
-	void SetDamagefromRock();
+
+	void SetInformData(int fHP, float nScore, bool bAlive, bool bInvincible);
+
+	bool IsAlive() { return m_bAlive; }
+	bool IsInvincible() { return m_bInvincible; }
+	float GetHP() { return m_fHP; }
 
 	int GetScore() { return m_nScore; }
-	void GiveScore(int nScore) { m_nScore += nScore; }
+	void GiveScore(int nScore);
+
+	void SetDamagefromPlayer();
+	void SetDamagefromRock();
 
 private:
 	Ray m_RayData;
 
 private:
+	bool m_bAlive = true;
+	bool m_bInvincible = false;
 	float m_fHP = 100.f;
 	int m_nScore = 0;
 

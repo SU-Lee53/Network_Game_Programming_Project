@@ -130,12 +130,19 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		recvPacket.flag = false;
 
 		SendPlayerPacket.client[client_num] = recvPacket;
+		//SendPlayerPacket.client[client_num].shotData = recvPacket.;
 		SendPlayerPacket.client[client_num].flag = true;
 		Players[client_num].get()->SetWorldMatrix(SendPlayerPacket.client[client_num].transformData.mtxPlayerTransform);
 		Ray receivedRay;
 		receivedRay.xmf3RayStartPosition = SendPlayerPacket.client[client_num].shotData.v3RayPosition;
 		receivedRay.xmf3RayDirection = SendPlayerPacket.client[client_num].shotData.v3RayDirection;
 		Players[client_num]->SetRayData(receivedRay);
+		Players[client_num]->SetInformData(
+			recvPacket.informData.hp,
+			recvPacket.informData.score,
+			recvPacket.informData.alive,
+			recvPacket.informData.invincible
+		);
 
 		EnterCriticalSection(&cs);
 		readyCount++;
@@ -152,6 +159,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		// 2단계: 모두 모일 때까지 대기
 		WaitForSingleObject(hSendEvent, INFINITE);
 		WaitForSingleObject(hLogicEndEvent, INFINITE);
+
 		// 3단계: 데이터 전송
 		retval = send(client_sock, (char*)&SendPlayerPacket, sizeof(SendPlayerPacket), 0);
 		retval = send(client_sock, (char*)&SendRockPacket, sizeof(SendRockPacket), 0);
@@ -277,7 +285,7 @@ int main(int argc, char* argv[])
 	while (true)
 	{
 		WaitForSingleObject(hLogicStartEvent, INFINITE);
-
+		g_fGamePlayTime += deltaTime;
 
 
 		auto currTime = std::chrono::high_resolution_clock::now();
@@ -312,8 +320,14 @@ int main(int argc, char* argv[])
 			SendRockPacket.rockData[index].nrockID = index;
 			++index;
 		}
-
 		SendRockPacket.size = Rocks.size();
+
+		for (int i = 0; i < 3; ++i) {
+			SendPlayerPacket.client[i].informData.alive = Players[i]->IsAlive();
+			SendPlayerPacket.client[i].informData.hp = Players[i]->GetHP();
+			SendPlayerPacket.client[i].informData.score = Players[i]->GetScore();
+		}
+
 		ResetEvent(hLogicStartEvent);
 		SetEvent(hLogicEndEvent);
 	}

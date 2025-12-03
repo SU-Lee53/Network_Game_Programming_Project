@@ -1,6 +1,13 @@
 ﻿#pragma once
 #include "Common.h"
 
+struct PlayerInformData {
+	int score;
+	float hp;
+	bool alive;
+	bool invincible;
+};
+
 struct PlayerTransformData {
 	XMFLOAT4X4 mtxPlayerTransform;
 };
@@ -25,6 +32,7 @@ struct CLIENT {
 	int id;
 	PlayerTransformData transformData;
 	PlayerShotData shotData;
+	PlayerInformData informData;
 	bool flag;
 };
 
@@ -36,6 +44,6 @@ struct ServertoClientPlayerPacket {
 //ServertoClientRockPacket 수정 by 민정원
 
 struct ServertoClientRockPacket {
-	std::array<RockData , 50> rockData;
+	std::array<RockData, 50> rockData;
 	int size;
 };

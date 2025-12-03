@@ -26,11 +26,29 @@ const Ray& Player::GetRayData() const
 	return m_RayData;
 }
 
+void Player::SetInformData(int fHP, float nScore, bool bAlive, bool bInvincible)
+{
+	m_fHP = fHP;
+	m_nScore = nScore;
+	m_bAlive = bAlive;
+	m_bInvincible = bInvincible;
+}
+
+void Player::GiveScore(int nScore)
+{
+	m_nScore += nScore;
+}
+
 void Player::SetDamagefromPlayer()
 {
 	if (m_fHP > 0)
 	{
-		m_fHP -= 1.f;
+		m_fHP -= 10.f;
+	}
+
+	// 추가
+	if (m_fHP <= 0) {
+		m_bAlive = false;
 	}
 }
 
@@ -38,6 +56,11 @@ void Player::SetDamagefromRock()
 {
 	if (m_fHP > 0)
 	{
-		m_fHP -= 2.f;
+		m_fHP -= 20.f;
+	}
+
+	// 추가
+	if (m_fHP <= 0) {
+		m_bAlive = false;
 	}
 }

@@ -113,7 +113,7 @@ void TestScene::BuildLights()
 	auto pLight1 = std::make_shared<PointLight>();
 	pLight1->m_v3Position = Vector3(-200, 0, -40);	// TODO : Sun의 위치로 수정
 	pLight1->m_v4Ambient = Vector4(0.05f, 0.05f, 0.05f, 1.0f);
-	pLight1->m_v4Diffuse = Vector4(10.0f, 10.0f, 10.0f, 1.0f);
+	pLight1->m_v4Diffuse = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	pLight1->m_v4Specular = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	pLight1->m_fAttenuation0 = 1.0f;
 	pLight1->m_fAttenuation1 = 0.001f;
@@ -179,11 +179,12 @@ void TestScene::Update()
 		NETWORK->WritePacketData(packet);
 	}
 
+
 	// NETWORK TEST ZONE
-	ImGui::Begin("Test");
-	{
-	}
-	ImGui::End();
+	//ImGui::Begin("Test");
+	//{
+	//}
+	//ImGui::End();
 
 	if (INPUT->GetButtonDown(VK_SPACE)) {
 		static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->SetShake(true);
@@ -200,7 +201,9 @@ void TestScene::Update()
 	UpdateObjects();
 
 	if (static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->m_bAlive == false) {
-		if (m_fEndSceneTimer >= m_fEndSceneTimer) {
+		if (m_fEndSceneTimer >= m_fEndSceneTime) {
+			auto pPlayer = static_pointer_cast<SpaceshipPlayer>(m_pPlayer);
+			m_fEndSceneTimer = 0.f;
 			SCENE->ChangeScene<OutroScene>();
 		}
 		else {
@@ -223,6 +226,7 @@ void TestScene::SyncSceneWithServer()
 	for (int i = 0; i < 3; ++i) {
 		if (receivedPacket.client[i].id == NETWORK->GetPlayerID()) {
 			auto pPlayer = static_pointer_cast<SpaceshipPlayer>(m_pPlayer);
+			pPlayer->m_nScore = receivedPacket.client[i].informData.score;
 
 			// 기존의 알던 체력과 새로 받은 체력이 다르면 흔든다
 			// 체력이 갑자기 늘어날일은 없음(없어야함)
@@ -230,6 +234,7 @@ void TestScene::SyncSceneWithServer()
 				pPlayer->SetShake(true);
 				SOUND->Play("damage_sound");
 				pPlayer->m_fHP = receivedPacket.client[i].informData.hp;
+				pPlayer->m_nScore = receivedPacket.client[i].informData.score;
 			}
 
 			pPlayer->m_bAlive = receivedPacket.client[i].informData.alive;
@@ -240,7 +245,9 @@ void TestScene::SyncSceneWithServer()
 				effectParam.fElapsedTime = 0.f;
 				effectParam.fAdditionalData = 0.f;
 
-				EFFECT->AddEffect<ExplosionEffect>(effectParam);
+				if (m_fEndSceneTimer == 0.f) {
+					EFFECT->AddEffect<ExplosionEffect>(effectParam);
+				}
 			}
 			continue;
 		}

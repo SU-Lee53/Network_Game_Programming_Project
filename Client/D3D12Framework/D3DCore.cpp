@@ -132,7 +132,7 @@ void D3DCore::CreateSwapChain()
 		dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 		dxgiSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-		dxgiSwapChainDesc.OutputWindow = WinCore::sm_hWnd;
+		dxgiSwapChainDesc.OutputWindow = WinCore::g_hWnd;
 		dxgiSwapChainDesc.SampleDesc.Count = (m_bMsaa4xEnable) ? 4 : 1;
 		dxgiSwapChainDesc.SampleDesc.Quality = (m_bMsaa4xEnable) ? (m_nMsaa4xQualityLevels - 1) : 0;
 		dxgiSwapChainDesc.Windowed = TRUE;
@@ -154,7 +154,7 @@ void D3DCore::CreateSwapChain()
 
 	m_nSwapChainBufferIndex = m_pdxgiSwapChain->GetCurrentBackBufferIndex();
 
-	m_pdxgiFactory->MakeWindowAssociation(WinCore::sm_hWnd, DXGI_MWA_NO_ALT_ENTER);
+	m_pdxgiFactory->MakeWindowAssociation(WinCore::g_hWnd, DXGI_MWA_NO_ALT_ENTER);
 
 #ifndef _WITH_SWAPCHAIN_FULLSCREEN_STATE
 	CreateRenderTargetViews();

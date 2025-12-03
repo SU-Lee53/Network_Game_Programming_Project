@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "GameFramework.h"
 
 class WinCore {
@@ -15,7 +15,7 @@ private:
 
 public:
 	static HINSTANCE sm_hInstance;
-	static HWND sm_hWnd;
+	static HWND g_hWnd;
 
 	static DWORD sm_dwClientWidth;
 	static DWORD sm_dwClientHeight;
