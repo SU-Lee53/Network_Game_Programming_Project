@@ -300,6 +300,7 @@ int main(int argc, char* argv[])
 		CheckRayIntersection();
 		CheckPlayerIntersection();
 
+
 		int index = 0;
 		for (auto& rockPtr : Rocks) {
 			Rock* rock = rockPtr.get();
