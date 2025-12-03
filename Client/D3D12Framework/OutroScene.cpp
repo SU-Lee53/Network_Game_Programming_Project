@@ -40,8 +40,8 @@ void OutroScene::Update()
 		packet.transformData.mtxPlayerTransform = mtxTransform;
 		packet.shotData.v3RayPosition = Vector3(0.f, 0.f, 0.f);
 		packet.shotData.v3RayDirection = Vector3(0.f, 0.f, 0.f);
-		packet.informData.alive = true;
-		packet.informData.hp = 100.f;
+		packet.informData.alive = false;
+		packet.informData.hp = 0.f;
 		packet.informData.score = 0.f;
 
 		NETWORK->WritePacketData(packet);
