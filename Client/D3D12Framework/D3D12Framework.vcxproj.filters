@@ -341,6 +341,9 @@
     <ClInclude Include="SoundManager.h">
       <Filter>소스 파일\02. Managers\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="OutroScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameFramework.cpp">
@@ -529,6 +532,15 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>소스 파일\02. Managers\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="OutroScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="D3D12Framework.rc">
@@ -588,5 +600,6 @@
     <FxCompile Include="..\HLSL\EffectCommon.hlsl">
       <Filter>소스 파일\05. HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="..\HLSL\Sprite.hlsl" />
   </ItemGroup>
 </Project>

@@ -11,13 +11,18 @@ enum PACKET_TYPE {
 	/*...*/
 };
 
+struct PlayerInformData {
+	int hp;
+	bool alive;
+};
+
 struct PlayerTransformData {
 	XMFLOAT4X4 mtxPlayerTransform;
 };
 
 struct PlayerShotData {
-	XMFLOAT3 v3RayPosition;
-	XMFLOAT3 v3RayDirection;
+	XMFLOAT3 v3RayPosition = Vector3(0.f, 0.f, 0.f);
+	XMFLOAT3 v3RayDirection = Vector3(0.f, 0.f, 0.f);
 };
 
 struct RockData {
@@ -30,6 +35,7 @@ struct ClientToServerPacket {
 	int id = 0;
 	PlayerTransformData transformData;
 	PlayerShotData shotData;
+	PlayerInformData informData;
 };
 
 #define CLIENT_NUM 3
@@ -38,6 +44,7 @@ struct CLIENT {
 	int id;
 	PlayerTransformData transformData;
 	PlayerShotData shotData;
+	PlayerInformData informData;
 	bool flag;
 };
 

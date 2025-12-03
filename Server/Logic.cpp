@@ -2,7 +2,7 @@
 #include "Rock.h"
 #include "Player.h"
 #include "ObjectCollections.h"
-
+#include <map>
 
 std::unique_ptr<Rock> CreateRock(const Player* Player)
 {
@@ -21,6 +21,8 @@ std::unique_ptr<Rock> CreateRock(const Player* Player)
 
 void CheckRayIntersection()
 {
+	std::map<Rock*, std::vector<Player*>> pIntersectionResultMap;
+
 	for (int i = 0; i < 3; ++i) {
 		const Ray& ray = Players[i]->GetRayData();
 		XMVECTOR xmvRayDirection = XMLoadFloat3(&ray.xmf3RayDirection);
@@ -42,8 +44,21 @@ void CheckRayIntersection()
 
 		if (pCollidedRock) {
 			pCollidedRock->SetDead();
+			pIntersectionResultMap[pCollidedRock].push_back(Players[i].get());
 		}
 	}
+
+	// 점수를 줄 플레이어를 선정하여 점수를 준다
+	for (const auto& [pRock, pPlayers] : pIntersectionResultMap) {
+		if (pPlayers.size() == 1) {
+			pPlayers[0]->
+		}
+		else {
+
+		}
+
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

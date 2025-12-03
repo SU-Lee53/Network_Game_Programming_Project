@@ -9,8 +9,6 @@
 
 class Player : public Object
 {
-
-
 public:
 	Player();
 	virtual ~Player();
@@ -20,10 +18,14 @@ public:
 	void SetDamagefromPlayer();
 	void SetDamagefromRock();
 
+	int GetScore() { return m_nScore; }
+	void GiveScore(int nScore) { m_nScore += nScore; }
+
 private:
 	Ray m_RayData;
 
 private:
-	int hp;
+	float m_fHP = 100.f;
+	int m_nScore = 0;
 
 };

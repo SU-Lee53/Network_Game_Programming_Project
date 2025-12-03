@@ -10,6 +10,7 @@
 #include "RockObject.h"
 #include "SpaceshipPlayer.h"
 #include "PlayerRenderer.h"
+#include "OutroScene.h"
 #include "Packets.h"
 
 using namespace std::string_literals;
@@ -188,28 +189,6 @@ void TestScene::Update()
 		static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->SetShake(true);
 	}
 
-
-	// Explosive Test
-	//if (m_fTestTime >= 1.f) {
-	//	float fRandX = RandomGenerator::GenerateRandomFloatInRange(-20, 20);
-	//	float fRandY = RandomGenerator::GenerateRandomFloatInRange(-20, 20);
-	//	float fRandZ = RandomGenerator::GenerateRandomFloatInRange(-20, 20);
-	//
-	//	EffectParameter effectParam;
-	//	effectParam.xmf3Position = Vector3(fRandX, fRandY, fRandZ);
-	//	effectParam.xmf3Force = Vector3(0, 0, 0);
-	//	effectParam.fElapsedTime = 0.f;
-	//	effectParam.fAdditionalData = 0.f;
-	//
-	//	EFFECT->AddEffect<ExplosionEffect>(effectParam);
-	//
-	//	m_fTestTime = 0.f;
-	//}
-	//else {
-	//	m_fTestTime += DT;
-	//}
-
-
 	if (!NETWORK->IsOffline()) {
 		SyncSceneWithServer();
 	}
@@ -219,6 +198,15 @@ void TestScene::Update()
 	}
 
 	UpdateObjects();
+
+	if (static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->m_bAlive == false) {
+		if (m_fEndSceneTimer >= m_fEndSceneTimer) {
+			SCENE->ChangeScene<OutroScene>();
+		}
+		else {
+			m_fEndSceneTimer += DT;
+		}
+	}
 }
 
 void TestScene::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommansList)
@@ -234,9 +222,33 @@ void TestScene::SyncSceneWithServer()
 	int nOtherPlayerIndex = 0;
 	for (int i = 0; i < 3; ++i) {
 		if (receivedPacket.client[i].id == NETWORK->GetPlayerID()) {
+			auto pPlayer = static_pointer_cast<SpaceshipPlayer>(m_pPlayer);
+
+			// 기존의 알던 체력과 새로 받은 체력이 다르면 흔든다
+			// 체력이 갑자기 늘어날일은 없음(없어야함)
+			if (pPlayer->m_fHP != receivedPacket.client[i].informData.hp) {
+				pPlayer->SetShake(true);
+				SOUND->Play("damage_sound");
+				pPlayer->m_fHP = receivedPacket.client[i].informData.hp;
+			}
+
+			pPlayer->m_bAlive = receivedPacket.client[i].informData.alive;
+			if (pPlayer->m_bAlive == false) {
+				EffectParameter effectParam;
+				effectParam.xmf3Position = pPlayer->GetTransform().GetPosition();
+				effectParam.xmf3Force = Vector3(0, 0, 0);
+				effectParam.fElapsedTime = 0.f;
+				effectParam.fAdditionalData = 0.f;
+
+				EFFECT->AddEffect<ExplosionEffect>(effectParam);
+			}
 			continue;
 		}
-		m_pOtherPlayers[nOtherPlayerIndex]->GetTransform().SetWorldMatrix(receivedPacket.client[i].transformData.mtxPlayerTransform);
+
+		auto pPlayer = static_pointer_cast<SpaceshipPlayer>(m_pOtherPlayers[nOtherPlayerIndex]);
+		pPlayer->GetTransform().SetWorldMatrix(receivedPacket.client[i].transformData.mtxPlayerTransform);
+		pPlayer->m_fHP = receivedPacket.client[i].informData.hp;
+		pPlayer->m_bAlive = receivedPacket.client[i].informData.alive;
 
 		if (receivedPacket.client[i].shotData.v3RayDirection != Vector3(0, 0, 0)) {
 			EffectParameter param;
@@ -265,12 +277,9 @@ void TestScene::SyncSceneWithServer()
 			effectParam.fAdditionalData = 0.f;
 
 			EFFECT->AddEffect<ExplosionEffect>(effectParam);
+			SOUND->Play("explosion_effect");
 		}
-
 	}
-
-	ImGui::Text(m_strLog2.c_str());
-	ImGui::Text(m_strLog1.c_str());
 
 }
 

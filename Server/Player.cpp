@@ -2,8 +2,6 @@
 
 Player::Player()
 {
-	hp = 10000000;
-
 	XMStoreFloat4x4(&m_xmf4x4WorldMatrix, XMMatrixIdentity());
 	m_fBoundingRadius = 2.0f;
 
@@ -30,16 +28,16 @@ const Ray& Player::GetRayData() const
 
 void Player::SetDamagefromPlayer()
 {
-	if (hp > 0)
+	if (m_fHP > 0)
 	{
-		hp -= 0.001;
+		m_fHP -= 1.f;
 	}
 }
 
 void Player::SetDamagefromRock()
 {
-	if (hp > 0)
+	if (m_fHP > 0)
 	{
-		hp -= 0.002;
+		m_fHP -= 2.f;
 	}
 }
