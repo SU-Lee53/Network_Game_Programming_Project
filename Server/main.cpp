@@ -308,8 +308,6 @@ int main(int argc, char* argv[])
 			Players[i]->Update(deltaTime);
 		}
 
-
-		int index = 0;
 		for (auto& rockPtr : Rocks) {
 			Rock* rock = rockPtr.get();
 			bool IsAlive = rock->GetIsAlive();
