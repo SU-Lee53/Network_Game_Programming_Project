@@ -52,7 +52,11 @@ void Player::GiveScore(int nScore)
 
 void Player::SetDamagefromPlayer()
 {
-	if (m_bInvincible || !m_bAlive) return;
+	if (m_bInvincible || !m_bAlive)
+	{
+		m_fInvincibleTimer = 0.5f;
+		return;
+	}
 
 	if (m_fHP > 0)
 	{
@@ -70,7 +74,11 @@ void Player::SetDamagefromPlayer()
 void Player::SetDamagefromRock()
 {
 
-	if (m_bInvincible || !m_bAlive) return;
+	if (m_bInvincible || !m_bAlive) 
+	{
+		m_fInvincibleTimer = 0.5f;
+		return;
+	}
 
 	if (m_fHP > 0)
 	{
