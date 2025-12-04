@@ -2,7 +2,7 @@
 
 struct VS_SKYBOX_OUTPUT
 {
-    float4 position : SV_POSITION;
+    float3 position : POSITION;
 };
 
 struct GS_SKYBOX_OUTPUT
@@ -15,7 +15,7 @@ VS_SKYBOX_OUTPUT VSSkybox(uint nVertexID : SV_VertexID)
 {
     VS_SKYBOX_OUTPUT output;
     
-    output.position = float4(gCameraData.gvCameraPosition, 1.0f);
+    output.position = gCameraData.gvCameraPosition;
     
     return output;
 }
@@ -23,104 +23,84 @@ VS_SKYBOX_OUTPUT VSSkybox(uint nVertexID : SV_VertexID)
 [maxvertexcount(24)]
 void GSSkybox(point VS_SKYBOX_OUTPUT input[1], inout TriangleStream<GS_SKYBOX_OUTPUT> outStream)
 {
-    // nVertexID ø° µ˚∂Ûº≠...
-    // nVertexID == 0 : æ’ (+z)
-    // nVertexID == 1 : µ⁄ (-z)
-    // nVertexID == 2 : øﬁ¬  (-x)
-    // nVertexID == 3 : ø¿∏•¬  (+x)
-    // nVertexID == 4 : ¿ß (+y)
-    // nVertexID == 5 : æ∆∑° (-y)
+    // nVertexID Ïóê Îî∞ÎùºÏÑú...
+    // nVertexID == 0 : Ïïû (+z)
+    // nVertexID == 1 : Îí§ (-z)
+    // nVertexID == 2 : ÏôºÏ™Ω (-x)
+    // nVertexID == 3 : Ïò§Î•∏Ï™Ω (+x)
+    // nVertexID == 4 : ÏúÑ (+y)
+    // nVertexID == 5 : ÏïÑÎûò (-y)
     
-    // ±‚∫ª¿˚¿∏∑Œ winding order ¿∫ µø¿œ«œ∞‘ ∞°∞Ì, Rasterizer State ø°º≠ µﬁ∏È¿Ã ∫∏¿Ãµµ∑œ µ⁄¡˝¿Ω
-    // ¥Ÿ∏∏ uv¥¬ æ»ø°º≠ πŸ∂Û∫√¿ª∂ß ±‚¡ÿ¿∏∑Œ ∞°æﬂ ∏¬¿ªµÌ?
+    // Í∏∞Î≥∏Ï†ÅÏúºÎ°ú winding order ÏùÄ ÎèôÏùºÌïòÍ≤å Í∞ÄÍ≥†, Rasterizer State ÏóêÏÑú Îí∑Î©¥Ïù¥ Î≥¥Ïù¥ÎèÑÎ°ù Îí§ÏßëÏùå
+    // Îã§Îßå uvÎäî ÏïàÏóêÏÑú Î∞îÎùºÎ¥§ÏùÑÎïå Í∏∞Ï§ÄÏúºÎ°ú Í∞ÄÏïº ÎßûÏùÑÎìØ?
     
-    float fSkyboxExtent = 10.f;
-    float3 v3SkyboxTopPosition = input[0].position.xyz + (float3(0, 1, 0) * fSkyboxExtent);
-    float3 v3SkyboxBottomPosition = input[0].position.xyz - (float3(0, 1, 0) * fSkyboxExtent);
+	float fSkyboxExtent = 1.f;
     
-    float3 rx = float3(1, 0, 0) * fSkyboxExtent;
-    float3 rz = float3(0, 0, 1) * fSkyboxExtent;
+	float3 vAxisX = float3(1.f, 0.f, 0.f);
+	float3 vAxisY = float3(0.f, 1.f, 0.f);
+	float3 vAxisZ = float3(0.f, 0.f, 1.f);
     
-    // top
-    float3 t00 = v3SkyboxTopPosition - rx + rz;
-    float3 t10 = v3SkyboxTopPosition + rx + rz;
-    float3 t01 = v3SkyboxTopPosition - rx - rz;
-    float3 t11 = v3SkyboxTopPosition + rx - rz;
+	float3 ex = vAxisX * fSkyboxExtent;
+	float3 ey = vAxisY * fSkyboxExtent;
+	float3 ez = vAxisZ * fSkyboxExtent;
     
-    // bottom
-    float3 b00 = v3SkyboxBottomPosition - rx + rz;
-    float3 b10 = v3SkyboxBottomPosition + rx + rz;
-    float3 b01 = v3SkyboxBottomPosition - rx - rz;
-    float3 b11 = v3SkyboxBottomPosition + rx - rz;
+	matrix mtxVP = mul(gCameraData.gmtxView, gCameraData.gmtxProjection);
+    
+	float4 T00 = mul(float4(input[0].position - ex + ey + ez, 1.f), mtxVP).xyww;
+	float4 T01 = mul(float4(input[0].position + ex + ey + ez, 1.f), mtxVP).xyww;
+	float4 T10 = mul(float4(input[0].position - ex + ey - ez, 1.f), mtxVP).xyww;
+	float4 T11 = mul(float4(input[0].position + ex + ey - ez, 1.f), mtxVP).xyww;
+    
+	float4 B00 = mul(float4(input[0].position - ex - ey + ez, 1.f), mtxVP).xyww;
+	float4 B01 = mul(float4(input[0].position + ex - ey + ez, 1.f), mtxVP).xyww;
+	float4 B10 = mul(float4(input[0].position - ex - ey - ez, 1.f), mtxVP).xyww;
+	float4 B11 = mul(float4(input[0].position + ex - ey - ez, 1.f), mtxVP).xyww;
     
     float4x4 VP = mul(gCameraData.gmtxView, gCameraData.gmtxProjection);
     GS_SKYBOX_OUTPUT output;
     
-    // æ’ (+z)
-    output.position = mul(float4(t10, 1.f), VP).xyww; output.uvw = float3(1, 0, 0);
-    outStream.Append(output);
-    output.position = mul(float4(t00, 1.f), VP).xyww; output.uvw = float3(0, 0, 0);
-    outStream.Append(output);
-    output.position = mul(float4(b10, 1.f), VP).xyww; output.uvw = float3(1, 1, 0);
-    outStream.Append(output);
-    output.position = mul(float4(b00, 1.f), VP).xyww; output.uvw = float3(0, 1, 0);
-    outStream.Append(output);
+    // Ïïû (+z)                                   
+    output.position = T01; output.uvw = float3(1.f, 0.f, 0.f); outStream.Append(output);
+    output.position = T00; output.uvw = float3(0.f, 0.f, 0.f); outStream.Append(output);
+    output.position = B01; output.uvw = float3(1.f, 1.f, 0.f); outStream.Append(output);
+    output.position = B00; output.uvw = float3(0.f, 1.f, 0.f); outStream.Append(output);
     outStream.RestartStrip();
     
-    // µ⁄ (-z)
-    output.position = mul(float4(t01, 1.f), VP).xyww; output.uvw = float3(1, 0, 1);
-    outStream.Append(output);
-    output.position = mul(float4(t11, 1.f), VP).xyww; output.uvw = float3(0, 0, 1);
-    outStream.Append(output);
-    output.position = mul(float4(b01, 1.f), VP).xyww; output.uvw = float3(1, 1, 1);
-    outStream.Append(output);
-    output.position = mul(float4(b11, 1.f), VP).xyww; output.uvw = float3(0, 1, 1);
-    outStream.Append(output);
+    // Îí§ (-z)
+    output.position = T10; output.uvw = float3(1.f, 0.f, 1.f); outStream.Append(output);
+    output.position = T11; output.uvw = float3(0.f, 0.f, 1.f); outStream.Append(output);
+    output.position = B10; output.uvw = float3(1.f, 1.f, 1.f); outStream.Append(output);
+    output.position = B11; output.uvw = float3(0.f, 1.f, 1.f); outStream.Append(output);
     outStream.RestartStrip();
     
-    // øﬁ¬  (-x)
-    output.position = mul(float4(t00, 1.f), VP).xyww; output.uvw = float3(1, 0, 2);
-    outStream.Append(output);
-    output.position = mul(float4(t01, 1.f), VP).xyww; output.uvw = float3(0, 0, 2);
-    outStream.Append(output);
-    output.position = mul(float4(b00, 1.f), VP).xyww; output.uvw = float3(1, 1, 2);
-    outStream.Append(output);
-    output.position = mul(float4(b01, 1.f), VP).xyww; output.uvw = float3(0, 1, 2);
-    outStream.Append(output);
+    // ÏôºÏ™Ω (-x)
+    output.position = T00; output.uvw = float3(1.f, 0.f, 2.f); outStream.Append(output);
+    output.position = T10; output.uvw = float3(0.f, 0.f, 2.f); outStream.Append(output);
+    output.position = B00; output.uvw = float3(1.f, 1.f, 2.f); outStream.Append(output);
+    output.position = B10; output.uvw = float3(0.f, 1.f, 2.f); outStream.Append(output);
     outStream.RestartStrip();
     
-    // ø¿∏•¬  (+x)
-    output.position = mul(float4(t11, 1.f), VP).xyww; output.uvw = float3(1, 0, 3);
-    outStream.Append(output);
-    output.position = mul(float4(t10, 1.f), VP).xyww; output.uvw = float3(0, 0, 3);
-    outStream.Append(output);
-    output.position = mul(float4(b11, 1.f), VP).xyww; output.uvw = float3(1, 1, 3);
-    outStream.Append(output);
-    output.position = mul(float4(b10, 1.f), VP).xyww; output.uvw = float3(0, 1, 3);
-    outStream.Append(output);
+    // Ïò§Î•∏Ï™Ω (+x)
+    output.position = T11; output.uvw = float3(1.f, 0.f, 3.f); outStream.Append(output);
+    output.position = T01; output.uvw = float3(0.f, 0.f, 3.f); outStream.Append(output);
+    output.position = B11; output.uvw = float3(1.f, 1.f, 3.f); outStream.Append(output);
+    output.position = B01; output.uvw = float3(0.f, 1.f, 3.f); outStream.Append(output);
     outStream.RestartStrip();
     
-    // ¿ß (+y)
-    output.position = mul(float4(t00, 1.f), VP).xyww; output.uvw = float3(1, 0, 4);
-    outStream.Append(output);
-    output.position = mul(float4(t10, 1.f), VP).xyww; output.uvw = float3(1, 1, 4);
-    outStream.Append(output);
-    output.position = mul(float4(t01, 1.f), VP).xyww; output.uvw = float3(0, 0, 4);
-    outStream.Append(output);
-    output.position = mul(float4(t11, 1.f), VP).xyww; output.uvw = float3(0, 1, 4);
-    outStream.Append(output);
+    // ÏúÑ (+y)
+    output.position = T00; output.uvw = float3(0.f, 1.f, 4.f); outStream.Append(output);
+    output.position = T01; output.uvw = float3(1.f, 1.f, 4.f); outStream.Append(output);
+    output.position = T10; output.uvw = float3(0.f, 0.f, 4.f); outStream.Append(output);
+    output.position = T11; output.uvw = float3(1.f, 1.f, 4.f); outStream.Append(output);
     outStream.RestartStrip();
     
-    // æ∆∑° (-y)
-    output.position = mul(float4(b00, 1.f), VP).xyww; output.uvw = float3(0, 0, 5);
-    outStream.Append(output);
-    output.position = mul(float4(b10, 1.f), VP).xyww; output.uvw = float3(1, 0, 5);
-    outStream.Append(output);
-    output.position = mul(float4(b01, 1.f), VP).xyww; output.uvw = float3(0, 1, 5);
-    outStream.Append(output);
-    output.position = mul(float4(b11, 1.f), VP).xyww; output.uvw = float3(1, 1, 5);
-    outStream.Append(output);
+    // ÏïÑÎûò (-y)
+    output.position = B01; output.uvw = float3(1.f, 0.f, 5.f); outStream.Append(output);
+    output.position = B00; output.uvw = float3(0.f, 0.f, 5.f); outStream.Append(output);
+    output.position = B11; output.uvw = float3(1.f, 1.f, 5.f); outStream.Append(output);
+    output.position = B10; output.uvw = float3(0.f, 1.f, 5.f); outStream.Append(output);
     outStream.RestartStrip();
+                  
 }
 
 float4 PSSkybox(GS_SKYBOX_OUTPUT input) : SV_Target
