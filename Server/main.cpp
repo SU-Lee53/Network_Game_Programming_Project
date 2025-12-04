@@ -73,6 +73,10 @@ std::uniform_int_distribution<int> uid(0, 2);
 //////////////////////////////////////////////////////////////////////////////////////////////
 // 2025.11.25
 // 보낼때 Rock 데이터도 같이 보냄.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 2025.12.02
+// 보낼 때 Player의 hp, alive 정보도 같이 보냄.
 
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -140,6 +144,11 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			recvPacket.informData.alive,
 			recvPacket.informData.invincible
 		);
+
+		// Player의 hp, alive를 전달
+		SendPlayerPacket.client[client_num].informData.alive = Players[client_num]->IsAlive();
+		SendPlayerPacket.client[client_num].informData.hp = Players[client_num]->GetHP();
+		SendPlayerPacket.client[client_num].informData.score = Players[client_num]->GetScore();
 
 		EnterCriticalSection(&cs);
 		readyCount++;
@@ -299,6 +308,7 @@ int main(int argc, char* argv[])
 		}
 		CheckRayIntersection();
 		CheckPlayerIntersection();
+		CheckRockIntersection();
 
 
 		int index = 0;
@@ -316,11 +326,6 @@ int main(int argc, char* argv[])
 		}
 		SendRockPacket.size = Rocks.size();
 
-		for (int i = 0; i < 3; ++i) {
-			SendPlayerPacket.client[i].informData.alive = Players[i]->IsAlive();
-			SendPlayerPacket.client[i].informData.hp = Players[i]->GetHP();
-			SendPlayerPacket.client[i].informData.score = Players[i]->GetScore();
-		}
 
 		ResetEvent(hLogicStartEvent);
 		SetEvent(hLogicEndEvent);
