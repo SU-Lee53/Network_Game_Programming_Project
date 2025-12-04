@@ -13,36 +13,39 @@ ThirdPersonCamera::~ThirdPersonCamera()
 
 void ThirdPersonCamera::ProcessInput()
 {
-	HWND hWnd = ::GetActiveWindow();
+	if (INPUT->GetButtonPressed(VK_RBUTTON)) {
+		HWND hWnd = ::GetActiveWindow();
 
-	::SetCursor(NULL);
+		::SetCursor(NULL);
 
-	RECT rtClientRect;
-	::GetClientRect(hWnd, &rtClientRect);
-	::ClientToScreen(hWnd, (LPPOINT)&rtClientRect.left);
-	::ClientToScreen(hWnd, (LPPOINT)&rtClientRect.right);
+		RECT rtClientRect;
+		::GetClientRect(hWnd, &rtClientRect);
+		::ClientToScreen(hWnd, (LPPOINT)&rtClientRect.left);
+		::ClientToScreen(hWnd, (LPPOINT)&rtClientRect.right);
 
-	int nScreenCenterX = 0, nScreenCenterY = 0;
-	nScreenCenterX = rtClientRect.left + WinCore::sm_dwClientWidth / 2;
-	nScreenCenterY = rtClientRect.top + WinCore::sm_dwClientHeight / 2;
+		int nScreenCenterX = 0, nScreenCenterY = 0;
+		nScreenCenterX = rtClientRect.left + WinCore::sm_dwClientWidth / 2;
+		nScreenCenterY = rtClientRect.top + WinCore::sm_dwClientHeight / 2;
 
-	POINT ptCursorPos;
-	::GetCursorPos(&ptCursorPos);
+		POINT ptCursorPos;
+		::GetCursorPos(&ptCursorPos);
 
-	POINT ptDelta{ (ptCursorPos.x - nScreenCenterX), (ptCursorPos.y - nScreenCenterY) };
+		POINT ptDelta{ (ptCursorPos.x - nScreenCenterX), (ptCursorPos.y - nScreenCenterY) };
 
-	m_fYaw += (float)ptDelta.x * m_fMouseSensitivity;
-	m_fPitch += (float)ptDelta.y * m_fMouseSensitivity;
+		m_fYaw += (float)ptDelta.x * m_fMouseSensitivity;
+		m_fPitch += (float)ptDelta.y * m_fMouseSensitivity;
 
-	SetRotation(m_fPitch, m_fYaw, 0.f);
+		// Pitch 제한 -> 화면 뒤집히지 않도록
+		if (m_fPitch > XMConvertToRadians(89.0f))
+			m_fPitch = XMConvertToRadians(89.0f);
+		if (m_fPitch < XMConvertToRadians(-89.0f))
+			m_fPitch = XMConvertToRadians(-89.0f);
 
-	// Pitch 제한 -> 화면 뒤집히지 않도록
-	if (m_fPitch > 89.0f)
-		m_fPitch = 89.0f;
-	if (m_fPitch < -89.0f)
-		m_fPitch = -89.0f;
+		SetRotation(m_fPitch, m_fYaw, 0.f);
 
-	::SetCursorPos(nScreenCenterX, nScreenCenterY);
+		::SetCursorPos(nScreenCenterX, nScreenCenterY);
+
+	}
 
 	if (INPUT->GetButtonPressed('W')) {
 		SOUND->Resume("spaceship_sfx");
