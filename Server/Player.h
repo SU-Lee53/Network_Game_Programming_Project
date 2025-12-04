@@ -21,6 +21,7 @@ public:
 	bool IsAlive() { return m_bAlive; }
 	bool IsInvincible() { return m_bInvincible; }
 	float GetHP() { return m_fHP; }
+	float GetInvincibleTimer() { return m_fInvincibleTimer; }
 
 	int GetScore() { return m_nScore; }
 	void GiveScore(int nScore);
@@ -28,12 +29,14 @@ public:
 	void SetDamagefromPlayer();
 	void SetDamagefromRock();
 
+	virtual void Update(float deltaTime) override;
 private:
 	Ray m_RayData;
 
 private:
 	bool m_bAlive = true;
 	bool m_bInvincible = false;
+	float m_fInvincibleTimer = 0.f;
 	float m_fHP = 100.f;
 	int m_nScore = 0;
 

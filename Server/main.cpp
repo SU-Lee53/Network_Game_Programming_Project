@@ -145,8 +145,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			recvPacket.informData.invincible
 		);
 
-		// Player의 hp, alive를 전달
-		
 		EnterCriticalSection(&cs);
 		readyCount++;
 		LeaveCriticalSection(&cs);
@@ -172,10 +170,10 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		sendCount++;
 
 		// 마지막 스레드가 리셋 및 다음 라운드 준비
-		if (sendCount == 3)
+		if (sendCount == CLIENT_NUM)
 		{
 			// 모든 flag 초기화
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < CLIENT_NUM; i++)
 				SendPlayerPacket.client[i].flag = false;
 
 			readyCount = 0;
@@ -292,8 +290,9 @@ int main(int argc, char* argv[])
 		auto currTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float> elapsed = currTime - prevTime;
 		deltaTime = elapsed.count();
+		deltaTime = std::min(deltaTime, 0.2f);
 		prevTime = currTime;
-
+		
 		Rocks.remove_if([](const auto& rockPtr) {
 			return !rockPtr->GetIsAlive() || rockPtr->IsOutOfBounds();
 			});
@@ -304,6 +303,13 @@ int main(int argc, char* argv[])
 			spawnTimer = 0;
 		}
 
+		for (int i = 0; i < CLIENT_NUM; ++i)
+		{
+			Players[i]->Update(deltaTime);
+		}
+
+
+		int index = 0;
 		for (auto& rockPtr : Rocks) {
 			Rock* rock = rockPtr.get();
 			bool IsAlive = rock->GetIsAlive();
@@ -327,7 +333,7 @@ int main(int argc, char* argv[])
 		}
 		SendRockPacket.size = Rocks.size();
 
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < CLIENT_NUM; ++i)
 		{
 			SendPlayerPacket.client[i].informData.alive = Players[i]->IsAlive();
 			SendPlayerPacket.client[i].informData.hp = Players[i]->GetHP();
