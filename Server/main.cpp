@@ -303,19 +303,23 @@ int main(int argc, char* argv[])
 			Rocks.push_back(CreateRock(Players[uid(dre)].get()));
 			spawnTimer = 0;
 		}
-		CheckRayIntersection();
-		CheckPlayerIntersection();
-		CheckRockIntersection();
 
-
-		int index = 0;
 		for (auto& rockPtr : Rocks) {
 			Rock* rock = rockPtr.get();
 			bool IsAlive = rock->GetIsAlive();
 			if (IsAlive) {
 				rock->Update(deltaTime);
 			}
+		}
 
+		CheckRayIntersection();
+		CheckPlayerIntersection();
+		CheckRockIntersection();
+
+		int index = 0;
+		for (auto& rockPtr : Rocks) {
+			Rock* rock = rockPtr.get();
+			bool IsAlive = rock->GetIsAlive();
 			SendRockPacket.rockData[index].mtxRockTransform = rock->GetWorldMatrix();
 			SendRockPacket.rockData[index].nIsAlive = IsAlive;
 			SendRockPacket.rockData[index].nrockID = index;
