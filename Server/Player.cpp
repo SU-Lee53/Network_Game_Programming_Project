@@ -16,6 +16,17 @@ Player::~Player()
 
 }
 
+void Player::Update(float deltaTime)
+{
+
+	m_fInvincibleTimer -= deltaTime;
+	if (m_fInvincibleTimer <= 0.f)
+	{
+		m_fInvincibleTimer = 0.f;
+	}
+
+}
+
 void Player::SetRayData(const Ray& ray)
 {
 	m_RayData = ray;
@@ -41,6 +52,8 @@ void Player::GiveScore(int nScore)
 
 void Player::SetDamagefromPlayer()
 {
+	if (m_bInvincible || !m_bAlive) return;
+
 	if (m_fHP > 0)
 	{
 		m_fHP -= 10.f;
@@ -50,10 +63,15 @@ void Player::SetDamagefromPlayer()
 	if (m_fHP <= 0) {
 		m_bAlive = false;
 	}
+
+	m_fInvincibleTimer = 0.5f;
 }
 
 void Player::SetDamagefromRock()
 {
+
+	if (m_bInvincible || !m_bAlive) return;
+
 	if (m_fHP > 0)
 	{
 		m_fHP -= 20.f;
@@ -63,4 +81,6 @@ void Player::SetDamagefromRock()
 	if (m_fHP <= 0) {
 		m_bAlive = false;
 	}
+
+	m_fInvincibleTimer = 0.5f;
 }
