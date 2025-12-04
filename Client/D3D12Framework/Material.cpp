@@ -85,7 +85,7 @@ void TexturedMaterial::UpdateShaderVariables(ComPtr<ID3D12Device> pd3dDevice, Co
 	descHandle.cpuHandle.ptr += D3DCore::g_nCBVSRVDescriptorIncrementSize;
 
 	pd3dCommandList->SetGraphicsRootDescriptorTable(ROOT_PARAMETER_OBJ_TEXTURES, descHandle.gpuHandle);
-	descHandle.gpuHandle.Offset(2, D3DCore::g_nCBVSRVDescriptorIncrementSize);
+	descHandle.gpuHandle.Offset(1, D3DCore::g_nCBVSRVDescriptorIncrementSize);
 }
 
 //////////////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 #include "Mesh.h"
 #include "Material.h"
@@ -32,7 +32,7 @@ public:
 	virtual void Initialize();
 	virtual void Update(std::shared_ptr<GameObject> pOwner);
 	
-	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, OUT int& refnInstanceBase) {};
+	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, int& refnInstanceBase) {};
 
 
 public:
@@ -41,7 +41,7 @@ public:
 protected:
 	std::shared_ptr<Mesh> m_pMesh = nullptr;
 	std::vector<std::shared_ptr<Material>> m_pMaterials;
-	bool m_bAddToRenderManager = true;	// µ¶¸³ÀûÀÎ ·»´õ¸µ ¹æ¹ıÀ» °¡Áö´Â °æ¿ì false
+	bool m_bAddToRenderManager = true;	// ë…ë¦½ì ì¸ ë Œë”ë§ ë°©ë²•ì„ ê°€ì§€ëŠ” ê²½ìš° false
 
 };
 
@@ -55,7 +55,7 @@ struct std::hash<MeshRenderer> {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DiffusedRenderer
-// Position + Á¤Á¡ »ö»ó
+// Position + ì •ì  ìƒ‰ìƒ
 
 class DiffusedRenderer : public MeshRenderer {
 public:
@@ -65,14 +65,14 @@ public:
 
 
 public:
-	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, OUT int& refnInstanceBase) override;
+	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, int& refnInstanceBase) override;
 
 
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TexturedRenderer
-// Texture (Á¶¸í, ³ë¸»¸Ê X)
+// Texture (ì¡°ëª…, ë…¸ë§ë§µ X)
 
 class TexturedRenderer : public MeshRenderer {
 public:
@@ -82,14 +82,14 @@ public:
 
 
 public:
-	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, OUT int& refnInstanceBase) override;
+	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, int& refnInstanceBase) override;
 
 
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TexturedIlluminatedRenderer
-// Texture + Á¶¸í
+// Texture + ì¡°ëª…
 
 class TexturedIlluminatedRenderer : public MeshRenderer {
 public:
@@ -99,7 +99,7 @@ public:
 
 
 public:
-	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, OUT int& refnInstanceBase) override;
+	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, int& refnInstanceBase) override;
 
 
 };
@@ -107,7 +107,7 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TexturedNormalRenderer
-// Texture + Á¶¸í + Normal Mapping
+// Texture + ì¡°ëª… + Normal Mapping
 
 class TexturedNormalRenderer : public MeshRenderer {
 public:
@@ -117,7 +117,7 @@ public:
 
 
 public:
-	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, OUT int& refnInstanceBase) override;
+	virtual void Render(ComPtr<ID3D12Device> pd3dDevice, ComPtr<ID3D12GraphicsCommandList> pd3dCommandList, DescriptorHandle& descHandle, int nInstanceCount, int& refnInstanceBase) override;
 
 
 };

@@ -32,6 +32,8 @@ public:
 
 	int GetPlayerID() const { return m_nPlayerID; }
 
+	const std::string& GetErrorLog() { return m_strErrorLog; }
+
 private:
 	// 2025.11.03 
 	// by 이승욱
@@ -63,6 +65,4 @@ private:
 	bool m_bGameBegin = false;
 
 	bool m_bOfflineMode = true;
-
-public:
 };

@@ -173,6 +173,9 @@ bool NetworkManager::ReceiveData()
 		return false;
 	int retval = 0;
 	retval = recv(m_hClientSocket, (char*)&m_PacketReceived, sizeof(ServertoClientPlayerPacket), MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_quit("recv()");
+	}
 	retval += recv(m_hClientSocket, (char*)&m_PacketRocksReceived, sizeof(ServertoClientRockPacket), MSG_WAITALL);
 	SetEvent(g_hPacketReceivedEvent);  // 이벤트 시그널
 

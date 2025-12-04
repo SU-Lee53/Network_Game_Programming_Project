@@ -173,11 +173,6 @@ void TestScene::Update()
 	pPlayerLight->m_v3Position = m_pPlayer->GetTransform().GetPosition();
 	pPlayerLight->m_v3Direction = m_pPlayer->GetTransform().GetLook();
 
-	if (!NETWORK->IsOffline()) {
-		ClientToServerPacket packet = m_pPlayer->MakePacketToSend();
-		NETWORK->WritePacketData(packet);
-	}
-
 
 	// NETWORK TEST ZONE
 	//ImGui::Begin("Test");
@@ -189,15 +184,20 @@ void TestScene::Update()
 		static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->SetShake(true);
 	}
 
-	if (!NETWORK->IsOffline()) {
-		SyncSceneWithServer();
-	}
-
 	for (auto& pOtherPlayer : m_pOtherPlayers) {
 		pOtherPlayer->Update();
 	}
 
 	UpdateObjects();
+
+	if (!NETWORK->IsOffline()) {
+		ClientToServerPacket packet = m_pPlayer->MakePacketToSend();
+		NETWORK->WritePacketData(packet);
+	}
+
+	if (!NETWORK->IsOffline()) {
+		SyncSceneWithServer();
+	}
 
 	if (static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->m_bAlive == false) {
 		if (m_fEndSceneTimer >= m_fEndSceneTime) {
