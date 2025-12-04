@@ -132,7 +132,7 @@ void CheckPlayerIntersection()
 			if (i == j)
 				continue;
 
-			if (Players[i]->GetBoundingSphere().Intersects(Players[j]->GetBoundingSphere()))
+			if (Players[i]->GetBoundingSphere().Intersects(Players[j]->GetBoundingSphere()) && !Players[i]->IsInvincible())
 			{
 				Players[i]->SetDamagefromPlayer();
 			}
@@ -146,7 +146,7 @@ void CheckRockIntersection()
 	{
 		for (auto iter = Rocks.begin(); iter != Rocks.end(); ++iter)
 		{
-			if (Players[i]->GetBoundingSphere().Intersects(iter->get()->GetBoundingSphere()))
+			if (Players[i]->GetBoundingSphere().Intersects(iter->get()->GetBoundingSphere()) && !Players[i]->IsInvincible())
 			{
 				Players[i]->SetDamagefromRock();
 			}
