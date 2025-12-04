@@ -146,8 +146,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		);
 
 		// Player의 hp, alive를 전달
-		SendPlayerPacket.client[client_num].informData.alive = Players[client_num]->GetAlive();
-		SendPlayerPacket.client[client_num].informData.hp = Players[client_num]->GetHp();
+		SendPlayerPacket.client[client_num].informData.alive = Players[client_num]->IsAlive();
+		SendPlayerPacket.client[client_num].informData.hp = Players[client_num]->GetHP();
+		SendPlayerPacket.client[client_num].informData.score = Players[client_num]->GetScore();
 
 		EnterCriticalSection(&cs);
 		readyCount++;
@@ -325,11 +326,6 @@ int main(int argc, char* argv[])
 		}
 		SendRockPacket.size = Rocks.size();
 
-		for (int i = 0; i < 3; ++i) {
-			SendPlayerPacket.client[i].informData.alive = Players[i]->IsAlive();
-			SendPlayerPacket.client[i].informData.hp = Players[i]->GetHP();
-			SendPlayerPacket.client[i].informData.score = Players[i]->GetScore();
-		}
 
 		ResetEvent(hLogicStartEvent);
 		SetEvent(hLogicEndEvent);
