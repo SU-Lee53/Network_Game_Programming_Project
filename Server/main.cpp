@@ -248,11 +248,6 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-
-		// Nagle Off
-		int optval = 1;
-		setsockopt(client_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&optval, sizeof(optval));
-
 		hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL)
 		{
