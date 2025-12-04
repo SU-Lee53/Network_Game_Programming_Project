@@ -72,7 +72,6 @@ void TestScene::BuildObjects()
 	m_pRockObj = std::make_shared<RockObject>();
 	m_pRockObj->Initialize();
 
-
 	m_pPlayer = std::make_shared<SpaceshipPlayer>();
 
 	Vector2 v2ScreenCenter{ 0.5f, 0.5f };
@@ -268,7 +267,7 @@ void TestScene::SyncSceneWithServer()
 		nOtherPlayerIndex++;
 	}
 
-	ServertoClientRockPacket rockPacket =  NETWORK->GetReceivedRockPacketData();
+	ServertoClientRockPacket rockPacket = NETWORK->GetReceivedRockPacketData();
 	for (int i = 0; i < rockPacket.size; ++i) {
 
 		if (rockPacket.rockData[i].nIsAlive) {

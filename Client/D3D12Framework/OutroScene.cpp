@@ -62,5 +62,6 @@ void OutroScene::SyncSceneWithServer()
 {
 	// 데이터 한번 빼줘야 맞음(한번 보냈으니까)
 	ServertoClientPlayerPacket receivedPacket = NETWORK->GetReceivedPacketData();
+	ServertoClientRockPacket rockPacket = NETWORK->GetReceivedRockPacketData();
 
 }
