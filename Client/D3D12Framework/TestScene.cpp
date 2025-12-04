@@ -180,14 +180,6 @@ void TestScene::Update()
 	//}
 	//ImGui::End();
 
-	if (INPUT->GetButtonDown(VK_SPACE)) {
-		static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->SetShake(true);
-	}
-
-	for (auto& pOtherPlayer : m_pOtherPlayers) {
-		pOtherPlayer->Update();
-	}
-
 	UpdateObjects();
 
 	if (!NETWORK->IsOffline()) {
@@ -197,6 +189,10 @@ void TestScene::Update()
 
 	if (!NETWORK->IsOffline()) {
 		SyncSceneWithServer();
+	}
+
+	for (auto& pOtherPlayer : m_pOtherPlayers) {
+		pOtherPlayer->Update();
 	}
 
 	if (static_pointer_cast<SpaceshipPlayer>(m_pPlayer)->m_bAlive == false) {

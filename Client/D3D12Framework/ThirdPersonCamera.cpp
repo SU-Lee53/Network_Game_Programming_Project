@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ThirdPersonCamera.h"
 
 //#define CAMERA_WITH_DELAY
@@ -13,58 +13,70 @@ ThirdPersonCamera::~ThirdPersonCamera()
 
 void ThirdPersonCamera::ProcessInput()
 {
-	// ÀÌ·¯°í½ÍÁö ¾ÊÀºµ¥ ¿øº»ÄÚµå°¡ ÀÌ·³...
-	if (INPUT->GetButtonPressed(VK_RBUTTON)) {
-		HWND hWnd = ::GetActiveWindow();
+	HWND hWnd = ::GetActiveWindow();
 
-		::SetCursor(NULL);
+	::SetCursor(NULL);
 
-		RECT rtClientRect;
-		::GetClientRect(hWnd, &rtClientRect);
-		::ClientToScreen(hWnd, (LPPOINT)&rtClientRect.left);
-		::ClientToScreen(hWnd, (LPPOINT)&rtClientRect.right);
+	RECT rtClientRect;
+	::GetClientRect(hWnd, &rtClientRect);
+	::ClientToScreen(hWnd, (LPPOINT)&rtClientRect.left);
+	::ClientToScreen(hWnd, (LPPOINT)&rtClientRect.right);
 
-		int nScreenCenterX = 0, nScreenCenterY = 0;
-		nScreenCenterX = rtClientRect.left + WinCore::sm_dwClientWidth / 2;
-		nScreenCenterY = rtClientRect.top + WinCore::sm_dwClientHeight / 2;
+	int nScreenCenterX = 0, nScreenCenterY = 0;
+	nScreenCenterX = rtClientRect.left + WinCore::sm_dwClientWidth / 2;
+	nScreenCenterY = rtClientRect.top + WinCore::sm_dwClientHeight / 2;
 
-		POINT ptCursorPos;
-		::GetCursorPos(&ptCursorPos);
+	POINT ptCursorPos;
+	::GetCursorPos(&ptCursorPos);
 
-		POINT ptDelta{ (ptCursorPos.x - nScreenCenterX), (ptCursorPos.y - nScreenCenterY) };
+	POINT ptDelta{ (ptCursorPos.x - nScreenCenterX), (ptCursorPos.y - nScreenCenterY) };
 
-		m_fYaw += (float)ptDelta.x * m_fMouseSensitivity;
-		m_fPitch += (float)ptDelta.y * m_fMouseSensitivity;
+	m_fYaw += (float)ptDelta.x * m_fMouseSensitivity;
+	m_fPitch += (float)ptDelta.y * m_fMouseSensitivity;
 
-		SetRotation(m_fPitch, m_fYaw, 0.f);
+	SetRotation(m_fPitch, m_fYaw, 0.f);
 
-		// Pitch Á¦ÇÑ -> È­¸é µÚÁýÈ÷Áö ¾Êµµ·Ï
-		if (m_fPitch > 89.0f)
-			m_fPitch = 89.0f;
-		if (m_fPitch < -89.0f)
-			m_fPitch = -89.0f;
+	// Pitch ì œí•œ -> í™”ë©´ ë’¤ì§‘ížˆì§€ ì•Šë„ë¡
+	if (m_fPitch > 89.0f)
+		m_fPitch = 89.0f;
+	if (m_fPitch < -89.0f)
+		m_fPitch = -89.0f;
 
-
-		//XMFLOAT3 xmf3AddRotation{ ptDelta.y * 0.10f, ptDelta.x * 0.10f, 0.f };
-		//XMStoreFloat3(&m_xmf3CamRotation, XMVectorAdd(XMLoadFloat3(&m_xmf3CamRotation), XMLoadFloat3(&xmf3AddRotation)));
-
-		::SetCursorPos(nScreenCenterX, nScreenCenterY);
-	}
+	::SetCursorPos(nScreenCenterX, nScreenCenterY);
 
 	if (INPUT->GetButtonPressed('W')) {
+		SOUND->Resume("spaceship_sfx");
 		m_v3Position += m_v3Look * m_fPlayerSpeed * DT;
 	}
 
 	if (INPUT->GetButtonPressed('S')) {
+		SOUND->Resume("spaceship_sfx");
 		m_v3Position -= m_v3Look * m_fPlayerSpeed * DT;
 	}
 
 	if (INPUT->GetButtonPressed('D')) {
+		SOUND->Resume("spaceship_sfx");
 		m_v3Position += m_v3Right * m_fPlayerSpeed * DT;
 	}
 
 	if (INPUT->GetButtonPressed('A')) {
+		SOUND->Resume("spaceship_sfx");
 		m_v3Position -= m_v3Right * m_fPlayerSpeed * DT;
+	}
+
+	if (INPUT->GetButtonPressed(VK_SPACE)) {
+		SOUND->Resume("spaceship_sfx");
+		m_v3Position += m_v3Up * m_fPlayerSpeed * DT;
+	}
+
+	if (INPUT->GetButtonPressed('W') == false &&
+		INPUT->GetButtonPressed('S') == false &&
+		INPUT->GetButtonPressed('A') == false &&
+		INPUT->GetButtonPressed('D') == false &&
+		INPUT->GetButtonPressed(VK_SPACE) == false) 
+	{
+
+		SOUND->Pause("spaceship_sfx");
 	}
 
 }
@@ -99,8 +111,8 @@ void ThirdPersonCamera::Update()
 	}
 #else
 	// 11.01
-	// TODO : Ä«¸Þ¶ó°¡ Roll À» µû¶ó°¡¼­´Â ¾ÈµÊ
-	// ¾î¶»°Ô? -> ±×³É ·ÎÁ÷À» ¿øº»²¨¶û µ¿ÀÏÇÏ°Ô ÇØº¸ÀÚ
+	// TODO : ì¹´ë©”ë¼ê°€ Roll ì„ ë”°ë¼ê°€ì„œëŠ” ì•ˆë¨
+	// ì–´ë–»ê²Œ? -> ê·¸ëƒ¥ ë¡œì§ì„ ì›ë³¸êº¼ëž‘ ë™ì¼í•˜ê²Œ í•´ë³´ìž
 	
 	//	const Transform& ownerTransform = m_wpOwner.lock()->GetTransform();
 	//	
