@@ -229,7 +229,7 @@ void TestScene::SyncSceneWithServer()
 
 			// 기존의 알던 체력과 새로 받은 체력이 다르면 흔든다
 			// 체력이 갑자기 늘어날일은 없음(없어야함)
-			if (pPlayer->m_fHP != receivedPacket.client[i].informData.hp) {
+			if (pPlayer->m_fHP > receivedPacket.client[i].informData.hp) {
 				pPlayer->SetShake(true);
 				SOUND->Play("damage_sound");
 				pPlayer->m_fHP = receivedPacket.client[i].informData.hp;

@@ -133,10 +133,11 @@ void SpaceshipPlayer::Update()
 	}
 	
 	// Barrel Roll
+	float fAmount = 100.f;
 	if (m_bBarrelRoll) {
 		if (m_fRoll < 0) {
 			if (m_fRoll > -720.f) {
-				m_fAngularVelocity -= 10 * DT;
+				m_fAngularVelocity -= fAmount * DT;
 				m_fRoll += m_fAngularVelocity;
 			}
 			else {
@@ -147,7 +148,7 @@ void SpaceshipPlayer::Update()
 		}
 		else {
 			if (m_fRoll < 720.f) {
-				m_fAngularVelocity += 10 * DT;
+				m_fAngularVelocity += fAmount * DT;
 				m_fRoll += m_fAngularVelocity;
 			}
 			else {
