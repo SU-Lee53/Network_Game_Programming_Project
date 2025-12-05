@@ -198,10 +198,7 @@ void SpaceshipPlayer::Update()
 
 	}
 
-
-
 	Player::Update();
-
 }
 
 void SpaceshipPlayer::Render(ComPtr<ID3D12GraphicsCommandList> pd3dCommandList)
